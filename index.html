@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trace &mdash; Home Health Assessment</title>
+  <meta name="description" content="Room-by-room home health assessment. 80+ checkpoints for hidden toxins. A personalized swap plan at your own pace. Launching Summer 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&family=Plus+Jakarta+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --linen: #F5F5F3;
+      --night: #1A1A1A;
+      --green: #2D5A27;
+      --green-bg: #EBF0E8;
+      --ash: #888888;
+      --bone: #E4E4E0;
+    }
+    html, body {
+      background: var(--linen);
+      color: var(--night);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 1fr minmax(0, 520px) 1fr;
+      min-height: 100vh;
+    }
+    .side {
+      background: var(--linen);
+      border-right: 1px solid var(--bone);
+    }
+    .side.right {
+      border-right: none;
+      border-left: 1px solid var(--bone);
+    }
+    .page {
+      padding: 72px 48px 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    @media (max-width: 680px) {
+      .shell { grid-template-columns: 1fr; }
+      .side { display: none; }
+      .page { padding: 56px 28px 48px; }
+    }
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .logo-wrap svg {
+      display: block;
+    }
+    .wordmark {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 200;
+      font-size: 16px;
+      letter-spacing: 0.48em;
+      color: var(--night);
+      text-transform: lowercase;
+    }
+    .eyebrow-wrap { margin-bottom: 20px; }
+    .eyebrow {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ash);
+      display: block;
+      line-height: 1.8;
+    }
+    .eyebrow-coming {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      display: block;
+      line-height: 1.8;
+      margin-top: 6px;
+    }
+    .headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 52px;
+      line-height: 1.05;
+      color: var(--night);
+      margin-bottom: 20px;
+    }
+    .body-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ash);
+      line-height: 1.85;
+      margin-bottom: 44px;
+      max-width: 360px;
+    }
+    .cta-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .cta-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 18px 16px;
+      text-decoration: none;
+      text-align: left;
+      transition: opacity 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box.active {
+      background: var(--night);
+    }
+    .cta-box.active:hover { opacity: 0.84; }
+    .cta-box.active .cta-title { color: #F5F5F3; }
+    .cta-box.active .cta-desc { color: rgba(245,245,243,0.45); }
+    .cta-box.active .cta-arrow { color: #F5F5F3; }
+    .cta-box.soon {
+      background: transparent;
+      border: 1px dashed var(--bone);
+      cursor: default;
+      pointer-events: none;
+    }
+    .cta-box.soon .cta-title { color: var(--night); }
+    .cta-box.soon .cta-desc { color: var(--ash); }
+    .cta-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 0.5px solid;
+      padding: 2px 6px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .cta-tag.green {
+      color: var(--green);
+      border-color: rgba(45,90,39,0.3);
+      background: var(--green-bg);
+    }
+    .cta-tag.muted {
+      color: var(--ash);
+      border-color: var(--bone);
+      background: transparent;
+    }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .cta-desc {
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.65;
+      display: block;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+    .cta-arrow {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: auto;
+      color: var(--ash);
+    }
+    .ig-link {
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--ash);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.15s;
+    }
+    .ig-link:hover { color: var(--night); }
+    .footer {
+      margin-top: auto;
+      padding-top: 44px;
+    }
+    .footer p {
+      font-size: 9px;
+      font-weight: 300;
+      color: var(--bone);
+      line-height: 1.9;
+      letter-spacing: 0.03em;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="side"></div>
+    <div class="page">
+
+      <div class="logo-wrap">
+        <svg width="80" height="72" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 2L34 14V30H2V14L18 2Z" stroke="#1A1A1A" stroke-width="1.2" fill="none"/>
+          <path d="M18 8L28 16.5V26H8V16.5L18 8Z" stroke="#1A1A1A" stroke-width="1" fill="none" opacity="0.5"/>
+          <path d="M18 14L22 17.5V22H14V17.5L18 14Z" stroke="#1A1A1A" stroke-width="0.8" fill="none" opacity="0.25"/>
+        </svg>
+        <span class="wordmark">trace</span>
+      </div>
+
+      <div class="eyebrow-wrap">
+        <span class="eyebrow">Home Health Assessment</span>
+        <span class="eyebrow-coming">Coming Summer 2026</span>
+      </div>
+
+      <h1 class="headline">Your home has<br>a health score.</h1>
+
+      <p class="body-text">A room-by-room assessment covering every area of your home &mdash; air, water, laundry, cookware, fragrance, and more. 80+ checkpoints for hidden toxin exposures, a personalized score for every room, and a budget-fitted swap plan with specific product recommendations at your own pace.</p>
+
+      <div class="cta-grid">
+
+        <a href="https://tracehomeco.github.io/trace-quiz" class="cta-box active">
+          <span class="cta-tag green">Free now</span>
+          <span class="cta-title">5-question preview</span>
+          <span class="cta-desc">Find out where your home stands across the 5 most common hidden toxin exposures.</span>
+          <span class="cta-arrow">Start &rarr;</span>
+        </a>
+
+        <div class="cta-box soon">
+          <span class="cta-tag muted">Coming soon</span>
+          <span class="cta-title">Full home assessment</span>
+          <span class="cta-desc">Every room. 80+ checkpoints. A personalized swap plan at your own pace.</span>
+          <span class="cta-arrow">Summer 2026</span>
+        </div>
+
+      </div>
+
+      <a href="https://instagram.com/tracehome" target="_blank" rel="noopener" class="ig-link">
+        @tracehome on Instagram
+      </a>
+
+      <div class="footer">
+        <p>For education only. Not medical advice.</p>
+        <p>&copy; 2026 Trace</p>
+      </div>
+
+    </div>
+    <div class="side right"></div>
+  </div>
+</body>
+</html>
