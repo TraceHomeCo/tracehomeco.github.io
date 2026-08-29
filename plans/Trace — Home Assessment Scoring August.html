@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trace — Home Visit Score</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap');
+
+:root{
+  --linen:#E4E0D8;
+  --night:#1A1A1A;
+  --green:#2D5A27;
+  --amber:#8A6D3B;
+  --red:#A3402D;
+  --ash:#8B8880;
+  --line:rgba(26,26,26,0.14);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--linen);
+  color:var(--night);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:640px;margin:0 auto;padding:48px 24px 120px;}
+
+header{margin-bottom:44px;}
+.eyebrow{
+  font-size:12px;font-weight:300;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ash);margin-bottom:14px;
+}
+.divider{width:52px;height:1px;background:var(--line);margin-bottom:22px;}
+h1{
+  font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px;
+  line-height:1.15;letter-spacing:-0.01em;
+}
+.sub{font-size:15px;color:var(--ash);margin-top:10px;font-weight:300;line-height:1.5;}
+
+.progress-track{
+  height:2px;background:var(--line);border-radius:2px;margin:28px 0 0;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--night);width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+.progress-label{font-size:12px;color:var(--ash);margin-top:8px;letter-spacing:0.04em;}
+
+.room{margin-top:52px;}
+.room-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
+.room-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:26px;}
+.room-count{font-size:13px;color:var(--ash);font-variant-numeric:tabular-nums;}
+
+.question{border-top:1px solid var(--line);padding:22px 0;}
+.question:last-child{padding-bottom:4px;}
+.q-text{font-size:16px;font-weight:400;margin-bottom:14px;line-height:1.4;}
+
+.options{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  display:flex;align-items:flex-start;gap:12px;
+  border:1px solid var(--line);background:transparent;color:var(--night);
+  border-radius:10px;padding:13px 14px;font-size:13px;font-weight:400;
+  cursor:pointer;transition:all .15s ease;text-align:left;width:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+.opt-letter{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;
+  min-width:20px;color:var(--ash);flex-shrink:0;
+}
+.opt-body{flex:1;}
+.opt-main{line-height:1.4;}
+.opt-sub{font-size:12px;color:var(--ash);font-weight:300;margin-top:3px;line-height:1.4;}
+.opt-btn:hover{border-color:var(--night);}
+.opt-btn.active{background:var(--night);color:var(--linen);border-color:var(--night);}
+.opt-btn.active .opt-letter{color:var(--linen);opacity:0.6;}
+.opt-btn.active .opt-sub{color:var(--linen);opacity:0.65;}
+
+footer{
+  position:fixed;bottom:0;left:0;right:0;background:var(--linen);
+  border-top:1px solid var(--line);padding:16px 24px;
+  display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(6px);
+}
+.footer-score{font-family:'Cormorant Garamond',serif;font-size:22px;}
+.footer-score span{color:var(--ash);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;margin-left:8px;}
+.reveal-btn{
+  font-family:'Plus Jakarta Sans',sans-serif;background:var(--night);color:var(--linen);
+  border:none;padding:13px 26px;border-radius:100px;font-size:14px;font-weight:400;
+  cursor:pointer;transition:opacity .15s;-webkit-tap-highlight-color:transparent;
+}
+.reveal-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.reveal-btn:not(:disabled):active{opacity:0.8;}
+
+.results{display:none;min-height:100vh;}
+.results.show{display:block;}
+.wrap.hide{display:none;}
+
+.results-hero{padding:64px 24px 40px;text-align:left;max-width:640px;margin:0 auto;}
+.score-big{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:96px;line-height:1;letter-spacing:-0.02em;}
+.score-big .pct{font-size:44px;vertical-align:top;margin-left:2px;color:var(--ash);}
+.score-band{font-size:16px;margin-top:14px;font-weight:400;}
+.score-band.opportunity{color:var(--red);}
+.score-band.foundation{color:var(--amber);}
+.score-band.approved{color:var(--green);}
+.score-desc{font-size:15px;color:var(--ash);margin-top:12px;line-height:1.6;font-weight:300;max-width:480px;}
+.benchmark{font-size:13px;opacity:0.75;margin-top:14px;}
+
+.breakdown{max-width:640px;margin:0 auto;padding:0 24px 40px;}
+.breakdown-title{font-size:12px;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:18px;padding-top:36px;border-top:1px solid var(--line);}
+.bd-room{margin-bottom:22px;}
+.bd-room-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.bd-room-name{font-family:'Cormorant Garamond',serif;font-size:20px;}
+.bd-room-pct{font-size:14px;color:var(--ash);font-variant-numeric:tabular-nums;}
+.bd-bar-track{height:5px;background:var(--line);border-radius:4px;overflow:hidden;}
+.bd-bar-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+
+.actions{max-width:640px;margin:0 auto;padding:12px 24px 16px;display:flex;gap:12px;flex-wrap:wrap;}
+.actions button{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:400;padding:12px 20px;border-radius:100px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.btn-primary{background:var(--night);color:var(--linen);border:none;}
+.btn-secondary{background:transparent;color:var(--night);border:1px solid var(--line);}
+.trace-mark{font-family:'Plus Jakarta Sans',sans-serif;font-weight:200;font-size:13px;letter-spacing:0.35em;color:var(--ash);text-transform:lowercase;}
+
+@media (max-width:420px){
+  h1{font-size:32px;}
+  .score-big{font-size:76px;}
+  .score-big .pct{font-size:36px;}
+}
+button:focus-visible,.opt-btn:focus-visible{outline:2px solid var(--night);outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="quizWrap">
+  <header>
+    <div class="eyebrow">HOME VISIT</div>
+    <div class="divider"></div>
+    <h1>Trace Score</h1>
+    <p class="sub" style="color:var(--night);font-weight:400;margin-bottom:6px;">Your home score is the new sleep score — diet and movement are fully tracked. Your environment almost never is. This is the missing pillar of health.</p>
+    <p class="sub">Same 53 questions as the Trace assessment. Answer based on what's actually in the home — almost none of this is regulated, so a low score reflects the industry, not the homeowner. Most homes we visit score around 25% on a first assessment — this isn't about doing everything perfectly, it's about knowing where things stand.</p>
+
+    <div style="margin-top:28px;">
+      <label for="visitLabel" style="font-size:12px;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Home / Client Label</label>
+      <input type="text" id="visitLabel" placeholder="e.g. Sarah M. — Nursery visit — July 17" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:300;-webkit-appearance:none;box-sizing:border-box;">
+    </div>
+  </header>
+
+  <div class="room" style="margin-top:0;">
+    <div class="room-header"><div class="room-name">Discovery</div></div>
+    <p class="sub" style="margin-bottom:20px;">Ask these naturally as you walk in — not a formal interview. Jot short answers as you go.</p>
+
+    <div class="question" style="border-top:1px solid var(--line);">
+      <div class="q-text">What made you want to do this?</div>
+      <textarea id="discMotivation" placeholder="e.g. baby on the way, wants to get ahead of it" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Who's home — anyone on the way, kids, pets?</div>
+      <textarea id="discHousehold" placeholder="e.g. couple, first baby due September" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Anything already on their mind — a room, a concern, a health reason?</div>
+      <textarea id="discConcern" placeholder="e.g. worried about the nursery specifically" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question" style="padding-bottom:0;">
+      <div class="q-text">Anything surprising they said — a quotable moment</div>
+      <textarea id="discQuote" placeholder="e.g. 'I've been using this for 10 years, had no idea'" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+  </div>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 53 answered</div>
+
+  <div id="roomsContainer"></div>
+</div>
+
+<div class="results" id="results">
+  <div class="results-hero">
+    <div class="eyebrow" id="resultsLabel">TRACE SCORE</div>
+    <div class="divider"></div>
+    <div class="score-big" id="scoreBig">0<span class="pct">%</span></div>
+    <div class="score-band" id="scoreBand">—</div>
+    <p class="score-desc" id="scoreDesc"></p>
+    <p class="score-desc benchmark">Most first-time visits land between 30–55%. Think of it like a credit score before anyone explains the rules — the number just reflects a system nobody handed you the playbook for. Once you know the rules, it moves fast.</p>
+  </div>
+
+  <div class="breakdown" style="padding-top:0;">
+    <div class="breakdown-title" style="border-top:none;padding-top:0;">Lead with this — already going well</div>
+    <p class="score-desc" style="margin-top:-8px;margin-bottom:20px;font-size:13px;">Mention 2-3 of these before revealing the number.</p>
+    <div id="strongContainer"></div>
+  </div>
+
+  <div class="breakdown">
+    <div class="breakdown-title">Room by room</div>
+    <div id="breakdownContainer"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" onclick="backToQuiz()">← Back to edit</button>
+    <button class="btn-primary" id="copyBtn" onclick="copyFindings()">Copy findings for swap plan</button>
+  </div>
+  <div class="actions">
+    <button class="btn-secondary" onclick="location.reload()">Start new visit</button>
+    <span class="trace-mark">trace</span>
+  </div>
+</div>
+
+<footer id="footerBar">
+  <div class="footer-score"><span id="liveScore">100</span><span>current score</span></div>
+  <button class="reveal-btn" id="revealBtn" disabled onclick="showResults()">See Trace Score</button>
+</footer>
+
+<script>
+const DATA = {"Kitchen": {"KIT_Q01": {"question_text": "What do you use for dish soap?", "options": [{"letter": "A", "text": "Clean, fragrance-free dish soap (Branch Basics, Meliora, etc.)", "sub": "No synthetic fragrance or optical brighteners", "points": 0, "risk": "none", "swap_key": "KIT001"}, {"letter": "B", "text": "Natural/marketed-as-clean (Seventh Generation, Method, etc.)", "sub": "Better than conventional; some contain fragrance", "points": 3, "risk": "none", "swap_key": "KIT002"}, {"letter": "C", "text": "Conventional (Dawn, Palmolive, Ajax, etc.)", "sub": "Contains synthetic fragrance, surfactant blends", "points": 10, "risk": "medium", "swap_key": "KIT003"}]}, "KIT_Q02": {"question_text": "What do you use for drinking water?", "options": [{"letter": "A", "text": "Reverse osmosis filter (countertop or under-sink)", "sub": "Removes 95-99% of contaminants", "points": 0, "risk": "none", "swap_key": "KIT004"}, {"letter": "B", "text": "Whole-house filtration system", "sub": "Protects all water", "points": 2, "risk": "none", "swap_key": "KIT004"}, {"letter": "C", "text": "Pitcher filter (ZeroWater, Brita, etc.)", "sub": "Reduces some contaminants; not all", "points": 7, "risk": "none", "swap_key": "KIT007"}, {"letter": "F", "text": "Built-in fridge filter", "sub": "Usually NSF 42 only \u2014 taste and odor, not full contaminant removal", "points": 7, "risk": "none", "swap_key": "KIT007"}, {"letter": "D", "text": "Bottled water", "sub": "Microplastics from plastic packaging", "points": 8, "risk": "medium", "swap_key": null}, {"letter": "E", "text": "Straight from the tap \u2014 unfiltered", "sub": "Depends on municipality", "points": 15, "risk": "high", "swap_key": "KIT004"}]}, "KIT_Q03": {"question_text": "What cookware do you use most?", "options": [{"letter": "A", "text": "Stainless steel or carbon steel", "sub": "No coatings, no leaching", "points": 0, "risk": "none", "swap_key": "KIT010"}, {"letter": "B", "text": "Cast iron or enameled cast iron", "sub": "Naturally non-stick when seasoned", "points": 2, "risk": "none", "swap_key": "KIT011"}, {"letter": "C", "text": "Ceramic-coated non-stick (GreenPan, Caraway, etc.)", "sub": "PFAS-free but coating degrades over time", "points": 6, "risk": "none", "swap_key": "KIT008"}, {"letter": "D", "text": "Teflon / traditional non-stick (T-fal, Calphalon, etc.)", "sub": "Releases PFAS when overheated or scratched", "points": 18, "risk": "high", "swap_key": "KIT010"}, {"letter": "E", "text": "Mix \u2014 some clean, some conventional", "sub": "Partial exposure", "points": 10, "risk": "medium", "swap_key": "KIT008"}]}, "KIT_Q04": {"question_text": "What kind of coffee maker do you use?", "options": [{"letter": "A", "text": "French press, pour-over, or Chemex (glass/stainless)", "sub": "No plastic in brew path", "points": 0, "risk": "none", "swap_key": "KIT013"}, {"letter": "B", "text": "Moka pot (stainless or aluminum)", "sub": "Metal body only", "points": 2, "risk": "none", "swap_key": "KIT014"}, {"letter": "C", "text": "Pod machine (Keurig, Nespresso)", "sub": "Plastic pods + plastic tubing contact hot water", "points": 13, "risk": "high", "swap_key": "KIT013"}, {"letter": "D", "text": "Plastic drip machine", "sub": "Plastic water reservoir contacts hot water", "points": 9, "risk": "medium", "swap_key": "KIT013"}, {"letter": "E", "text": "I don't drink coffee", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "KIT_Q05": {"question_text": "What do you use for food storage and covering food?", "options": [{"letter": "A", "text": "Glass containers with glass or silicone lids", "sub": "Zero plastic contact with food", "points": 0, "risk": "none", "swap_key": "KIT022"}, {"letter": "B", "text": "Beeswax wraps or silicone covers", "sub": "Reusable, non-toxic", "points": 0, "risk": "none", "swap_key": "KIT023"}, {"letter": "C", "text": "BPA-free plastic containers", "sub": "BPA removed but BPS/BPF may substitute", "points": 8, "risk": "medium", "swap_key": "KIT022"}, {"letter": "D", "text": "Plastic wrap / cling film", "sub": "Plasticizers migrate into food, especially with heat", "points": 14, "risk": "high", "swap_key": "KIT023"}, {"letter": "E", "text": "Regular plastic Tupperware / ziplock bags", "sub": "BPA may still be present in older items", "points": 10, "risk": "medium", "swap_key": "KIT022"}]}, "KIT_Q06": {"question_text": "What water bottle do you use most?", "options": [{"letter": "A", "text": "Stainless steel (Klean Kanteen, Hydro Flask)", "sub": "Zero plastic contact", "points": 0, "risk": "none", "swap_key": "KIT017"}, {"letter": "B", "text": "Glass bottle", "sub": "Zero plastic contact", "points": 0, "risk": "none", "swap_key": "KIT019"}, {"letter": "C", "text": "Stanley or YETI tumbler", "sub": "2024 testing found lead solder in base", "points": 7, "risk": "medium", "swap_key": "KIT017"}, {"letter": "D", "text": "Reusable plastic (Nalgene, CamelBak)", "sub": "BPA-free but plastic still contacts liquid", "points": 9, "risk": "medium", "swap_key": "KIT017"}, {"letter": "E", "text": "Single-use plastic water bottles", "sub": "Microplastics + high packaging waste", "points": 14, "risk": "high", "swap_key": "KIT017"}]}, "KIT_Q07": {"question_text": "What cutting board do you use?", "options": [{"letter": "A", "text": "Wood or bamboo cutting board", "sub": "Natural material, no microplastic generation", "points": 0, "risk": "none", "swap_key": "KIT021"}, {"letter": "B", "text": "Glass or composite stone board", "sub": "Zero microplastic generation", "points": 0, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Thick plastic cutting board", "sub": "Microplastics from knife grooves enter food", "points": 9, "risk": "medium", "swap_key": "KIT021"}, {"letter": "D", "text": "Thin flexible plastic cutting mats", "sub": "Highest microplastic shedding of any cutting surface", "points": 14, "risk": "high", "swap_key": "KIT021"}]}, "KIT_Q08": {"question_text": "What do you use for all-purpose cleaning?", "options": [{"letter": "A", "text": "Clean, fragrance-free concentrate (Branch Basics, Force of Nature)", "sub": "No synthetic fragrance, fully disclosed", "points": 0, "risk": "none", "swap_key": "KIT024"}, {"letter": "B", "text": "Natural/marketed-as-clean (Method, Mrs. Meyer's)", "sub": "Better than conventional; often still fragranced", "points": 5, "risk": "none", "swap_key": "KIT024"}, {"letter": "C", "text": "Conventional (409, Lysol, etc.)", "sub": "Synthetic fragrance, undisclosed ingredients", "points": 12, "risk": "medium", "swap_key": "KIT024"}]}, "KIT_Q09": {"question_text": "What do kids use for lunchboxes or snack containers?", "options": [{"letter": "A", "text": "Stainless steel or glass", "sub": "No plastic contact with food", "points": 0, "risk": "none", "swap_key": "KIT025"}, {"letter": "B", "text": "Silicone reusable bags/containers", "sub": "Food-grade silicone, no leaching", "points": 2, "risk": "none", "swap_key": "KIT026"}, {"letter": "C", "text": "Plastic lunchbox or containers", "sub": "Repeated heat/cold cycling degrades plastic over time", "points": 9, "risk": "medium", "swap_key": "KIT025"}, {"letter": "D", "text": "Not applicable", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}}, "Bathroom": {"BATH_Q01": {"question_text": "What shampoo do you use?", "options": [{"letter": "A", "text": "Clean, certified shampoo (EWG Verified or MADE SAFE)", "sub": "No synthetic fragrance, sulfates, or parabens", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Natural/marketed-as-clean shampoo", "sub": "Better than conventional; check ingredients", "points": 4, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Conventional shampoo (Head & Shoulders, Pantene, etc.)", "sub": "Contains sulfates, synthetic fragrance, parabens", "points": 11, "risk": "medium", "swap_key": null}]}, "BATH_Q02": {"question_text": "What body wash or soap do you use?", "options": [{"letter": "A", "text": "Dr. Bronner's Castile or MADE SAFE certified body wash", "sub": "Organic, no synthetic fragrance", "points": 0, "risk": "none", "swap_key": "BATH005"}, {"letter": "B", "text": "Natural/plant-based (Pipette, Alaffia, etc.)", "sub": "Better than conventional", "points": 3, "risk": "none", "swap_key": "BATH006"}, {"letter": "C", "text": "Conventional body wash (Dove, Olay, etc.)", "sub": "Contains synthetic fragrance, SLS, parabens", "points": 11, "risk": "medium", "swap_key": "BATH005"}]}, "BATH_Q03": {"question_text": "What deodorant do you use?", "options": [{"letter": "A", "text": "Aluminum-free deodorant (Ursa Major, Megababe, etc.)", "sub": "No aluminum, EWG Verified options available", "points": 0, "risk": "none", "swap_key": "BATH008"}, {"letter": "B", "text": "Aluminum-free but with synthetic fragrance (Native scented, etc.)", "sub": "Better than antiperspirant; fragrance concern remains", "points": 5, "risk": "none", "swap_key": "BATH007"}, {"letter": "C", "text": "Conventional antiperspirant (Secret, Degree, Old Spice)", "sub": "Aluminum compounds block sweat glands; synthetic fragrance", "points": 15, "risk": "high", "swap_key": "BATH008"}]}, "BATH_Q04": {"question_text": "What toothpaste do you use?", "options": [{"letter": "A", "text": "Clean toothpaste (David's, Boka, EWG Verified)", "sub": "No SLS, no artificial sweeteners, no titanium dioxide", "points": 0, "risk": "none", "swap_key": "BATH010"}, {"letter": "B", "text": "Tom's of Maine or similar natural brand", "sub": "Better than conventional; contains SLS in some formulas", "points": 4, "risk": "none", "swap_key": "BATH009"}, {"letter": "C", "text": "Conventional toothpaste (Crest, Colgate, etc.)", "sub": "Contains saccharin, artificial flavors, SLS, potentially titanium dioxide", "points": 10, "risk": "medium", "swap_key": "BATH010"}]}, "BATH_Q05": {"question_text": "Do you use a shower filter?", "options": [{"letter": "A", "text": "Yes \u2014 NSF-certified shower filter (Weddell Duo, Multipure)", "sub": "Removes chlorine, chloramines, and PFAS", "points": 0, "risk": "none", "swap_key": "BATH001"}, {"letter": "B", "text": "Yes \u2014 standard shower filter (Aquasana, Jolie, etc.)", "sub": "Removes chlorine and chloramines; not PFAS-certified", "points": 4, "risk": "none", "swap_key": "BATH003"}, {"letter": "C", "text": "No \u2014 unfiltered shower", "sub": "Chlorine absorbed through skin during shower", "points": 14, "risk": "high", "swap_key": "BATH001"}]}, "BATH_Q06": {"question_text": "What shower curtain do you have?", "options": [{"letter": "A", "text": "Organic cotton or hemp curtain (OEKO-TEX certified)", "sub": "No PVC, no off-gassing", "points": 0, "risk": "none", "swap_key": "BATH012"}, {"letter": "B", "text": "PEVA curtain", "sub": "Significantly less toxic than PVC \u2014 no chlorine", "points": 5, "risk": "none", "swap_key": "BATH013"}, {"letter": "C", "text": "PVC vinyl curtain", "sub": "Releases phthalates and dioxins \u2014 especially when new", "points": 16, "risk": "high", "swap_key": "BATH012"}, {"letter": "D", "text": "No shower curtain (walk-in)", "sub": "No concern", "points": 0, "risk": "none", "swap_key": null}]}, "BATH_Q07": {"question_text": "What feminine care products do you use?", "options": [{"letter": "A", "text": "Organic cotton pads/tampons (GOTS certified) or menstrual cup", "sub": "No chlorine bleach, no fragrance, no synthetic fibers", "points": 0, "risk": "none", "swap_key": "BATH015"}, {"letter": "B", "text": "Fragrance-free conventional products", "sub": "Better than scented; chlorine bleach may still be present", "points": 6, "risk": "none", "swap_key": "BATH015"}, {"letter": "C", "text": "Conventional scented pads or tampons", "sub": "Synthetic fragrance + chlorine bleach in direct mucosa contact", "points": 18, "risk": "high", "swap_key": "BATH015"}, {"letter": "D", "text": "Not applicable", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "BATH_Q08": {"question_text": "What dental floss do you use?", "options": [{"letter": "A", "text": "PTFE-free floss (Boka Ela Mint, Dr. Tung's silk, bamboo)", "sub": "No PFAS coating", "points": 0, "risk": "none", "swap_key": "BATH017"}, {"letter": "B", "text": "Regular uncoated floss (Reach, CVS brand)", "sub": "No PTFE; check ingredient list", "points": 3, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Oral-B Glide or other PTFE-coated floss", "sub": "PFAS compounds detected in independent testing \u2014 direct gum contact", "points": 14, "risk": "high", "swap_key": "BATH017"}]}, "BATH_Q09": {"question_text": "What hand soap do you use?", "options": [{"letter": "A", "text": "Clean, fragrance-free (Dr. Bronner's, Branch Basics)", "sub": "No synthetic fragrance", "points": 0, "risk": "none", "swap_key": "BATH019"}, {"letter": "B", "text": "Natural/marketed-as-clean", "sub": "Better than conventional", "points": 3, "risk": "none", "swap_key": "BATH019"}, {"letter": "C", "text": "Conventional (Softsoap, Bath & Body Works)", "sub": "Synthetic fragrance, used multiple times daily", "points": 10, "risk": "medium", "swap_key": "BATH019"}]}, "BATH_Q10": {"question_text": "What toilet paper do you use?", "options": [{"letter": "A", "text": "Chlorine-free, unbleached (Reel, Repurpose)", "sub": "No bleach residue, no dyes", "points": 0, "risk": "none", "swap_key": "BATH020"}, {"letter": "B", "text": "Recycled, no dye/fragrance added", "sub": "Better than conventional", "points": 3, "risk": "none", "swap_key": "BATH020"}, {"letter": "C", "text": "Conventional bleached (Charmin, Cottonelle)", "sub": "Chlorine-bleached, direct contact with sensitive skin", "points": 9, "risk": "medium", "swap_key": "BATH020"}]}, "BATH_Q11": {"question_text": "What nail polish do you use?", "options": [{"letter": "A", "text": "17+ free, non-toxic brand (Ella+Mila, Olive & June)", "sub": "Free of formaldehyde, toluene, DBP", "points": 0, "risk": "none", "swap_key": "BATH021"}, {"letter": "B", "text": "Occasionally, no specific brand preference", "sub": "Inconsistent exposure", "points": 4, "risk": "none", "swap_key": "BATH021"}, {"letter": "C", "text": "Conventional polish (OPI, Essie, etc.)", "sub": "May contain formaldehyde, toluene, DBP (\"toxic trio\")", "points": 8, "risk": "medium", "swap_key": "BATH021"}, {"letter": "D", "text": "Don't use nail polish", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "BATH_Q12": {"question_text": "Do you have a filter on your bathroom sink faucet?", "options": [{"letter": "A", "text": "Yes \u2014 dedicated faucet filter", "sub": "Filters water used for face washing and brushing teeth", "points": 0, "risk": "none", "swap_key": "BATH022"}, {"letter": "B", "text": "No, but whole-house filtration covers it", "sub": "Already addressed at the source", "points": 0, "risk": "none", "swap_key": null}, {"letter": "C", "text": "No filtration on this faucet", "sub": "Unfiltered water contacts face and mouth daily", "points": 8, "risk": "medium", "swap_key": "BATH022"}]}}, "Bedroom": {"BED_Q01": {"question_text": "What mattress do you sleep on?", "options": [{"letter": "A", "text": "Certified organic mattress (GOTS + GREENGUARD Gold)", "sub": "No polyurethane foam, no synthetic fire retardants", "points": 0, "risk": "none", "swap_key": "BED001"}, {"letter": "B", "text": "CertiPUR-US certified foam mattress", "sub": "Tested for PBDE, TDCPP \u2014 not organic but meets safety thresholds", "points": 7, "risk": "none", "swap_key": "BED004"}, {"letter": "C", "text": "Standard conventional mattress (no certification)", "sub": "May contain polyurethane foam with PBDE fire retardants", "points": 18, "risk": "high", "swap_key": "BED001"}]}, "BED_Q02": {"question_text": "What sheets do you sleep on?", "options": [{"letter": "A", "text": "GOTS certified organic cotton sheets", "sub": "No formaldehyde finish, no synthetic fiber blend", "points": 0, "risk": "none", "swap_key": "BED005"}, {"letter": "B", "text": "OEKO-TEX certified sheets", "sub": "Free from harmful chemical limits \u2014 not organic", "points": 4, "risk": "none", "swap_key": "BED006"}, {"letter": "C", "text": "Conventional sheets (no certification)", "sub": "May contain formaldehyde finishing agents, synthetic dyes", "points": 16, "risk": "high", "swap_key": "BED005"}]}, "BED_Q03": {"question_text": "Do you run an air purifier in your bedroom?", "options": [{"letter": "A", "text": "Yes \u2014 True HEPA purifier (Coway, Winix, Medify)", "sub": "Removes particles down to 0.3 microns", "points": 0, "risk": "none", "swap_key": "BED008"}, {"letter": "B", "text": "Yes \u2014 HEPA-type or non-HEPA purifier", "sub": "Less effective than True HEPA", "points": 6, "risk": "none", "swap_key": null}, {"letter": "C", "text": "No air purifier", "sub": "Continuous overnight exposure to indoor air pollutants", "points": 20, "risk": "high", "swap_key": "BED008"}]}, "BED_Q04": {"question_text": "What do you use for bedroom lighting?", "options": [{"letter": "A", "text": "LED bulbs throughout", "sub": "No mercury, long lifespan", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Mix of LED and incandescent", "sub": "Mostly fine", "points": 2, "risk": "none", "swap_key": null}, {"letter": "C", "text": "CFL bulbs (compact fluorescent)", "sub": "Contain mercury \u2014 hazardous if broken in bedroom", "points": 8, "risk": "medium", "swap_key": null}]}, "BED_Q05": {"question_text": "Do you use scented candles or air fresheners in your bedroom?", "options": [{"letter": "A", "text": "No \u2014 fragrance-free bedroom", "sub": "No synthetic VOC exposure during sleep", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Occasionally \u2014 beeswax or soy candles", "sub": "Lower VOC load than paraffin", "points": 4, "risk": "none", "swap_key": "LR001"}, {"letter": "C", "text": "Yes \u2014 paraffin candles regularly", "sub": "Benzene and toluene release when burned", "points": 14, "risk": "high", "swap_key": "LR001"}, {"letter": "D", "text": "Yes \u2014 plug-in or spray air freshener", "sub": "Continuous or frequent synthetic VOC release", "points": 18, "risk": "high", "swap_key": null}]}, "BED_Q06": {"question_text": "What pillows do you sleep on?", "options": [{"letter": "A", "text": "GOTS certified organic wool or cotton", "sub": "No flame retardants, no synthetic foam", "points": 0, "risk": "none", "swap_key": "BED010"}, {"letter": "B", "text": "CertiPUR-US certified foam", "sub": "Tested for PBDE, TDCPP", "points": 5, "risk": "none", "swap_key": "BED010"}, {"letter": "C", "text": "Conventional foam or polyester fill (no certification)", "sub": "May contain flame retardants, closest contact to face all night", "points": 14, "risk": "high", "swap_key": "BED010"}]}, "BED_Q07": {"question_text": "Where does your phone charge overnight?", "options": [{"letter": "A", "text": "Across the room or in another room", "sub": "Minimal proximity during sleep", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "On the nightstand, airplane mode on", "sub": "Reduced signal during charging", "points": 3, "risk": "none", "swap_key": null}, {"letter": "C", "text": "On the nightstand, normal mode", "sub": "Closest, most continuous RF exposure point in the home", "points": 8, "risk": "medium", "swap_key": null}]}, "BED_Q08": {"question_text": "How close is your WiFi router to your bedroom?", "options": [{"letter": "A", "text": "Different floor or far end of the home", "sub": "Minimal proximity during sleep", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Adjacent room", "sub": "Moderate proximity", "points": 3, "risk": "none", "swap_key": null}, {"letter": "C", "text": "In or directly next to the bedroom", "sub": "Continuous, closest-range RF exposure overnight", "points": 8, "risk": "medium", "swap_key": null}]}}, "Living Room": {"LR_Q01": {"question_text": "Do you use synthetic fragrance products in your living room?", "options": [{"letter": "A", "text": "No \u2014 fragrance-free", "sub": "No VOC load", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Beeswax or soy candles occasionally", "sub": "Lower chemical load", "points": 4, "risk": "none", "swap_key": "LR001"}, {"letter": "C", "text": "Paraffin candles regularly", "sub": "VOC release when burned", "points": 12, "risk": "medium", "swap_key": "LR001"}, {"letter": "D", "text": "Plug-in air fresheners or synthetic diffusers", "sub": "Continuous VOC release \u2014 highest deduction", "points": 20, "risk": "high", "swap_key": null}]}, "LR_Q02": {"question_text": "What type of sofa do you have?", "options": [{"letter": "A", "text": "Solid wood frame, organic or natural fiber upholstery", "sub": "No foam, no synthetic fire retardants", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Conventional sofa \u2014 bought in last 5 years", "sub": "Newer sofas more likely to meet modern fire retardant standards", "points": 5, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Conventional sofa \u2014 older than 10 years", "sub": "More likely to contain PBDE fire retardants (phased out 2004-2013)", "points": 15, "risk": "high", "swap_key": null}]}, "LR_Q03": {"question_text": "Do you have an air purifier in your main living area?", "options": [{"letter": "A", "text": "Yes \u2014 True HEPA (Jaspr, Austin Air, Coway, Winix)", "sub": "Filters main breathing air", "points": 0, "risk": "none", "swap_key": "LR006"}, {"letter": "B", "text": "Yes \u2014 non-HEPA purifier", "sub": "Some benefit but limited filtration", "points": 8, "risk": "none", "swap_key": "LR006"}, {"letter": "C", "text": "No", "sub": "Main living area unfiltered", "points": 18, "risk": "high", "swap_key": "LR006"}]}, "LR_Q04": {"question_text": "What kind of rug do you have?", "options": [{"letter": "A", "text": "Organic wool or cotton rug (GOTS certified)", "sub": "No synthetic backing, no VOC-laden glues", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Jute or sisal rug", "sub": "Natural fiber, low off-gassing", "points": 2, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Synthetic area rug (polyester, nylon)", "sub": "Off-gasses VOCs, may have PFC water-resistant coating", "points": 9, "risk": "medium", "swap_key": null}, {"letter": "D", "text": "No rug", "sub": "No concern", "points": 0, "risk": "none", "swap_key": null}]}, "LR_Q05": {"question_text": "Do you remove shoes at the door?", "options": [{"letter": "A", "text": "Yes \u2014 always shoes off at the door", "sub": "Prevents tracking in pesticides, lead, and allergens", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Sometimes", "sub": "Partial benefit", "points": 4, "risk": "none", "swap_key": null}, {"letter": "C", "text": "No \u2014 shoes worn throughout home", "sub": "Tracks in pesticides, lead, pollen, bacteria", "points": 10, "risk": "medium", "swap_key": null}]}}, "Laundry": {"LAU_Q01": {"question_text": "What laundry detergent do you use?", "options": [{"letter": "A", "text": "Clean, fragrance-free (Branch Basics, Molly's Suds, ECOS)", "sub": "No synthetic fragrance, no optical brighteners", "points": 0, "risk": "none", "swap_key": "LAU001"}, {"letter": "B", "text": "Natural/marketed-as-clean (Seventh Generation, Method)", "sub": "Better than conventional; may contain fragrance", "points": 6, "risk": "none", "swap_key": "LAU003"}, {"letter": "C", "text": "Conventional (Tide, Gain, Arm & Hammer)", "sub": "Synthetic fragrance, optical brighteners, surfactants", "points": 18, "risk": "high", "swap_key": "LAU001"}, {"letter": "D", "text": "Scented pods or sheets", "sub": "High fragrance load \u2014 VOC release", "points": 16, "risk": "high", "swap_key": "LAU001"}]}, "LAU_Q02": {"question_text": "Do you use dryer sheets or fabric softener?", "options": [{"letter": "A", "text": "No \u2014 dryer balls only (wool or rubber)", "sub": "No chemical residue on fabric", "points": 0, "risk": "none", "swap_key": "LAU006"}, {"letter": "B", "text": "Occasionally \u2014 natural brand", "sub": "Lower chemical load", "points": 4, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Yes \u2014 conventional dryer sheets (Bounce, Downy)", "sub": "Quat compounds + synthetic fragrance on all fabric", "points": 14, "risk": "high", "swap_key": "LAU006"}, {"letter": "D", "text": "Liquid fabric softener", "sub": "Similar quat load to dryer sheets; rinses slightly better", "points": 10, "risk": "medium", "swap_key": "LAU006"}]}, "LAU_Q03": {"question_text": "Do you have a microfiber filter on your washing machine?", "options": [{"letter": "A", "text": "Yes \u2014 Cora Ball or Guppyfriend bag", "sub": "Captures synthetic microfibers before they reach waterways", "points": 0, "risk": "none", "swap_key": "LAU009"}, {"letter": "B", "text": "No", "sub": "Microplastic fibers from synthetic clothing enter water supply", "points": 8, "risk": "medium", "swap_key": "LAU009"}]}, "LAU_Q04": {"question_text": "Do you dry clean clothes?", "options": [{"letter": "A", "text": "Rarely or never", "sub": "Minimal exposure", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Yes \u2014 at a wet cleaning or CO2 cleaner", "sub": "Non-toxic alternatives to PERC", "points": 2, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Yes \u2014 at a conventional dry cleaner", "sub": "PERC (perchloroethylene) is a probable human carcinogen \u2014 residue on clothes brought home", "points": 16, "risk": "high", "swap_key": null}]}}, "Nursery": {"NUR_Q01": {"question_text": "What crib mattress do you have?", "options": [{"letter": "A", "text": "Certified organic crib mattress (GOTS + GREENGUARD Gold)", "sub": "No polyurethane, no synthetic fire retardants", "points": 0, "risk": "none", "swap_key": "NUR001"}, {"letter": "B", "text": "GREENGUARD Gold certified (not organic)", "sub": "Low chemical emissions verified \u2014 not organic", "points": 6, "risk": "none", "swap_key": "NUR003"}, {"letter": "C", "text": "Standard crib mattress (no certification)", "sub": "May contain polyurethane foam, synthetic fire retardants", "points": 20, "risk": "high", "swap_key": "NUR001"}]}, "NUR_Q02": {"question_text": "What diapers do you use?", "options": [{"letter": "A", "text": "Organic cotton or certified non-toxic diapers (Coterie, Andy Pandy)", "sub": "No chlorine, no fragrance, OEKO-TEX certified", "points": 0, "risk": "none", "swap_key": "NUR008"}, {"letter": "B", "text": "Chlorine-free diapers (Seventh Generation, Bambo)", "sub": "Better than conventional; no bleaching", "points": 5, "risk": "none", "swap_key": "NUR007"}, {"letter": "C", "text": "Conventional diapers (Huggies, Pampers)", "sub": "Chlorine bleaching, fragrance, lotions", "points": 12, "risk": "medium", "swap_key": "NUR007"}]}, "NUR_Q03": {"question_text": "What wipes do you use?", "options": [{"letter": "A", "text": "Organic cotton or water-based wipes (WaterWipes, Bamboobies)", "sub": "Minimal ingredients, no preservatives", "points": 0, "risk": "none", "swap_key": "NUR005"}, {"letter": "B", "text": "Fragrance-free conventional wipes (Huggies Natural Care)", "sub": "Better than scented", "points": 4, "risk": "none", "swap_key": "NUR006"}, {"letter": "C", "text": "Scented conventional wipes", "sub": "Synthetic fragrance in direct contact with most absorbent skin", "points": 14, "risk": "high", "swap_key": "NUR005"}]}, "NUR_Q04": {"question_text": "What baby wash/shampoo do you use?", "options": [{"letter": "A", "text": "EWG Verified or MADE SAFE certified baby wash (Pipette, Babo Botanicals)", "sub": "Safest formulation standard", "points": 0, "risk": "none", "swap_key": "NUR005"}, {"letter": "B", "text": "Johnson & Johnson Free & Gentle", "sub": "Reformulated \u2014 removed quaternium-15. Better but not certified.", "points": 5, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Conventional baby wash (original Johnson's, Aveeno Baby)", "sub": "Contains fragrance and/or preservatives", "points": 12, "risk": "medium", "swap_key": "NUR005"}]}, "NUR_Q05": {"question_text": "What baby monitor do you use?", "options": [{"letter": "A", "text": "Non-WiFi FHSS monitor (Infant Optics DXR-8, Eufy SpaceView)", "sub": "Intermittent RF \u2014 lower than WiFi", "points": 0, "risk": "none", "swap_key": "NUR010"}, {"letter": "B", "text": "WiFi monitor (Nanit, Owlet)", "sub": "Continuous WiFi RF \u2014 place 6+ feet from crib", "points": 6, "risk": "none", "swap_key": "NUR009"}, {"letter": "C", "text": "No monitor", "sub": "No concern", "points": 0, "risk": "none", "swap_key": null}]}}, "General": {"GEN_Q01": {"question_text": "Is your WiFi router on a timer or turned off overnight?", "options": [{"letter": "A", "text": "Yes \u2014 off or on a timer overnight", "sub": "Reduces RF exposure during sleep", "points": 0, "risk": "none", "swap_key": "GEN001"}, {"letter": "B", "text": "No \u2014 runs continuously 24/7", "sub": "Simple, free habit not yet in place", "points": 4, "risk": "none", "swap_key": "GEN001"}]}, "GEN_Q02": {"question_text": "What lighting do you use in main living spaces in the evening?", "options": [{"letter": "A", "text": "Warm/amber-toned bulbs", "sub": "Supports natural melatonin production", "points": 0, "risk": "none", "swap_key": "GEN002"}, {"letter": "B", "text": "Mix of warm and bright/blue-toned", "sub": "Partial benefit", "points": 3, "risk": "none", "swap_key": "GEN002"}, {"letter": "C", "text": "Standard bright/blue-toned LED throughout", "sub": "Suppresses melatonin in the hours before bed", "points": 6, "risk": "none", "swap_key": "GEN002"}]}}, "Garage": {"GAR_Q01": {"question_text": "What pest control products do you use in or around your home?", "options": [{"letter": "A", "text": "Non-toxic/botanical (diatomaceous earth, essential oil-based)", "sub": "No synthetic pesticide residue", "points": 0, "risk": "none", "swap_key": "GAR001"}, {"letter": "B", "text": "Professional service, asked for lower-toxicity options", "sub": "Varies by product used", "points": 4, "risk": "none", "swap_key": "GAR001"}, {"letter": "C", "text": "Conventional pesticides/sprays (Raid, Ortho, etc.)", "sub": "Synthetic pesticide residue tracked indoors", "points": 12, "risk": "medium", "swap_key": "GAR001"}]}, "GAR_Q02": {"question_text": "What paints do you use for home projects?", "options": [{"letter": "A", "text": "Zero-VOC certified paint", "sub": "No volatile organic compound off-gassing", "points": 0, "risk": "none", "swap_key": "GAR002"}, {"letter": "B", "text": "Low-VOC paint", "sub": "Reduced but not zero emissions", "points": 3, "risk": "none", "swap_key": "GAR002"}, {"letter": "C", "text": "Conventional paint", "sub": "VOCs off-gas for weeks to months after application", "points": 8, "risk": "medium", "swap_key": "GAR002"}, {"letter": "D", "text": "No recent projects", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}}, "Home Office": {"OFF_Q01": {"question_text": "Do you have an air purifier in your home office?", "options": [{"letter": "A", "text": "Yes \u2014 True HEPA", "sub": "Filters air in a space you occupy for hours daily", "points": 0, "risk": "none", "swap_key": "OFF001"}, {"letter": "B", "text": "No", "sub": "Unfiltered air in a high-occupancy room", "points": 10, "risk": "medium", "swap_key": "OFF001"}, {"letter": "C", "text": "No dedicated home office", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "OFF_Q02": {"question_text": "What is your primary desk surface made of?", "options": [{"letter": "A", "text": "Solid wood or metal", "sub": "No composite off-gassing", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Laminate or composite wood", "sub": "May off-gas formaldehyde from adhesives", "points": 5, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Not sure / no dedicated desk", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "OFF_Q03": {"question_text": "Do you use a desk mat or pad?", "options": [{"letter": "A", "text": "Natural material (leather, wool, cork)", "sub": "No synthetic off-gassing", "points": 0, "risk": "none", "swap_key": null}, {"letter": "B", "text": "Synthetic/PVC mat", "sub": "Potential VOC off-gassing at close range", "points": 3, "risk": "none", "swap_key": null}, {"letter": "C", "text": "No desk mat", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}}, "Pets & Pests": {"PET_Q01": {"question_text": "What flea and tick prevention do you use for your pets?", "options": [{"letter": "A", "text": "Natural/botanical prevention", "sub": "Lower synthetic pesticide load", "points": 0, "risk": "none", "swap_key": "PET001"}, {"letter": "B", "text": "Vet-prescribed oral or topical treatment", "sub": "Regulated but still a pesticide compound", "points": 3, "risk": "none", "swap_key": null}, {"letter": "C", "text": "Over-the-counter flea collar or spot treatment", "sub": "Organophosphates/pyrethroids in some products, direct pet and human contact", "points": 8, "risk": "medium", "swap_key": "PET001"}, {"letter": "D", "text": "No pets", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "PET_Q02": {"question_text": "What cat litter do you use?", "options": [{"letter": "A", "text": "Natural (walnut, corn, wheat-based)", "sub": "No silica dust, no fragrance", "points": 0, "risk": "none", "swap_key": "PET002"}, {"letter": "B", "text": "Clay litter, unscented", "sub": "Silica dust exposure with regular use", "points": 4, "risk": "none", "swap_key": "PET002"}, {"letter": "C", "text": "Clay litter, scented", "sub": "Silica dust plus synthetic fragrance", "points": 8, "risk": "medium", "swap_key": "PET002"}, {"letter": "D", "text": "No cats", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}, "PET_Q03": {"question_text": "What household pest control do you use?", "options": [{"letter": "A", "text": "Non-toxic/botanical", "sub": "No synthetic pesticide residue", "points": 0, "risk": "none", "swap_key": "GAR001"}, {"letter": "B", "text": "Conventional sprays/traps with pesticide", "sub": "Residue in living spaces, pet and child contact risk", "points": 8, "risk": "medium", "swap_key": "GAR001"}, {"letter": "C", "text": "No pest control needed", "sub": "N/A", "points": 0, "risk": "none", "swap_key": null}]}}};
+;
+
+const ROOM_ORDER = ["Kitchen","Bathroom","Bedroom","Living Room","Laundry","Nursery"];
+const ROOM_SUB = {
+  "Kitchen":"Highest-frequency exposure room in the home",
+  "Bathroom":"Highest product density per square foot",
+  "Bedroom":"Roughly a third of every day spent here",
+  "Living Room":"Where the most time is spent awake",
+  "Laundry":"Touches every fabric in the home",
+  "Nursery":"Skip if not applicable to this home"
+};
+
+let answers = {}; // question_id -> {letter, points, swap_key, text}
+let totalQuestions = 0;
+ROOM_ORDER.forEach(r => totalQuestions += Object.keys(DATA[r]).length);
+
+function render(){
+  const container = document.getElementById('roomsContainer');
+  container.innerHTML = '';
+  ROOM_ORDER.forEach(roomName => {
+    const questions = DATA[roomName];
+    const qIds = Object.keys(questions);
+
+    const roomEl = document.createElement('div');
+    roomEl.className = 'room';
+    roomEl.innerHTML = `<div class="room-header"><div class="room-name">${roomName}</div><div class="room-count" id="room-count-${roomName.replace(/\s/g,'')}"></div></div>
+      <p class="sub" style="margin-bottom:0;">${ROOM_SUB[roomName]}</p>`;
+
+    qIds.forEach(qid => {
+      const q = questions[qid];
+      const qEl = document.createElement('div');
+      qEl.className = 'question';
+
+      const qText = document.createElement('div');
+      qText.className = 'q-text';
+      qText.textContent = q.question_text;
+      qEl.appendChild(qText);
+
+      const optsEl = document.createElement('div');
+      optsEl.className = 'options';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.id = `opt-${qid}-${opt.letter}`;
+        btn.innerHTML = `<span class="opt-letter">${opt.letter}</span><span class="opt-body"><span class="opt-main">${opt.text}</span><span class="opt-sub">${opt.sub}</span></span>`;
+        btn.onclick = () => selectAnswer(qid, opt, roomName);
+        optsEl.appendChild(btn);
+      });
+
+      qEl.appendChild(optsEl);
+      roomEl.appendChild(qEl);
+    });
+
+    container.appendChild(roomEl);
+  });
+  updateFooter();
+}
+
+function selectAnswer(qid, opt, roomName){
+  answers[qid] = {letter: opt.letter, points: opt.points, swap_key: opt.swap_key, text: opt.text, room: roomName};
+
+  const q = DATA[roomName][qid];
+  q.options.forEach(o => {
+    const b = document.getElementById(`opt-${qid}-${o.letter}`);
+    b.classList.toggle('active', o.letter === opt.letter);
+  });
+
+  updateRoomCount(roomName);
+  updateFooter();
+}
+
+function updateRoomCount(roomName){
+  const qIds = Object.keys(DATA[roomName]);
+  const answered = qIds.filter(qid => answers[qid]).length;
+  const el = document.getElementById(`room-count-${roomName.replace(/\s/g,'')}`);
+  el.textContent = `${answered} / ${qIds.length}`;
+}
+
+function updateFooter(){
+  const answeredCount = Object.keys(answers).length;
+  const progressPct = Math.round((answeredCount/totalQuestions)*100);
+  document.getElementById('progressFill').style.width = progressPct + '%';
+  document.getElementById('progressLabel').textContent = `${answeredCount} of ${totalQuestions} answered`;
+
+  const {overall} = computeScore();
+  document.getElementById('liveScore').textContent = overall + '%';
+  document.getElementById('revealBtn').disabled = answeredCount < Math.ceil(totalQuestions*0.5);
+}
+
+function computeScore(){
+  let totalDeduction = 0;
+  Object.values(answers).forEach(a => { totalDeduction += a.points; });
+  let overall = 100 - totalDeduction;
+  if(overall < 25) overall = 25;
+  if(overall > 100) overall = 100;
+
+  const roomResults = [];
+  ROOM_ORDER.forEach(roomName => {
+    const qIds = Object.keys(DATA[roomName]);
+    const answeredIds = qIds.filter(qid => answers[qid]);
+    if(answeredIds.length === 0) return;
+    let deduction = 0;
+    answeredIds.forEach(qid => deduction += answers[qid].points);
+    let roomScore = 100 - (deduction * (qIds.length / answeredIds.length));
+    if(roomScore < 25) roomScore = 25;
+    if(roomScore > 100) roomScore = 100;
+    roomResults.push({name: roomName, pct: Math.round(roomScore)});
+  });
+
+  return {overall, roomResults};
+}
+
+function bandFor(pct){
+  if(pct < 50) return {label:'Most Opportunity', cls:'opportunity',
+    desc:"This is where most homes land on a first visit — almost nothing here is the homeowner's fault, since so little of this is regulated or disclosed. The biggest wins are still ahead."};
+  if(pct < 75) return {label:'Real Opportunity', cls:'foundation',
+    desc:"Good choices have already been made. A handful of specific swaps in the lowest-scoring categories will move this meaningfully."};
+  return {label:'Good Start', cls:'approved',
+    desc:"Strong baseline choices across most categories. What's left are refinements, not overhauls."};
+}
+
+function showResults(){
+  const {overall, roomResults} = computeScore();
+  const band = bandFor(overall);
+
+  const labelInput = document.getElementById('visitLabel').value.trim();
+  document.getElementById('resultsLabel').textContent = labelInput ? labelInput.toUpperCase() : 'TRACE SCORE';
+
+  document.getElementById('scoreBig').innerHTML = `${overall}<span class="pct">%</span>`;
+  const bandEl = document.getElementById('scoreBand');
+  bandEl.textContent = band.label;
+  bandEl.className = 'score-band ' + band.cls;
+  document.getElementById('scoreDesc').textContent = band.desc;
+
+  // Populate "already going well" — every question answered with the cleanest option
+  const strongEl = document.getElementById('strongContainer');
+  strongEl.innerHTML = '';
+  const strongFindings = [];
+  ROOM_ORDER.forEach(roomName => {
+    Object.keys(DATA[roomName]).forEach(qid => {
+      const a = answers[qid];
+      if(a && a.points === 0){
+        strongFindings.push({room: roomName, text: a.text});
+      }
+    });
+  });
+
+  if(strongFindings.length === 0){
+    const p = document.createElement('p');
+    p.className = 'score-desc';
+    p.style.fontSize = '14px';
+    p.textContent = 'Nothing at the top tier yet on this pass — that\'s okay, lead straight into the plan instead.';
+    strongEl.appendChild(p);
+  } else {
+    strongFindings.forEach(f => {
+      const el = document.createElement('div');
+      el.className = 'bd-room';
+      el.style.marginBottom = '14px';
+      el.innerHTML = `
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:var(--green);font-size:16px;line-height:1.4;">✓</span>
+          <div>
+            <div style="font-size:11px;color:var(--ash);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">${f.room}</div>
+            <div style="font-size:15px;color:var(--night);line-height:1.4;">${f.text}</div>
+          </div>
+        </div>`;
+      strongEl.appendChild(el);
+    });
+  }
+
+  const bd = document.getElementById('breakdownContainer');
+  bd.innerHTML = '';
+  roomResults.forEach(r => {
+    const rb = bandFor(r.pct);
+    const color = rb.cls === 'opportunity' ? 'var(--red)' : rb.cls === 'foundation' ? 'var(--amber)' : 'var(--green)';
+    const el = document.createElement('div');
+    el.className = 'bd-room';
+    el.innerHTML = `<div class="bd-room-top"><div class="bd-room-name">${r.name}</div><div class="bd-room-pct">${r.pct}%</div></div>
+      <div class="bd-bar-track"><div class="bd-bar-fill" style="width:${r.pct}%; background:${color};"></div></div>`;
+    bd.appendChild(el);
+  });
+
+  document.getElementById('quizWrap').classList.add('hide');
+  document.getElementById('footerBar').style.display = 'none';
+  document.getElementById('results').classList.add('show');
+  window.scrollTo(0,0);
+}
+
+function generateFindingsText(){
+  const {overall} = computeScore();
+  const band = bandFor(overall);
+  const labelInput = document.getElementById('visitLabel').value.trim();
+  let out = `TRACE HOME VISIT — FINDINGS SUMMARY\n`;
+  if(labelInput) out += `${labelInput}\n`;
+  out += `Overall score: ${overall}% — ${band.label}\n\n`;
+
+  const motivation = document.getElementById('discMotivation').value.trim();
+  const household = document.getElementById('discHousehold').value.trim();
+  const concern = document.getElementById('discConcern').value.trim();
+  const quote = document.getElementById('discQuote').value.trim();
+  if(motivation || household || concern || quote){
+    out += `DISCOVERY\n`;
+    if(motivation) out += `Why they wanted this: ${motivation}\n`;
+    if(household) out += `Household: ${household}\n`;
+    if(concern) out += `On their mind: ${concern}\n`;
+    if(quote) out += `Quotable moment: "${quote}"\n`;
+    out += `\n`;
+  }
+  out += `PRIORITY SWAPS (swap_key references Trace product catalogue):\n`;
+
+  let anyPriority = false;
+  ROOM_ORDER.forEach(roomName => {
+    const qIds = Object.keys(DATA[roomName]);
+    const lines = [];
+    qIds.forEach(qid => {
+      const a = answers[qid];
+      if(a && a.points >= 6 && a.swap_key){
+        lines.push(`- ${DATA[roomName][qid].question_text} → currently: "${a.text}" [swap_key: ${a.swap_key}]`);
+        anyPriority = true;
+      }
+    });
+    if(lines.length) out += `\n${roomName.toUpperCase()}\n` + lines.join('\n') + '\n';
+  });
+  if(!anyPriority) out += '(none — no major gaps found)\n';
+
+  out += `\nALREADY CLEAN:\n`;
+  let anyClean = false;
+  ROOM_ORDER.forEach(roomName => {
+    const qIds = Object.keys(DATA[roomName]);
+    const lines = [];
+    qIds.forEach(qid => {
+      const a = answers[qid];
+      if(a && a.points === 0){
+        lines.push(`- ${DATA[roomName][qid].question_text} → "${a.text}"`);
+        anyClean = true;
+      }
+    });
+    if(lines.length) out += `\n${roomName.toUpperCase()}\n` + lines.join('\n') + '\n';
+  });
+  if(!anyClean) out += '(none yet)\n';
+
+  out += `\nUnanswered / not applicable: `;
+  const unanswered = [];
+  ROOM_ORDER.forEach(roomName => {
+    Object.keys(DATA[roomName]).forEach(qid => {
+      if(!answers[qid]) unanswered.push(DATA[roomName][qid].question_text);
+    });
+  });
+  out += unanswered.length ? unanswered.join(', ') : 'none';
+
+  return out;
+}
+
+function copyFindings(){
+  const text = generateFindingsText();
+  const btn = document.getElementById('copyBtn');
+  const originalLabel = btn.textContent;
+  function done(success){
+    btn.textContent = success ? 'Copied ✓' : 'Copy failed — try again';
+    setTimeout(() => { btn.textContent = originalLabel; }, 2000);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => done(true)).catch(() => done(false));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(true); }catch(e){ done(false); }
+    document.body.removeChild(ta);
+  }
+}
+
+function backToQuiz(){
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('quizWrap').classList.remove('hide');
+  document.getElementById('footerBar').style.display = 'flex';
+  window.scrollTo(0,0);
+}
+
+render();
+</script>
+</body>
+</html>
