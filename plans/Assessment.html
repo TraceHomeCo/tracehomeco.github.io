@@ -141,6 +141,7 @@ button:focus-visible,.opt-btn:focus-visible{outline:2px solid var(--night);outli
     <h1>Trace Score</h1>
     <p class="sub" style="color:var(--night);font-weight:400;margin-bottom:6px;">Your home score is the new sleep score — diet and movement are fully tracked. Your environment almost never is. This is the missing pillar of health.</p>
     <p class="sub">Same 53 questions as the Trace assessment. Answer based on what's actually in the home — almost none of this is regulated, so a low score reflects the industry, not the homeowner. Most homes we visit score around 25% on a first assessment — this isn't about doing everything perfectly, it's about knowing where things stand.</p>
+    <p class="sub" style="font-size:12px;color:var(--ash);">Scoring logic, if asked: your score is the percentage of things in your home already at the cleanest verified option — clean water filtration, safe cookware, that kind of thing. A few big ones — water, mattress, bedroom air — matter enough that if any are still missing, the score caps at 70% even if everything else is perfect. Once those are covered, the cap disappears and the score just reflects the percentage of everything else at the cleanest option too.</p>
 
     <div style="margin-top:28px;">
       <label for="visitLabel" style="font-size:12px;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Home / Client Label</label>
@@ -307,35 +308,48 @@ function updateFooter(){
   document.getElementById('revealBtn').disabled = answeredCount < Math.ceil(totalQuestions*0.5);
 }
 
+// Foundational checkpoints — research-backed high-exposure categories.
+// If breadth score exceeds 70% but any applicable Foundational item isn't
+// already at top-tier (0 points), the score caps at 70%.
+const FOUNDATIONAL_IDS = ['KIT_Q02', 'BED_Q01', 'BED_Q03', 'NUR_Q01'];
+
 function computeScore(){
-  let totalDeduction = 0;
-  Object.values(answers).forEach(a => { totalDeduction += a.points; });
-  let overall = 100 - totalDeduction;
-  if(overall < 25) overall = 25;
+  const answeredIds = Object.keys(answers);
+  const totalAnswered = answeredIds.length;
+  if(totalAnswered === 0) return {overall: 0, roomResults: []};
+
+  // Breadth: % of answered questions already at top tier (0 points)
+  const cleanCount = answeredIds.filter(qid => answers[qid].points === 0).length;
+  let overall = Math.round((cleanCount / totalAnswered) * 100);
+
+  // Foundational cap: only applies to Foundational IDs actually answered
+  const answeredFoundational = FOUNDATIONAL_IDS.filter(id => answers[id]);
+  const foundationalGap = answeredFoundational.some(id => answers[id].points > 0);
+  if(overall > 70 && foundationalGap){
+    overall = 70;
+  }
   if(overall > 100) overall = 100;
+  if(overall < 0) overall = 0;
 
   const roomResults = [];
   ROOM_ORDER.forEach(roomName => {
     const qIds = Object.keys(DATA[roomName]);
-    const answeredIds = qIds.filter(qid => answers[qid]);
-    if(answeredIds.length === 0) return;
-    let deduction = 0;
-    answeredIds.forEach(qid => deduction += answers[qid].points);
-    let roomScore = 100 - (deduction * (qIds.length / answeredIds.length));
-    if(roomScore < 25) roomScore = 25;
-    if(roomScore > 100) roomScore = 100;
-    roomResults.push({name: roomName, pct: Math.round(roomScore)});
+    const roomAnsweredIds = qIds.filter(qid => answers[qid]);
+    if(roomAnsweredIds.length === 0) return;
+    const roomClean = roomAnsweredIds.filter(qid => answers[qid].points === 0).length;
+    let roomScore = Math.round((roomClean / roomAnsweredIds.length) * 100);
+    roomResults.push({name: roomName, pct: roomScore});
   });
 
   return {overall, roomResults};
 }
 
 function bandFor(pct){
-  if(pct < 50) return {label:'Most Opportunity', cls:'opportunity',
+  if(pct < 65) return {label:'Building Momentum', cls:'opportunity',
     desc:"This is where most homes land on a first visit — almost nothing here is the homeowner's fault, since so little of this is regulated or disclosed. The biggest wins are still ahead."};
-  if(pct < 75) return {label:'Real Opportunity', cls:'foundation',
+  if(pct < 85) return {label:'Strong Foundation', cls:'foundation',
     desc:"Good choices have already been made. A handful of specific swaps in the lowest-scoring categories will move this meaningfully."};
-  return {label:'Good Start', cls:'approved',
+  return {label:'Trace Approved Home', cls:'approved',
     desc:"Strong baseline choices across most categories. What's left are refinements, not overhauls."};
 }
 
