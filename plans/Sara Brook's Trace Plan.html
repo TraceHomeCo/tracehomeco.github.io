@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sara's Trace Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --night: #1A1A1A;
+    --linen: #F5F5F3;
+    --bone: #E4E4E0;
+    --dusk: #888888;
+    --ash: #AAAAAA;
+    --white: #FFFFFF;
+    --green-bg: #EBF0E8;
+    --green-text: #2D5A27;
+    --amber-bg: #FBF3E3;
+    --amber: #B8863B;
+    --red: #A3402D;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    background: var(--linen);
+    color: var(--night);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; padding: 56px 24px 100px; }
+
+  .logo-mark { text-align: center; margin-bottom: 36px; }
+
+  .eyebrow {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dusk);
+    margin-bottom: 8px;
+  }
+
+  .visit-label {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--night);
+    margin-bottom: 40px;
+  }
+
+  .score-ring-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 32px; }
+  .score-ring { position: relative; width: 170px; height: 170px; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring-track { fill: none; stroke: var(--bone); stroke-width: 3; }
+  .score-ring-fill {
+    fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: butt;
+    stroke-dasharray: 461.8; stroke-dashoffset: 461.8;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .score-number { font-family: 'Cormorant Garamond', serif; font-size: 74px; font-weight: 400; line-height: 1; color: var(--night); }
+  .score-denom { font-size: 11px; color: var(--ash); letter-spacing: 0.1em; }
+  .score-band { margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); font-weight: 400; }
+
+  .result-headline { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 5vw, 30px); font-weight: 300; line-height: 1.25; color: var(--night); margin-bottom: 14px; text-align: center; }
+  .result-body { font-size: 14px; line-height: 1.75; color: var(--dusk); text-align: center; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+  .disclosure {
+    background: var(--white);
+    border-left: 3px solid var(--amber);
+    padding: 16px 20px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #555;
+    margin: 0 auto 32px;
+    max-width: 520px;
+  }
+
+  .divider { width: 48px; height: 1px; background: var(--bone); margin: 40px auto; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dusk); text-align: center; margin-bottom: 20px; }
+  .section-h { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; text-align: center; margin-bottom: 8px; }
+  .section-sub { font-size: 13px; color: var(--dusk); text-align: center; font-style: italic; margin-bottom: 28px; }
+
+  .reassure {
+    background: var(--green-bg);
+    border-left: 3px solid var(--green-text);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--green-text);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+
+  .approved-card { background: var(--white); border-radius: 2px; padding: 24px; margin-bottom: 32px; }
+  .approved-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+  .approved-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.5; color: var(--night); padding: 4px 0; }
+  .approved-check { color: var(--green-text); font-weight: 500; flex-shrink: 0; }
+
+  .top3-card {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--white); padding: 16px 20px; margin-bottom: 10px;
+  }
+  .top3-num {
+    width: 32px; height: 32px; background: var(--green-text); color: var(--linen);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 18px; flex-shrink: 0;
+  }
+  .top3-content { flex: 1; }
+  .top3-title { font-size: 14px; font-weight: 400; color: var(--night); margin-bottom: 2px; }
+  .top3-reason { font-size: 12px; color: var(--dusk); font-style: italic; }
+  .top3-points { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--green-text); flex-shrink: 0; }
+
+  .wave-header { text-align: center; margin: 48px 0 20px; }
+  .wave-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; }
+  .wave-sub { font-size: 13px; color: var(--dusk); font-style: italic; margin-top: 4px; }
+
+  .room-h { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 400; margin: 28px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--bone); }
+
+  .swap-card { background: var(--white); padding: 22px 24px; margin-bottom: 20px; }
+  .swap-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .swap-label { font-size: 12px; font-weight: 500; color: var(--dusk); letter-spacing: 0.05em; text-transform: uppercase; }
+  .swap-badge { font-size: 11px; font-weight: 500; color: var(--green-text); background: var(--green-bg); padding: 3px 10px; }
+  .swap-badge.free { color: var(--green-text); }
+  .swap-current { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--night); margin-bottom: 10px; }
+  .swap-why { font-size: 13px; line-height: 1.65; color: #444; margin-bottom: 10px; }
+  .swap-note { font-size: 12.5px; line-height: 1.6; color: #666; font-style: italic; margin-bottom: 14px; }
+
+  .options-row { display: grid; gap: 12px; }
+  .options-row::before {
+    content: "VERIFIED SWAP";
+    display: block;
+    grid-column: 1 / -1;
+    font-family: 'Jost', sans-serif;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-text);
+    margin-bottom: -4px;
+  }
+  .options-row.two { grid-template-columns: 1fr 1fr; }
+  .options-row.one { grid-template-columns: 1fr; }
+  .option { border: 1px solid var(--bone); padding: 16px; }
+  .option-name { font-size: 13px; font-weight: 500; color: var(--green-text); margin-bottom: 5px; text-decoration: underline; }
+  .option-price { font-size: 12px; color: #666; margin-bottom: 3px; }
+  .option-cert { font-size: 11.5px; color: var(--green-text); font-style: italic; }
+
+  .nursery-banner {
+    background: var(--white);
+    border: 1px solid var(--bone);
+    padding: 20px 24px;
+    margin: 24px 0 28px;
+    text-align: center;
+  }
+  .nursery-banner-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-bottom: 8px; }
+  .nursery-banner-body { font-size: 13px; color: var(--dusk); line-height: 1.6; }
+
+  .footer-mark { text-align: center; font-family: 'Jost', sans-serif; font-weight: 200; font-size: 13px; letter-spacing: 0.35em; color: var(--ash); text-transform: lowercase; margin-top: 48px; }
+
+  @media (max-width: 480px) {
+    .options-row.two { grid-template-columns: 1fr; }
+    .options-row.three { grid-template-columns: 1fr; }
+    .options-row[style*="1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    .approved-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="logo-mark">
+    <img src="https://tracehomeco.github.io/trace_logo_A_primary.png" alt="Trace" style="height:90px;width:auto;"
+      onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+    <div id="logo-fallback" style="display:none;font-family:'Jost', sans-serif;font-weight:200;font-size:22px;letter-spacing:0.35em;color:#1A1A1A;text-transform:lowercase;">trace</div>
+  </div>
+
+  <div class="eyebrow">YOUR HOME HEALTH BLUEPRINT</div>
+  <div class="visit-label">Sara Brooks &middot; San Diego &middot; August 29, 2026</div>
+  <div style="text-align:center;font-size:12px;color:var(--dusk);font-style:italic;margin-top:-24px;margin-bottom:24px;">Prepared by your Home Health Architect</div>
+
+  <div class="score-ring-wrap">
+    <div class="score-ring">
+      <svg width="170" height="170" viewBox="0 0 170 170">
+        <circle class="score-ring-track" cx="85" cy="85" r="73.5"/>
+        <circle class="score-ring-fill" id="score-arc" cx="85" cy="85" r="73.5"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-number">32</div>
+        <div class="score-denom">/ 100</div>
+      </div>
+    </div>
+    <div class="score-band">Building Momentum</div>
+  </div>
+
+  <h2 class="result-headline">Several categories already reflect real, deliberate choices.</h2>
+  <p class="result-body">
+    Trace assesses over 50 checkpoints across a home. This visit covered a full room-by-room
+    walkthrough of your core living spaces.
+  </p>
+
+  <div class="disclosure">
+    <strong>How this score works:</strong> your Clean Score reflects breadth &mdash; the
+    percentage of categories already at the cleanest verified option &mdash; not severity, and
+    not a pass/fail test. Most homes land in a similar range on a first assessment, not because
+    of anything done wrong, but because so little in this industry is required to be disclosed.
+    As you complete swaps from the plan below, your score rises to reflect it &mdash; each one
+    moves a category into the "clean" count. There's no expectation of reaching 100; landing in
+    Strong Foundation (65%+) represents real, meaningful change that most homes never reach at
+    all. The swap plan below is calculated separately, prioritized by daily exposure impact.
+  </div>
+
+  <div class="disclosure" style="border-left-color:var(--green-text);">
+    <strong>The gap we're working with:</strong> what's available for purchase on a shelf has never meant
+    it's been proven safe &mdash; only that no one's been required to prove otherwise. We're at
+    a real pivot point right now, where more of this is finally being questioned, and where
+    verified, independent sources are becoming easier to find alongside that. This plan is your
+    blueprint through that gap &mdash; built entirely from those sources, not marketing claims.
+  </div>
+
+  <div class="reassure">
+    This whole plan is about progress, not perfection overnight. A few swaps at a time, in
+    whatever order works for your life, is exactly the right pace.
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Where you're already ahead</div>
+  <div class="section-h" style="margin-bottom:24px;">Already going well.</div>
+
+  <div class="approved-card">
+    <div class="approved-grid" style="grid-template-columns:1fr;">
+      <div class="approved-item"><span class="approved-check">&#10003;</span>Saatva mattress &mdash; CertiPUR-US certified, no fiberglass</div>
+      <div class="approved-item"><span class="approved-check">&#10003;</span>Curie deodorant, unscented</div>
+      <div class="approved-item"><span class="approved-check">&#10003;</span>Kitchen drinking water &mdash; Body Glove BG-3000, NSF 42 + 53 certified, reduces lead</div>
+      <div class="approved-item"><span class="approved-check">&#10003;</span>WiFi router in garage &mdash; excellent placement, far from living spaces</div>
+      <div class="approved-item"><span class="approved-check">&#10003;</span>SuperTeeth toothpaste &mdash; fully transparent</div>
+      <div class="approved-item"><span class="approved-check">&#10003;</span>Hello toothpaste (kids) &mdash; SLS-free, Leaping Bunny certified</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Quick primer</div>
+  <div class="section-h" style="margin-bottom:16px;">A few terms you'll see below.</div>
+  <p class="result-body" style="margin-bottom:20px;">These are some of the key chemicals and toxins found in everyday home products and materials &mdash; the ones worth recognizing as flags when they show up in what you're already using. Individually, many of these exposures are small. But like a phone running too many apps at once &mdash; each one seems minor, but together they drain the battery and slow everything down &mdash; these add up across every product you touch throughout the day. The goal isn't eliminating every single one; it's reducing the overall load. Nothing here requires prior knowledge; this is everything you need to follow the rest of the plan.</p>
+
+  <div class="approved-card">
+    <div style="font-size:13px;color:#444;line-height:1.7;margin-bottom:16px;"><strong>What are VOCs?</strong> Volatile Organic Compounds &mdash; chemicals that evaporate easily into the air at room temperature. This is why new paint, new furniture, and synthetic fragrance all have a distinct "smell" &mdash; you're breathing the compound itself.</div>
+    <div class="approved-grid" style="grid-template-columns:1fr;gap:14px;">
+      <div><strong style="color:var(--green-text);font-size:13px;">Polyester</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Nylon and spandex too &mdash; chemically, these are all a type of plastic. Worn directly against skin for hours at a time in clothing, underwear, and sleepwear.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">Fragrance</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">A legal catch-all term; companies aren't required to disclose what's inside it. Absorbed through skin and inhalation.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">Phthalates</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Often hidden inside "fragrance." Absorbed through skin, inhalation, and internal tissue. Linked to hormone disruption.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">BPA</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Used in some plastics and can linings. Mimics estrogen in the body. Heat and repeated use increase how much leaches into food or liquid.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">PFAS ("forever chemicals")</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Used in non-stick coatings and water-resistant fabrics. Doesn't break down in the body or environment over time.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">Parabens</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Preservatives in personal care products. Absorbed through skin. Some studies link them to hormone disruption.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">Lead</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Found in some older plumbing and, per recent research, some menstrual products. No safe exposure level established.</div></div>
+      <div><strong style="color:var(--green-text);font-size:13px;">Chloramine / Chlorine</strong><div style="font-size:12.5px;color:#555;margin-top:2px;">Water disinfectants. Absorbed through skin and inhalation, especially in hot showers.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">If you do nothing else</div>
+  <div class="section-h">Start here.</div>
+  <p class="section-sub">Three actions with the strongest evidence behind them in your home specifically.</p>
+
+  <div class="top3-card">
+    <div class="top3-num">1</div>
+    <div class="top3-content"><div class="top3-title">Bedroom air purifier</div><div class="top3-reason">Nightly, continuous exposure &mdash; roughly a third of your life spent in this room</div></div>
+    <div class="top3-points">High</div>
+  </div>
+  <div class="top3-card">
+    <div class="top3-num">2</div>
+    <div class="top3-content"><div class="top3-title">Shampoo, conditioner &amp; body wash</div><div class="top3-reason">The most serious findings in your entire home</div></div>
+    <div class="top3-points">High</div>
+  </div>
+  <div class="top3-card">
+    <div class="top3-num">3</div>
+    <div class="top3-content"><div class="top3-title">Shower filter</div><div class="top3-reason">Completes the water story, currently unfiltered</div></div>
+    <div class="top3-points">High</div>
+  </div>
+
+  <div class="reassure" style="margin-top:20px;">
+    Do these three first. Think of this as protective work &mdash; for your own long-term health,
+    and for your kids' as they grow. The value compounds over years, the same way small daily
+    choices always do. The rest of this plan will still be here
+    whenever you're ready for more.
+  </div>
+
+  <!-- WAVE 1 -->
+  <div class="wave-header">
+    <div class="wave-title" style="color:var(--green-text);">Wave 1 &middot; Priority now</div>
+    <div class="wave-sub">The most serious findings, and your highest daily exposures.</div>
+  </div>
+
+  <div class="room-h">Bathroom</div>
+  <div class="reassure" style="margin-bottom:20px;">
+    Neither of the next two findings was something you could have known without digging in &mdash; both market themselves as clean, and most people would have trusted that. That's true of almost everything on this list.
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Shampoo &amp; Conditioner</span><span class="swap-badge" style="background:#FBEAE5;color:var(--red);">High priority</span></div>
+    <div class="swap-current">Currently: Monday</div>
+    <div class="swap-why">EWG's own database flags a Monday product line as "High Hazard." Confirmed ingredients of concern include undisclosed fragrance (Parfum), phenoxyethanol, and behentrimonium chloride.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://rahua.com" target="_blank" style="text-decoration:none;"><div class="option-name">Rahua Shampoo &amp; Conditioner</div></a><div class="option-price">rahua.com</div><div class="option-cert">Fully disclosed &middot; plant-based</div></div>
+      <div class="option"><a href="https://innersense.com" target="_blank" style="text-decoration:none;"><div class="option-name">Innersense Organic Beauty</div></a><div class="option-price">innersensebeauty.com</div><div class="option-cert">Fully disclosed</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Body Wash</span><span class="swap-badge" style="background:#FBEAE5;color:var(--red);">High priority</span></div>
+    <div class="swap-current">Currently: Native</div>
+    <div class="swap-why">EWG hazard score of 8/10 &mdash; flagged specifically for fragrance-related allergy and endocrine disruption concerns, despite clean/natural marketing.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://drbronner.com" target="_blank" style="text-decoration:none;"><div class="option-name">Dr. Bronner's Castile Soap</div></a><div class="option-price">~$12 &middot; Amazon</div><div class="option-cert">EWG Verified &middot; USDA Organic</div></div>
+      <div class="option"><a href="https://weareeveryone.com" target="_blank" style="text-decoration:none;"><div class="option-name">Everyone Body Wash</div></a><div class="option-price">weareeveryone.com</div><div class="option-cert">EWG Verified</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Shower filter</span><span class="swap-badge">High impact</span></div>
+    <div class="swap-current">Currently: unfiltered shower</div>
+    <div class="swap-why">Hot water opens pores and lungs to whatever's in the water &mdash; chlorine and chloramine absorb faster in the shower than by drinking the same water. This applies just as much to the kids' bath/shower as to yours &mdash; worth covering both.</div>
+    <div class="research-note" style="font-size:12.5px;color:#666;background:var(--linen);border-left:3px solid var(--amber);padding:10px 14px;margin-bottom:14px;">San Diego's own water data: chloramine is the primary disinfectant here, averaging roughly 1&ndash;1.7 ppm across the system &mdash; and unlike plain chlorine, standard carbon or Brita-style filters don't reliably remove it. San Diego's water is also very hard (16&ndash;18 grains per gallon), which compounds skin and hair dryness in the shower specifically. A real, peer-reviewed study measured increased chloroform levels in participants' breath after just a 10-minute shower &mdash; confirmed absorption through skin and inhalation, not just theoretical.</div>
+    <div class="research-note" style="font-size:12.5px;color:#666;background:var(--linen);border-left:3px solid var(--amber);padding:10px 14px;margin-bottom:14px;">Beyond chloramine, San Diego's water has 13 contaminants confirmed above EWG health guidelines by their independent database, including chromium (hexavalent) &mdash; the carcinogen made widely known by the Erin Brockovich case &mdash; along with several disinfection byproducts (haloacetic acids, trihalomethanes) and uranium. None of this is unique to San Diego or a sign of a poorly-run utility; it reflects how disinfection byproducts form nationwide, and how far EWG's health-based guidelines sit below the legal minimum.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://filterbaby.com" target="_blank" style="text-decoration:none;"><div class="option-name">FilterBaby Shower Filter</div></a><div class="option-price">filterbaby.com</div><div class="option-cert">Tested to NSF 42 &amp; 177 &mdash; covers chloramine, the stronger fit given SD's water</div></div>
+      <div class="option"><a href="https://amzn.to/4wY8dqJ" target="_blank" style="text-decoration:none;"><div class="option-name">Sprite Slim-Line 2</div></a><div class="option-price">~$35 &middot; Amazon</div><div class="option-cert">NSF 177 certified &mdash; free chlorine only, not chloramine. Budget option, best paired with kids' bathroom.</div></div>
+    </div>
+    <div class="options-row one" style="margin-top:12px;">
+      <div class="option"><a href="https://amzn.to/3Tp6c9x" target="_blank" style="text-decoration:none;"><div class="option-name">Jolie</div></a><div class="option-price">Amazon</div><div class="option-cert">Popular, well-designed &mdash; not currently listed in NSF's certification database despite common claims</div></div>
+    </div>
+  </div>
+
+  <div class="room-h">Bedroom</div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Air purifier</span><span class="swap-badge">High impact</span></div>
+    <div class="swap-current">Currently: no air purifier</div>
+    <div class="swap-why">The single most consistent finding across every home we've assessed. Bedrooms measure the highest VOC levels of any room, driven by closed-door, low-ventilation overnight occupancy.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4pvIbJs" target="_blank" style="text-decoration:none;"><div class="option-name">Coway AP-1512HH</div></a><div class="option-price">~$160 &middot; Amazon</div><div class="option-cert">True HEPA &middot; 361 sq ft</div></div>
+      <div class="option"><a href="https://iqair.com" target="_blank" style="text-decoration:none;"><div class="option-name">IQAir HealthPro</div></a><div class="option-price">iqair.com</div><div class="option-cert">Medical-grade HEPA</div></div>
+    </div>
+    <div class="options-row two" style="margin-top:12px;">
+      <div class="option"><a href="https://austinair.com" target="_blank" style="text-decoration:none;"><div class="option-name">Austin Air HealthMate</div></a><div class="option-price">austinair.com</div><div class="option-cert">Medical-grade HEPA</div></div>
+      <div class="option"><a href="https://jaspr.co" target="_blank" style="text-decoration:none;"><div class="option-name">Jaspr</div></a><div class="option-price">jaspr.co</div><div class="option-cert">HEPA + carbon &mdash; no independent lab data confirming premium pricing</div></div>
+    </div>
+  </div>
+
+  <div class="reassure" style="margin: 32px 0;">
+    Still here? No rush &mdash; Wave 2 is worth doing, not worth doing all at once.
+  </div>
+
+  <!-- WAVE 2 -->
+  <div class="wave-header">
+    <div class="wave-title" style="color:var(--amber);">Wave 2 &middot; Next 30 days</div>
+    <div class="wave-sub">No deadline &mdash; 30 days is a loose guide.</div>
+  </div>
+
+  <div class="room-h">Kitchen</div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Dish &amp; hand soap</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: Dawn and Home Court</div>
+    <div class="swap-why">Home Court markets itself as non-toxic, and it's easy to see why that felt safe to trust. But its own published ingredient list tells a different story: "Fragrance" appears undisclosed, exactly the same legal loophole found in conventional brands, plus an explicit note that it "may contain fragrance allergens." This isn't about doing anything wrong &mdash; it's about a label doing exactly what labels are legally allowed to do.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4ptuH0L" target="_blank" style="text-decoration:none;"><div class="option-name">Molly's Suds</div></a><div class="option-price">~$12&ndash;18 &middot; Amazon</div><div class="option-cert">EWG rated &middot; fragrance-free</div></div>
+      <div class="option"><a href="https://amzn.to/4gQEcoK" target="_blank" style="text-decoration:none;"><div class="option-name">Branch Basics Concentrate</div></a><div class="option-price">~$49 &middot; branchbasics.com</div><div class="option-cert">EWG Verified</div></div>
+    </div>
+    <div class="swap-note">We left both of these behind for you to try &mdash; the dish soap and a Branch Basics all-purpose bottle. Links above are ready whenever you're ready to reorder. Both are also available at Target for a quick in-person run &mdash; Branch Basics currently in select stores, with prefilled bottles (a different format than the concentrate linked above).</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Drinking water</span><span class="swap-badge" style="background:var(--green-bg);color:var(--green-text);">Good, one real gap</span></div>
+    <div class="swap-current">Currently: Body Glove BG-3000 under-sink, kitchen (confirmed model)</div>
+    <div class="swap-why">Good news: the BG-3000 is truly certified for both NSF 42 and NSF 53 &mdash; meaning it does reduce lead, VOCs, TTHMs, cysts, and asbestos, not just chlorine taste and odor. This is a real, solid system for most of what matters. The one gap: it doesn't carry NSF 401, the certification specifically covering pharmaceutical residue &mdash; that's only on Body Glove's top-tier BG-12000.</div>
+    <div class="swap-note">Not urgent to replace given how solid this already is. If pharmaceutical-specific filtration matters to you, an RO system (<a href="https://cloudwaterfilters.com" target="_blank" style="color:var(--green-text);">Cloud RO</a> or <a href="https://rkin.com" target="_blank" style="color:var(--green-text);">RKIN U1</a>) would close that last gap &mdash; but this isn't the priority-level finding it would have been with a base taste-only filter. One real adjustment either way: skip the fridge filter, including for cooking water &mdash; it's only taste/odor certified, meaningfully less than what your Body Glove system already does.</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Cookware</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: mostly ceramic-coated non-stick, with some stainless already in rotation</div>
+    <div class="swap-why">The good news: quality ceramic coating is truly free of PFAS and PTFE (the chemicals in traditional Teflon), so this isn't the same category of concern. The real issue is what happens over time &mdash; a 2016 peer-reviewed study found titanium dioxide nanoparticles (used in many ceramic coatings) can migrate into food, and once the coating scratches or wears, most ceramic-coated pans expose bare aluminum underneath. Cast iron and stainless have nothing to wear off in the first place.</div>
+    <div class="swap-note">You already own some stainless pieces &mdash; worth reaching for those first, more often, before buying anything new. One scratched ceramic pan got tossed during the visit itself, a real start already made.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4wokBA7" target="_blank" style="text-decoration:none;"><div class="option-name">Lodge Cast Iron</div></a><div class="option-price">Amazon</div><div class="option-cert">No coating, lasts a lifetime</div></div>
+      <div class="option"><a href="https://madeincookware.com" target="_blank" style="text-decoration:none;"><div class="option-name">Made In Stainless</div></a><div class="option-price">madeincookware.com</div><div class="option-cert">No coating, no PFAS</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Plastic storage &amp; cooking utensils</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: several plastic containers and utensils throughout the kitchen &mdash; a good number already cleared out during the visit</div>
+    <div class="swap-why">Repeated heat and scraping wear plastic down over time, shedding microplastics and additives directly into food &mdash; worth clearing out what's left, not just the ceramic pan already tossed.</div>
+    <div class="swap-note">Throw out any remaining plastic storage containers and cooking utensils. A single wood or stainless set covers spatulas, spoons, and tongs in one go &mdash; simpler than replacing piece by piece.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://madeincookware.com" target="_blank" style="text-decoration:none;"><div class="option-name">Made In Utensil Set</div></a><div class="option-price">madeincookware.com</div><div class="option-cert">Stainless, no coating</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Kids' lunchboxes &amp; cooking utensils</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: plastic lunchboxes; plastic cooking utensils (being discarded)</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://lunchskins.com" target="_blank" style="text-decoration:none;"><div class="option-name">Lunchskins</div></a><div class="option-price">lunchskins.com</div><div class="option-cert">Reusable, food-safe</div></div>
+      <div class="option"><a href="https://stasherbag.com" target="_blank" style="text-decoration:none;"><div class="option-name">Stasher</div></a><div class="option-price">stasherbag.com</div><div class="option-cert">Silicone, plastic-free</div></div>
+    </div>
+    <div class="swap-note">Wood or stainless utensils and cutting boards for cooking; glass for all food storage. For everything you're phasing out: rather than tossing it, the discarded plastic containers and utensils still have a second life in the garage for hardware, loose toys, or craft supplies &mdash; just out of the kitchen.</div>
+  </div>
+
+  <div class="room-h">Bathroom</div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Feminine care</span><span class="swap-badge" style="background:#FBEAE5;color:var(--red);">High priority</span></div>
+    <div class="swap-current">Currently: Tampax</div>
+    <div class="swap-why">A 2024 study found lead in 100% of tampons tested, and a 2025 study found estrogenic activity in nearly half the brands tested &mdash; regardless of organic or synthetic material. Organic labeling alone isn't sufficient based on current research.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://natracare.com" target="_blank" style="text-decoration:none;"><div class="option-name">Natracare</div></a><div class="option-price">natracare.com</div><div class="option-cert">GOTS certified &middot; independently tested for heavy metals &amp; PFAS, results published publicly</div></div>
+      <div class="option"><a href="https://tampontribe.com" target="_blank" style="text-decoration:none;"><div class="option-name">Tampon Tribe</div></a><div class="option-price">tampontribe.com</div><div class="option-cert">GOTS + ICEA certified &middot; third-party tested PFAS-free</div></div>
+    </div>
+    <div class="swap-note">Natracare and Tampon Tribe stood out specifically &mdash; both proactively commissioned third-party lab testing and published the results. Worth knowing: we looked at Cora too, but independent Mamavation lab testing found PFAS in their products despite GOTS/organic marketing, so we left it off this list.</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Dental floss</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: PTFE-coated floss</div>
+    <div class="swap-why">PTFE is the same chemical family used to coat non-stick Teflon pans &mdash; part of the PFAS group, sometimes called "forever chemicals" because they don't break down in the body over time. Flossing draws that coating directly across gum tissue, including any small breaks or bleeding, which is about as direct a route into the body as a product like this can have.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://thehumble.co" target="_blank" style="text-decoration:none;"><div class="option-name">Humble Co. Floss Sticks</div></a><div class="option-price">thehumble.co</div><div class="option-cert">PFAS/PTFE-free brand commitment</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Toilet paper</span><span class="swap-badge" style="background:#F0F0F0;color:#888;">Easy, low urgency</span></div>
+    <div class="swap-why">Most conventional toilet paper is bleached with chlorine to get that bright white color &mdash; the process can leave behind trace dioxin residue, and this is direct, repeated contact with sensitive tissue.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4bB1H1q" target="_blank" style="text-decoration:none;"><div class="option-name">Reel Premium Bamboo</div></a><div class="option-price">Amazon</div><div class="option-cert">FSC certified &middot; chlorine-free</div></div>
+      <div class="option"><a href="https://amzn.to/4fkYioz" target="_blank" style="text-decoration:none;"><div class="option-name">Repurpose Bamboo</div></a><div class="option-price">Amazon</div><div class="option-cert">No bleach, dyes, or PFAS</div></div>
+    </div>
+    <div class="swap-note">We left a roll of Repurpose behind &mdash; the link above is ready whenever you need to reorder. Reel is also sold at Target if you'd rather grab it in person.</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Faucet filter</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: none</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://filterbaby.com" target="_blank" style="text-decoration:none;"><div class="option-name">FilterBaby Faucet Filter</div></a><div class="option-price">filterbaby.com</div><div class="option-cert">Bathroom sink specific</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Nail polish</span><span class="swap-badge" style="background:#F0F0F0;color:#888;">Easy, low urgency</span></div>
+    <div class="swap-why">Conventional polish often contains what's nicknamed the "toxic trio" &mdash; formaldehyde, toluene, and DBP &mdash; three ingredients still standard in most drugstore brands despite real, documented health concerns.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://ellamila.com" target="_blank" style="text-decoration:none;"><div class="option-name">Ella+Mila</div></a><div class="option-price">ellamila.com</div><div class="option-cert">17-free</div></div>
+    </div>
+    <div class="swap-note">Worth knowing for Georgia too &mdash; Ella+Mila is a truly gentle option for kids as she gets into nail polish herself.</div>
+  </div>
+
+  <div class="room-h">Bedroom &mdash; Sara</div>
+  <p style="font-size:13.5px;color:#666;line-height:1.7;margin-bottom:16px;font-style:italic;">This room is your sleep sanctuary &mdash; the one place your body gets to fully restore. Since it also doubles as your office, the lighting recommendations below are split between what supports focus during the day and what protects sleep once work is done.</p>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Sheets</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: conventional, no certification</div>
+    <div class="swap-why">Uncertified sheets are often treated with synthetic finishing chemicals (including formaldehyde-based wrinkle resistance) and dyed with undisclosed processes &mdash; and this is fabric you're in direct, hours-long contact with every single night.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://onequince.com" target="_blank" style="text-decoration:none;"><div class="option-name">Quince Organic Cotton</div></a><div class="option-price">onequince.com</div><div class="option-cert">GOTS certified</div></div>
+      <div class="option"><a href="https://amzn.to/4vL6vZt" target="_blank" style="text-decoration:none;"><div class="option-name">Boll &amp; Branch</div></a><div class="option-price">Amazon</div><div class="option-cert">GOTS &middot; Fair Trade</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Pillows</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: conventional foam/polyester fill</div>
+    <div class="swap-why">Uncertified foam and polyester fill are commonly treated with flame retardant chemicals, which can off-gas over time &mdash; and your face is pressed directly against this fabric for roughly a third of every day.</div>
+    <div class="swap-note">GOTS-certified organic wool or cotton fill.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4h1ARBK" target="_blank" style="text-decoration:none;"><div class="option-name">Avocado Green Pillow</div></a><div class="option-price">Amazon</div><div class="option-cert">GOTS, GOLS, MADE SAFE, GREENGUARD Gold</div></div>
+      <div class="option"><a href="https://www.naturepedic.com" target="_blank" style="text-decoration:none;"><div class="option-name">Naturepedic Organic Pillow</div></a><div class="option-price">naturepedic.com</div><div class="option-cert">GOTS, GOLS, MADE SAFE</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Undergarments, sleepwear &amp; loungewear</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-why">Worn directly against skin for hours at a time &mdash; see "Polyester" in the quick primer above for why this matters. Underwear specifically is worth extra attention: synthetic dyes and finishing chemicals in this category have been linked to hormone disruption, and this is skin that's more absorbent than most other parts of the body.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://wearpact.com" target="_blank" style="text-decoration:none;"><div class="option-name">PACT</div></a><div class="option-price">wearpact.com</div><div class="option-cert">GOTS certified</div></div>
+      <div class="option"><a href="https://cottonique.com" target="_blank" style="text-decoration:none;"><div class="option-name">Cottonique</div></a><div class="option-price">cottonique.com</div><div class="option-cert">Hypoallergenic, elastic-free</div></div>
+    </div>
+    <div class="options-row one" style="margin-top:12px;">
+      <div class="option"><a href="https://matethelabel.com" target="_blank" style="text-decoration:none;"><div class="option-name">MATE the Label</div></a><div class="option-price">matethelabel.com</div><div class="option-cert">GOTS certified &middot; no PFAS, BPA, or formaldehyde</div></div>
+    </div>
+    <div class="swap-note">MATE is specifically strong for loungewear and low-impact workout wear &mdash; a good fit if you want one brand that covers both categories. More clean-fabric activewear brands are available on request if you want a wider range to choose from.</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Lighting, full day and night</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-current">Currently: standard bedside lamp, standard overhead</div>
+    <div class="swap-why">This room does double duty as your office, so lighting needs to actively support two different jobs, not just one. Full-spectrum light during work hours supports focus and alertness. After dark, that same brightness works against you &mdash; overhead and blue-toned light delays melatonin right when your body should be winding down.</div>
+    <div class="swap-note">During the day: full-spectrum bulbs at the desk. After dark: no overhead lights &mdash; switch to warm/amber lamps only, and phone/WiFi on airplane mode as work wraps up for the night.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://hoogahealth.com" target="_blank" style="text-decoration:none;"><div class="option-name">Hooga Dual Mode Clip Light</div></a><div class="option-price">hoogahealth.com</div><div class="option-cert">625nm &middot; blocks 99.94% blue light &middot; bedtime reading</div></div>
+      <div class="option"><a href="https://blockbluelight.com" target="_blank" style="text-decoration:none;"><div class="option-name">Block Blue Light Sweet Dreams Bulb</div></a><div class="option-price">blockbluelight.com</div><div class="option-cert">1800K &middot; 100% blue &amp; green light free &middot; nightstand lamps</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Overnight device habits</span><span class="swap-badge free">Free action</span></div>
+    <div class="swap-why">AirPods charging on the nightstand adds a continuous Bluetooth (RF) source right next to where you sleep. Same fix as your phone: charge across the room, and consider airplane mode overnight.</div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">WiFi timer</span><span class="swap-badge free">Free action</span></div>
+    <div class="swap-why">Your router placement in the garage is already excellent &mdash; truly one of the better setups we've seen, well away from bedrooms and living spaces. A timer or off-switch takes it a step further, cutting continuous RF emission overnight house-wide rather than just relying on distance.</div>
+    <div class="swap-note">The timer left with you today covers this &mdash; just set it to cut power during sleeping hours. For future reference or a spare: a simple mechanical outlet timer works fine, no app or WiFi needed for the timer itself.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://amzn.to/4h7P2Fs" target="_blank" style="text-decoration:none;"><div class="option-name">BN-LINK Mechanical Outlet Timer</div></a><div class="option-price">Amazon</div><div class="option-cert">24-hour cycle, simple on/off dial</div></div>
+    </div>
+  </div>
+
+  <div class="room-h">Kids' Bedrooms</div>
+  <p style="font-size:13.5px;color:#666;line-height:1.7;margin-bottom:16px;font-style:italic;">Theo and Georgia's rooms matter just as much as yours &mdash; arguably more, since their bodies and brains are still developing. The same standards apply here: screens and devices affecting blue light exposure, lighting after dark, and air quality all shape sleep quality during exactly the years it matters most for growth.</p>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Sheets, pillows, air purifiers &amp; lighting</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-note">Sheets: organic cotton, same sources as primary bedroom. Air purifiers: Coway or IQAir, one per room if budget allows. Light bulbs: warm/amber, same logic as primary bedroom.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://www.avocadogreenmattress.com/products/organic-kids-pillow" target="_blank" style="text-decoration:none;"><div class="option-name">Avocado Organic Kids Pillow</div></a><div class="option-price">avocadogreenmattress.com</div><div class="option-cert">GOTS certified &middot; ages 3+ &middot; Certified Vegan</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Underwear (boy &amp; girl)</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-why">Same reasoning as your own underwear &mdash; synthetic fabric worn directly against skin for hours, and kids' skin is generally thinner and more absorbent than an adult's. The same hormone-disruption concern applies here too, worth taking just as seriously for Theo and Georgia as for yourself.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4xKioR5" target="_blank" style="text-decoration:none;"><div class="option-name">Organickid</div></a><div class="option-price">Amazon</div><div class="option-cert">GOTS + OEKO-TEX certified</div></div>
+      <div class="option"><a href="https://citythreads.com" target="_blank" style="text-decoration:none;"><div class="option-name">City Threads</div></a><div class="option-price">citythreads.com</div><div class="option-cert">GOTS certified, made in LA</div></div>
+    </div>
+    <div class="options-row one" style="margin-top:12px;">
+      <div class="option"><a href="https://onequince.com" target="_blank" style="text-decoration:none;"><div class="option-name">Quince Organic Cotton (Kids)</div></a><div class="option-price">onequince.com</div><div class="option-cert">GOTS certified &mdash; same brand as Sara's own sheets</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Pajamas (boy &amp; girl)</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-why">Sleepwear specifically is often treated with flame-retardant chemicals under safety regulations &mdash; worth choosing a brand that's transparent about what's used instead.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://burtsbees.com" target="_blank" style="text-decoration:none;"><div class="option-name">Burt's Bees Organic</div></a><div class="option-price">burtsbees.com</div><div class="option-cert">100% GOTS certified</div></div>
+      <div class="option"><a href="https://www.hannaandersson.com" target="_blank" style="text-decoration:none;"><div class="option-name">Hanna Andersson</div></a><div class="option-price">hannaandersson.com</div><div class="option-cert">GOTS + OEKO-TEX &middot; sizing covers both Theo and Georgia's ages</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Shampoo &amp; body wash</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-why">Same fragrance and formulation concerns as adult products apply here too &mdash; kids' skin absorbs more relative to their body size, making product choice matter even more.</div>
+    <div class="options-row one">
+      <div class="option"><a href="https://amzn.to/3SFka73" target="_blank" style="text-decoration:none;"><div class="option-name">Attitude Kids</div></a><div class="option-price">Amazon</div><div class="option-cert">EWG Verified &middot; PETA certified</div></div>
+    </div>
+  </div>
+
+  <div class="reassure" style="margin: 32px 0;">
+    Made it this far? Truly impressive. Wave 3 is the least urgent tier &mdash; think of it as a list for whenever, not a deadline.
+  </div>
+
+  <!-- WAVE 3 -->
+  <div class="wave-header">
+    <div class="wave-title" style="color:var(--dusk);">Wave 3 &middot; When you're ready</div>
+    <div class="wave-sub">Bigger investments, no rush.</div>
+  </div>
+
+  <div class="room-h">Living Room</div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Air purifier</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Nice to have</span></div>
+    <div class="swap-current">Currently: no air purifier</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4pvIbJs" target="_blank" style="text-decoration:none;"><div class="option-name">Coway AP-1512HH</div></a><div class="option-price">Amazon</div><div class="option-cert">True HEPA</div></div>
+      <div class="option"><a href="https://austinair.com" target="_blank" style="text-decoration:none;"><div class="option-name">Austin Air HealthMate</div></a><div class="option-price">austinair.com</div><div class="option-cert">Medical-grade HEPA</div></div>
+    </div>
+  </div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Candles</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Nice to have</span></div>
+    <div class="swap-note">If you want something a step up for the living room specifically, a couple of luxury-tier options worth knowing about.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4b4ACn8" target="_blank" style="text-decoration:none;"><div class="option-name">Fontana Candle Co.</div></a><div class="option-price">Amazon</div><div class="option-cert">Soy wax, disclosed fragrance</div></div>
+      <div class="option"><a href="https://amzn.to/4yEbm1i" target="_blank" style="text-decoration:none;"><div class="option-name">Beeswax Taper Candles</div></a><div class="option-price">Amazon</div><div class="option-cert">100% beeswax</div></div>
+    </div>
+    <div class="options-row two" style="margin-top:12px;">
+      <div class="option"><a href="https://primallypure.com" target="_blank" style="text-decoration:none;"><div class="option-name">Primally Pure</div></a><div class="option-price">primallypure.com</div><div class="option-cert">Beeswax + coconut wax &middot; essential oils &middot; already trusted for her deodorant</div></div>
+      <div class="option"><a href="https://www.lafco.com" target="_blank" style="text-decoration:none;"><div class="option-name">LAFCO</div></a><div class="option-price">lafco.com</div><div class="option-cert">Vegan &middot; no phthalates or parabens</div></div>
+    </div>
+  </div>
+
+  <div class="room-h">Laundry</div>
+  <div class="swap-card">
+    <div class="swap-top"><span class="swap-label">Detergent, dryer sheets &amp; microfiber filter</span><span class="swap-badge" style="background:var(--amber-bg);color:var(--amber);">Moderate</span></div>
+    <div class="swap-why">Everything you wear sits in this detergent, then dries against dryer sheets coated in synthetic fragrance and fabric softening chemicals &mdash; residue that stays on every fabric in the house afterward, including sheets and clothes worn all day.</div>
+    <div class="options-row two">
+      <div class="option"><a href="https://amzn.to/4ptuH0L" target="_blank" style="text-decoration:none;"><div class="option-name">Molly's Suds Detergent</div></a><div class="option-price">Amazon</div><div class="option-cert">Fragrance-free</div></div>
+      <div class="option"><div class="option-name">Wool dryer balls</div><div class="option-price">Amazon</div><div class="option-cert">Replaces fabric softener</div></div>
+    </div>
+    <div class="swap-note">Add a microfiber filter to the washing machine &mdash; PlanetCare was the top performer in independent testing. We also left a box of Molly's Suds peppermint pods behind, plus a Branch Basics bathroom cleaner &mdash; the detergent link above works for reordering the pods too, and Branch Basics' site covers the bathroom cleaner. Molly's Suds and Branch Basics (select stores, prefilled bottles) are both also at Target if you want to grab them in person.</div>
+  </div>
+
+  <div class="nursery-banner">
+    <div class="nursery-banner-title">For later &mdash; whole-house filtration</div>
+    <div class="nursery-banner-body">The GoodFor Company (WQA Gold Seal, NSF 42/44/53/58/372 &mdash; their whole-home line) or Aquasana Rhino (NSF 42 and 61). Either would address chloramine, PFAS, and lead at every tap, not just the shower &mdash; worth considering once the priority items above are handled.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="nursery-banner" style="background:var(--night);border:none;">
+    <div class="nursery-banner-title" style="color:white;">If you'd rather we just handled it</div>
+    <div class="nursery-banner-body" style="color:#ccc;">Trace can curate and order everything on this list, then bring it all to you on one dedicated install day &mdash; no waiting on separate deliveries, no unpacking boxes yourself. We handle the setup, you come home to it done. Happy to talk through what that would look like whenever you're ready.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">About Trace</div>
+  <div class="section-h" style="margin-bottom:20px;">The missing pillar of health.</div>
+  <div class="approved-card">
+    <p style="font-size:13.5px;color:#444;line-height:1.75;margin-bottom:14px;">Sleep gets a score. Steps get a score. What's actually in your home rarely does &mdash; even though it's where you spend most of your life. Trace exists to close that gap: real research, real certifications, room by room.</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.75;margin-bottom:14px;">A web app is on the way, built to bring this same depth to anyone, anywhere &mdash; not just through an in-home visit. We're also extending the same rigor to short-term rentals, verifying vacation properties against the same standard used here, so the places you stay can meet the same bar as the place you live.</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.75;">If you'd like to go deeper &mdash; a full re-assessment, a follow-up visit once you've worked through this plan, or just a conversation about what's next &mdash; we'd love to. This is a relationship, not a one-time report.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <p style="text-align:center;font-size:14px;color:#444;max-width:480px;margin:0 auto 20px;">
+    Choosing to look this closely at your home &mdash; and to act on what you find &mdash; is a real, intentional investment in Theo and Georgia's long-term health, not just your own. That's worth recognizing on its own.
+  </p>
+
+  <p style="text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--night);max-width:480px;margin:0 auto 32px;">
+    This blueprint is a lot of information for one visit. You don't need to act on all of it today &mdash; just pick one thing, and go from there.
+  </p>
+
+  <div style="max-width:520px;margin:0 auto;">
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;">
+      <strong style="color:#666;">Affiliate disclosure:</strong> some links in this plan are Amazon
+      Associates links. If you purchase through them, Trace may earn a small commission at no
+      additional cost to you. Recommendations are based on independent research and certifications,
+      not on which links pay a commission.
+    </p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;">
+      <strong style="color:#666;">Not medical advice:</strong> this plan is educational and reflects
+      independent research into product formulations and certifications. It isn't medical advice,
+      and isn't a substitute for guidance from a doctor or other qualified health professional.
+    </p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;">
+      <strong style="color:#666;">Subject to change:</strong> product formulations, certifications,
+      and prices can change after this document was written. We recommend confirming current
+      certification status directly with the brand before purchasing.
+    </p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;">
+      <strong style="color:#666;">Specific to this visit:</strong> this plan reflects one home
+      assessment on one date. It isn't a guarantee of health outcomes, and isn't a comprehensive
+      audit of every product or material in the home.
+    </p>
+  </div>
+
+  <div class="footer-mark">trace</div>
+
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      const circumference = 2 * Math.PI * 73.5;
+      const score = 32;
+      const offset = circumference - (score / 100) * circumference;
+      document.getElementById('score-arc').style.strokeDashoffset = offset;
+    }, 200);
+  });
+</script>
+
+</body>
+</html>
