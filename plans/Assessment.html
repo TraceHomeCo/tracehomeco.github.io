@@ -55,6 +55,11 @@ h1{
 .room-count{font-size:13px;color:var(--ash);font-variant-numeric:tabular-nums;}
 
 .question{border-top:1px solid var(--line);padding:22px 0;}
+.room-notes{border-top:1px solid var(--line);padding:22px 0;}
+.room-notes label{font-size:13px;font-weight:500;color:var(--ash);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:10px;}
+.room-notes textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:4px;padding:12px;font-family:inherit;font-size:14px;color:var(--night);resize:vertical;background:#FAFAF8;}
+.room-notes textarea:focus{outline:none;border-color:var(--night);}
+.room-notes .hint{font-size:12px;color:var(--ash);margin-top:6px;}
 .question:last-child{padding-bottom:4px;}
 .q-text{font-size:16px;font-weight:400;margin-bottom:14px;line-height:1.4;}
 
@@ -174,6 +179,41 @@ button:focus-visible,.opt-btn:focus-visible{outline:2px solid var(--night);outli
     </div>
   </div>
 
+  <div class="room">
+    <div class="room-header"><div class="room-name">Personal Care &amp; Clothing</div></div>
+    <p class="sub" style="margin-bottom:20px;">Brand-based — too much variety for fixed options. Note what she says, research the specific brand afterward.</p>
+
+    <div class="question" style="border-top:1px solid var(--line);">
+      <div class="q-text">Loungewear — what brands does she wear most often?</div>
+      <textarea id="pcLoungewear" placeholder="e.g. Lululemon, Skims..." style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Underwear — what brands does she typically wear?</div>
+      <textarea id="pcUnderwear" placeholder="e.g. Skims, Victoria's Secret..." style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Sleepwear — hers and her daughters', if different</div>
+      <textarea id="pcSleepwear" placeholder="e.g. her: cotton pajama sets; daughters: fleece brand X" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Nail polish — hers and her daughters'</div>
+      <textarea id="pcNailPolish" placeholder="e.g. OPI for her, kids' brand for the girls..." style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-text">Lighting — bulb types/brands used throughout the home</div>
+      <textarea id="pcLighting" placeholder="e.g. mostly LED overhead, no specific brand noted" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+
+    <div class="question" style="padding-bottom:0;">
+      <div class="q-text">Devices — overnight habits, charging locations, screen time notes</div>
+      <textarea id="pcDevices" placeholder="e.g. phone charges on nightstand, kids have tablets in their rooms" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:300;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+  </div>
+
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   <div class="progress-label" id="progressLabel">0 of 53 answered</div>
 
@@ -272,10 +312,19 @@ function render(){
       roomEl.appendChild(qEl);
     });
 
+    const notesEl = document.createElement('div');
+    notesEl.className = 'room-notes';
+    notesEl.innerHTML = `<label for="notes-${roomName.replace(/\s/g,'')}">Notes / Other Findings \u2014 ${roomName}</label>
+      <textarea id="notes-${roomName.replace(/\s/g,'')}" placeholder="Anything that doesn't fit the options above \u2014 a specific brand, a detail worth remembering, a follow-up question..." oninput="roomNotes['${roomName}'] = this.value"></textarea>
+      <div class="hint">Optional \u2014 use this for anything the checklist doesn't capture.</div>`;
+    roomEl.appendChild(notesEl);
+
     container.appendChild(roomEl);
   });
   updateFooter();
 }
+
+const roomNotes = {};
 
 function selectAnswer(qid, opt, roomName){
   answers[qid] = {letter: opt.letter, points: opt.points, swap_key: opt.swap_key, text: opt.text, room: roomName};
@@ -440,6 +489,23 @@ function generateFindingsText(){
     if(quote) out += `Quotable moment: "${quote}"\n`;
     out += `\n`;
   }
+
+  const loungewear = document.getElementById('pcLoungewear').value.trim();
+  const underwear = document.getElementById('pcUnderwear').value.trim();
+  const sleepwear = document.getElementById('pcSleepwear').value.trim();
+  const nailPolish = document.getElementById('pcNailPolish').value.trim();
+  const lighting = document.getElementById('pcLighting').value.trim();
+  const devices = document.getElementById('pcDevices').value.trim();
+  if(loungewear || underwear || sleepwear || nailPolish || lighting || devices){
+    out += `PERSONAL CARE & CLOTHING (brand-based, research individually):\n`;
+    if(loungewear) out += `Loungewear: ${loungewear}\n`;
+    if(underwear) out += `Underwear: ${underwear}\n`;
+    if(sleepwear) out += `Sleepwear: ${sleepwear}\n`;
+    if(nailPolish) out += `Nail polish: ${nailPolish}\n`;
+    if(lighting) out += `Lighting: ${lighting}\n`;
+    if(devices) out += `Devices: ${devices}\n`;
+    out += `\n`;
+  }
   out += `PRIORITY SWAPS (swap_key references Trace product catalogue):\n`;
 
   let anyPriority = false;
@@ -472,6 +538,14 @@ function generateFindingsText(){
     if(lines.length) out += `\n${roomName.toUpperCase()}\n` + lines.join('\n') + '\n';
   });
   if(!anyClean) out += '(none yet)\n';
+
+  const notesEntries = Object.entries(roomNotes).filter(([room, text]) => text && text.trim());
+  if(notesEntries.length){
+    out += `\nNOTES / OTHER FINDINGS:\n`;
+    notesEntries.forEach(([room, text]) => {
+      out += `${room.toUpperCase()}: ${text.trim()}\n`;
+    });
+  }
 
   out += `\nUnanswered / not applicable: `;
   const unanswered = [];
