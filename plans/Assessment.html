@@ -601,7 +601,7 @@ function generateFindingsText(){
     const lines = [];
     qIds.forEach(qid => {
       const a = answers[qid];
-      if(a && a.points >= 6 && a.swap_key){
+      if(a && a.points > 0 && a.swap_key){
         lines.push(`- ${DATA[roomName][qid].question_text} → currently: "${a.text}" [swap_key: ${a.swap_key}]`);
         anyPriority = true;
       }
