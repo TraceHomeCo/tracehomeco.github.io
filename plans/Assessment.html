@@ -347,6 +347,12 @@ const roomNotes = {};
 function selectAnswer(qid, opt, roomName){
   answers[qid] = {letter: opt.letter, points: opt.points, swap_key: opt.swap_key, text: opt.text, room: roomName};
 
+  // DEBUG LOGGING — remove once discrepancy is resolved
+  const totalAnsweredNow = Object.keys(answers).length;
+  const cleanNow = Object.keys(answers).filter(id => answers[id].points === 0).length;
+  const liveScore = Math.round((cleanNow / totalAnsweredNow) * 100);
+  console.log(`[TRACE DEBUG] ${qid} (${roomName}) → "${opt.text}" | points: ${opt.points} | Running: ${cleanNow} clean / ${totalAnsweredNow} answered = ${liveScore}%`);
+
   const q = DATA[roomName][qid];
   q.options.forEach(o => {
     const b = document.getElementById(`opt-${qid}-${o.letter}`);
@@ -442,6 +448,13 @@ function bandFor(pct){
 function showResults(){
   const {overall, roomResults} = computeScore();
   const band = bandFor(overall);
+
+  // DEBUG LOGGING — remove once discrepancy is resolved
+  const totalAnsweredFinal = Object.keys(answers).length;
+  const cleanFinal = Object.keys(answers).filter(id => answers[id].points === 0).length;
+  console.log(`[TRACE DEBUG] === FINAL SCORE REVEAL ===`);
+  console.log(`[TRACE DEBUG] Total answered: ${totalAnsweredFinal} | Clean: ${cleanFinal} | computeScore() returned: ${overall}%`);
+  console.log(`[TRACE DEBUG] Full answers object:`, JSON.parse(JSON.stringify(answers)));
 
   const labelInput = document.getElementById('visitLabel').value.trim();
   document.getElementById('resultsLabel').textContent = labelInput ? labelInput.toUpperCase() : 'TRACE SCORE';
