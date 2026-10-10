@@ -13,8 +13,8 @@
     :root { --linen:#F5F5F5; --night:#1A1A1A; --dusk:#7A7466; --rule:#DDDAD2; --paper:#FBFAF7; }
     html, body { background:var(--linen); color:var(--night); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-weight:300; font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased; }
     .wrap { max-width:1060px; margin:0 auto; padding:0 32px; }
-    header { padding:40px 0 0; }
-    .logo { display:block; height:72px; width:auto; mix-blend-mode:multiply; }
+    header { padding:32px 0 0; }
+    .logo { display:block; height:140px; width:auto; }
     .label { font-family:'Cormorant Garamond',Georgia,serif; font-style:normal; font-weight:600; font-size:15px; letter-spacing:.26em; text-transform:uppercase; color:var(--dusk); margin-bottom:18px; }
     h1,h2,h3 { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:400; line-height:1.08; }
     h1 { font-size:clamp(46px,7vw,84px); margin-bottom:24px; }
@@ -56,6 +56,23 @@
     .cell p { font-size:14.5px; color:var(--dusk); }
     .note { margin-top:24px; font-size:14px; color:var(--dusk); max-width:640px; }
 
+
+    .room { margin-top:40px; }
+    .frame { position:relative; }
+    .frame img { display:block; width:100%; height:auto; mix-blend-mode:multiply; }
+    .pin { position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:var(--night); color:var(--linen); font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:16px; line-height:30px; text-align:center; box-shadow:0 0 0 5px rgba(245,245,245,.7); }
+    .legend { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:36px; }
+    .legend div { border-top:1px solid var(--night); padding-top:14px; }
+    .legend .n { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; color:var(--dusk); font-size:20px; }
+    .legend h3 { font-size:16px; margin:2px 0 6px; }
+    .legend p { font-size:14px; color:var(--dusk); }
+    .room.two { display:grid; grid-template-columns:.8fr 1.2fr; gap:64px; align-items:center; }
+    .room.two .frame { max-width:420px; }
+    .it { border-top:1px solid var(--night); padding:14px 0 16px; display:grid; grid-template-columns:44px 1fr; }
+    .it:last-child { border-bottom:1px solid var(--rule); }
+    .it .n { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; color:var(--dusk); font-size:22px; }
+    .it h3 { font-size:17px; margin-bottom:4px; }
+    .it p { font-size:14.5px; color:var(--dusk); }
     .stack { background:var(--paper); }
     .parts { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:44px; }
     .part { border-top:1px solid var(--rule); padding-top:18px; }
@@ -86,12 +103,13 @@
       .grid { grid-template-columns:1fr 1fr; }
       .card { padding:32px 26px; }
     }
-    @media (max-width:520px) { .grid { grid-template-columns:1fr; } .logo { height:60px; } }
+    @media (max-width:860px) { .room.two { grid-template-columns:1fr; gap:32px; } .room.two .frame { max-width:360px; margin:0 auto; } .legend { grid-template-columns:1fr 1fr; gap:22px; } .pin { width:24px; height:24px; margin:-12px 0 0 -12px; font-size:13px; line-height:24px; box-shadow:0 0 0 3px rgba(245,245,245,.7); } }
+    @media (max-width:520px) { .grid { grid-template-columns:1fr; } .logo { height:108px; } }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header><img class="logo" src="trace_logo_A_primary.png" alt="Trace"></header>
+    <header><img class="logo" src="trace_logo_transparent.png" alt="Trace"></header>
 
     <div class="hero">
       <div>
@@ -104,33 +122,60 @@
         </div>
       </div>
       <div class="card" id="assessment">
-        <p class="label">In-person assessment &middot; San Diego</p>
+        <p class="label">In-person or virtual</p>
         <h2>A room-by-room walkthrough of your actual home</h2>
-        <p class="price">Starting at $250</p>
+        <p class="price">In-person starts at $250 &middot; San Diego</p>
         <ul>
-          <li>60 to 90 minutes in your home</li>
+          <li>60 to 90 minutes, in your home or on video</li>
           <li>60+ checkpoints, room by room</li>
           <li>Your Trace Score</li>
           <li>Swap plan with product links and a timeline, within a week</li>
           <li>White-glove service available</li>
         </ul>
         <a class="btn" href="mailto:hello@tracehome.co?subject=Assessment%20request&amp;body=Name%3A%0AZip%20code%3A%0AHome%20type%3A%0APreferred%20timing%3A%0APhone%3A">Request an assessment</a>
-        <p class="small">Local to San Diego and Southern California for now.</p>
+        <p class="small">In person in San Diego and Southern California; travel available upon request. Virtual assessments are available anywhere in the world.</p>
       </div>
     </div>
 
     <section class="intro">
       <div>
         <p class="label">About Trace</p>
-        <h2>What&rsquo;s actually in the spaces where you live.</h2>
+        <h2>We track our sleep and our steps. No one tracks what&rsquo;s inside the home.</h2>
       </div>
       <div>
         <p>Trace is a home health platform setting the standard for what&rsquo;s actually in the spaces where people live, sleep, breathe and travel.</p>
-        <p style="margin-top:16px">Most &ldquo;clean&rdquo; claims are self-reported: a brand&rsquo;s own list, not independent verification. We check each room and identify exactly what&rsquo;s worth swapping and why, backed by independent certifications.</p>
+        <p style="margin-top:16px">Most &ldquo;clean&rdquo; claims are self-reported: a brand&rsquo;s own list, not independent verification. Meanwhile the products we use every day, from the mattress to the cookware to the cleaner under the sink, are rarely required to disclose what&rsquo;s in them.</p>
+        <p style="margin-top:16px">We check each room, identify what&rsquo;s worth swapping and why, and back it with independent certifications. You get a score you can track and improve, the same way you track everything else about your health.</p>
         <p class="standards">GOTS &middot; EWG &middot; NSF</p>
       </div>
     </section>
 
+    <section>
+      <p class="label">Room by room</p>
+      <h2>Start with where you sleep.</h2>
+      <p>We check 60+ things across the home. In the bedroom, that includes:</p>
+      <div class="room two">
+        <div class="frame">
+          <img src="trace_bedroom_photo.jpg" alt="A bedroom with numbered points showing what Trace checks" width="732" height="1098">
+          <span class="pin" style="left:80%;top:91%">1</span>
+          <span class="pin" style="left:78%;top:72%">2</span>
+          <span class="pin" style="left:26%;top:64%">3</span>
+          <span class="pin" style="left:52.5%;top:33%">4</span>
+          <span class="pin" style="left:48.5%;top:55.5%">5</span>
+          <span class="pin" style="left:11%;top:25.5%">6</span>
+        </div>
+        <div class="list">
+          <div class="it"><span class="n">01</span><div><h3>Mattress &amp; bedding</h3><p>Materials and independent certifications, bed by bed.</p></div></div>
+          <div class="it"><span class="n">02</span><div><h3>Sleepwear &amp; loungewear</h3><p>What you wear against your skin for hours.</p></div></div>
+          <div class="it"><span class="n">03</span><div><h3>Air purification</h3><p>What the unit is independently tested for.</p></div></div>
+          <div class="it"><span class="n">04</span><div><h3>Lighting</h3><p>Bulbs, evening light and what&rsquo;s near the bed.</p></div></div>
+          <div class="it"><span class="n">05</span><div><h3>Fragrance</h3><p>Candles, sprays and diffusers.</p></div></div>
+          <div class="it"><span class="n">06</span><div><h3>Window coverings</h3><p>Fabric and any treatments.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    
     <section>
       <p class="label">How it works</p>
       <h2>From walkthrough to a plan you can act on.</h2>
@@ -141,26 +186,13 @@
       </div>
     </section>
 
-    <section>
-      <p class="label">What we look at</p>
-      <h2>A sample of the 60+ checkpoints.</h2>
-      <div class="grid">
-        <div class="cell"><h3>Water</h3><p>Filtration at the tap and under the sink, and what it&rsquo;s independently certified to reduce.</p></div>
-        <div class="cell"><h3>Cleaning products</h3><p>Ingredient disclosure and independent certification, not &ldquo;natural&rdquo; on the front label.</p></div>
-        <div class="cell"><h3>Laundry &amp; fragrance</h3><p>Detergents, dryer products, candles, diffusers and sprays, and where fragrance is hiding.</p></div>
-        <div class="cell"><h3>Mattress &amp; bedding</h3><p>Mattress, pillow and sheet materials, checked against certifications like GOTS, bed by bed.</p></div>
-        <div class="cell"><h3>Cookware &amp; kitchen</h3><p>Pan coatings, storage and everyday kitchenware.</p></div>
-        <div class="cell"><h3>Air</h3><p>Air purification and what the unit is independently tested for.</p></div>
-      </div>
-      <p class="note">This is a sample, not the full list. Trace verifies the products and materials in your home. We do not test for mold.</p>
-    </section>
-
     <section class="stack">
       <p class="label">Where Trace is going</p>
       <h2>Beyond one home.</h2>
+      <p style="margin-top:-4px">Trace works wherever you are: in person in San Diego, virtually for any home in the world, and soon for the places you travel.</p>
       <div class="parts">
-        <div class="part"><p class="status">Available now</p><h3>In-person assessments</h3><p>A real, room-by-room assessment in your home, with a written plan.</p></div>
-        <div class="part"><p class="status">In development</p><h3>Web app</h3><p>The same assessment from your phone, with an instant score. A virtual option for homes outside San Diego.</p></div>
+        <div class="part"><p class="status">Available now</p><h3>In-person &amp; virtual assessments</h3><p>A room-by-room assessment with a written plan, in person in San Diego or by video from anywhere.</p></div>
+        <div class="part"><p class="status">In development</p><h3>Web app</h3><p>The same assessment from your phone, built for any home anywhere in the world. You get an instant provisional score, and Trace confirms it after reviewing your photos and receipts.</p></div>
         <div class="part"><p class="status">In development</p><h3>Verified by Trace</h3><p>Independent verification for short-term rentals, hotels and other places people stay, so travelers can see what&rsquo;s in the space.</p></div>
       </div>
     </section>
@@ -171,10 +203,11 @@
         <h2>Good to know.</h2>
       </div>
       <div>
-        <details><summary>Do you test for mold or toxins?</summary><p>No. We verify the products and materials in your home against independent certifications. We don&rsquo;t run lab tests.</p></details>
+        <details><summary>What do you look for?</summary><p>The products and materials most likely to contain substances researchers study for their effects on health, including VOCs and fragrance in the air, PFAS, BPA and phthalates in the kitchen, chlorine and lead in water, and synthetic materials against the skin. We check each one against independent certifications and point you to alternatives. We identify likely sources; we don&rsquo;t test your air, water or surfaces.</p></details>
+        <details><summary>Do you test for mold or toxins?</summary><p>No. We verify the products and materials in your home against independent certifications. We don&rsquo;t run lab tests on your air, water or surfaces.</p></details>
         <details><summary>Do I have to replace everything?</summary><p>No. The plan ranks swaps by impact and you decide the pace. Many people start with the bedroom and kitchen.</p></details>
         <details><summary>Does this work for renters?</summary><p>Yes. Most swaps are products, not renovations.</p></details>
-        <details><summary>What areas do you serve?</summary><p>San Diego and Southern California for now.</p></details>
+        <details><summary>Where do you serve?</summary><p>In person in San Diego and Southern California, with travel available upon request. Virtual assessments are available for any home, anywhere in the world.</p></details>
       </div>
     </section>
 
