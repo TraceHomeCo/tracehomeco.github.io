@@ -3,260 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trace &mdash; Home Health Assessment</title>
-  <meta name="description" content="Room-by-room home health assessment. 80+ checkpoints for hidden toxins. A personalized swap plan at your own pace. Launching Summer 2026.">
+  <title>Trace | The Home Health Standard</title>
+  <meta name="description" content="In-person home assessments in San Diego from $250. We verify the products and materials in your home against independent certifications, not marketing claims.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&family=Plus+Jakarta+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --linen: #F5F5F3;
-      --night: #1A1A1A;
-      --green: #2D5A27;
-      --green-bg: #EBF0E8;
-      --ash: #888888;
-      --bone: #E4E4E0;
+    :root { --linen:#F5F5F5; --night:#1A1A1A; --dusk:#7A7466; --rule:#DDDAD2; --paper:#FBFAF7; }
+    html, body { background:var(--linen); color:var(--night); font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-weight:300; font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+    .wrap { max-width:1060px; margin:0 auto; padding:0 32px; }
+    header { padding:40px 0 0; }
+    .logo { display:block; height:72px; width:auto; mix-blend-mode:multiply; }
+    .label { font-family:'Cormorant Garamond',Georgia,serif; font-style:normal; font-weight:600; font-size:15px; letter-spacing:.26em; text-transform:uppercase; color:var(--dusk); margin-bottom:18px; }
+    h1,h2,h3 { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:400; line-height:1.08; }
+    h1 { font-size:clamp(46px,7vw,84px); margin-bottom:24px; }
+    h2 { font-size:clamp(32px,4.4vw,46px); margin-bottom:18px; }
+    h3 { font-style:normal; font-weight:600; font-size:19px; letter-spacing:.14em; text-transform:uppercase; line-height:1.3; margin-bottom:10px; }
+    p { max-width:560px; }
+    .btn { display:inline-block; background:var(--night); color:var(--linen); text-decoration:none; font-weight:400; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:16px 28px; transition:opacity .2s; }
+    .btn:hover { opacity:.84; }
+    .text-link { color:var(--night); font-size:14px; text-decoration:underline; text-underline-offset:4px; text-decoration-color:var(--dusk); }
+    .actions { display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; }
+    .small { font-size:13px; color:var(--dusk); }
+
+    .hero { display:grid; grid-template-columns:1.15fr .85fr; gap:64px; align-items:center; padding:88px 0 96px; }
+    .lede { font-size:19px; margin-bottom:34px; max-width:500px; }
+    .card { background:var(--night); color:var(--linen); padding:40px 36px; }
+    .card .label { color:#B9B3A4; }
+    .card h2 { font-size:34px; margin-bottom:6px; }
+    .card .price { color:#B9B3A4; margin-bottom:22px; }
+    .card ul { list-style:none; margin-bottom:28px; font-size:15px; }
+    .card li { padding:8px 0 8px 22px; position:relative; }
+    .card li::before { content:""; position:absolute; left:0; top:20px; width:10px; border-top:1px solid #B9B3A4; }
+    .card .btn { background:var(--linen); color:var(--night); display:block; text-align:center; }
+    .card .small { color:#B9B3A4; margin-top:14px; }
+
+    section { padding:88px 0; border-top:1px solid var(--rule); }
+    .intro { display:grid; grid-template-columns:1fr 1.4fr; gap:64px; }
+    .intro h2 { margin-bottom:0; }
+    .standards { font-weight:400; letter-spacing:.06em; margin-top:8px; }
+
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:44px; }
+    .step { border-top:1px solid var(--night); padding-top:18px; }
+    .step .n { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:22px; color:var(--dusk); }
+    .step p { font-size:15px; }
+    .time { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--dusk); margin-top:10px; }
+
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:44px; }
+    .cell { background:var(--linen); padding:28px 26px 30px; }
+    .cell h3 { font-size:18px; }
+    .cell p { font-size:14.5px; color:var(--dusk); }
+    .note { margin-top:24px; font-size:14px; color:var(--dusk); max-width:640px; }
+
+    .stack { background:var(--paper); }
+    .parts { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:44px; }
+    .part { border-top:1px solid var(--rule); padding-top:18px; }
+    .status { font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--dusk); margin-bottom:8px; }
+    .part p { font-size:15px; color:var(--dusk); }
+
+    .faq { display:grid; grid-template-columns:1fr 1.4fr; gap:64px; }
+    details { border-top:1px solid var(--rule); padding:18px 0; }
+    details:last-child { border-bottom:1px solid var(--rule); }
+    summary { cursor:pointer; font-weight:400; list-style:none; display:flex; justify-content:space-between; gap:16px; }
+    summary::-webkit-details-marker { display:none; }
+    summary::after { content:"+"; color:var(--dusk); }
+    details[open] summary::after { content:"\2212"; }
+    details p { margin-top:10px; font-size:15px; color:var(--dusk); }
+
+    .cta { text-align:left; }
+    .cta h2 { max-width:640px; }
+    footer { border-top:1px solid var(--rule); padding:28px 0 48px; font-size:12px; color:var(--dusk); line-height:1.8; }
+    footer p { margin-bottom:4px; max-width:none; }
+    footer a { color:var(--dusk); text-underline-offset:3px; }
+
+    @media (max-width:860px) {
+      .wrap { padding:0 22px; }
+      .hero, .intro, .faq { grid-template-columns:1fr; gap:40px; }
+      .hero { padding:56px 0 64px; }
+      section { padding:60px 0; }
+      .steps, .parts { grid-template-columns:1fr; gap:28px; }
+      .grid { grid-template-columns:1fr 1fr; }
+      .card { padding:32px 26px; }
     }
-    html, body {
-      background: var(--linen);
-      color: var(--night);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-    }
-    .shell {
-      display: grid;
-      grid-template-columns: 1fr minmax(0, 520px) 1fr;
-      min-height: 100vh;
-    }
-    .side {
-      background: var(--linen);
-      border-right: 1px solid var(--bone);
-    }
-    .side.right {
-      border-right: none;
-      border-left: 1px solid var(--bone);
-    }
-    .page {
-      padding: 72px 48px 56px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    @media (max-width: 680px) {
-      .shell { grid-template-columns: 1fr; }
-      .side { display: none; }
-      .page { padding: 56px 28px 48px; }
-    }
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      margin-bottom: 32px;
-    }
-    .logo-wrap svg {
-      display: block;
-    }
-    .wordmark {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 200;
-      font-size: 16px;
-      letter-spacing: 0.48em;
-      color: var(--night);
-      text-transform: lowercase;
-    }
-    .eyebrow-wrap { margin-bottom: 20px; }
-    .eyebrow {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 400;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ash);
-      display: block;
-      line-height: 1.8;
-    }
-    .eyebrow-coming {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 400;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--green);
-      display: block;
-      line-height: 1.8;
-      margin-top: 6px;
-    }
-    .headline {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 52px;
-      line-height: 1.05;
-      color: var(--night);
-      margin-bottom: 20px;
-    }
-    .body-text {
-      font-size: 13px;
-      font-weight: 300;
-      color: var(--ash);
-      line-height: 1.85;
-      margin-bottom: 44px;
-      max-width: 360px;
-    }
-    .cta-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .cta-box {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 18px 16px;
-      text-decoration: none;
-      text-align: left;
-      transition: opacity 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-box.active {
-      background: var(--night);
-    }
-    .cta-box.active:hover { opacity: 0.84; }
-    .cta-box.active .cta-title { color: #F5F5F3; }
-    .cta-box.active .cta-desc { color: rgba(245,245,243,0.45); }
-    .cta-box.active .cta-arrow { color: #F5F5F3; }
-    .cta-box.soon {
-      background: transparent;
-      border: 1px dashed var(--bone);
-      cursor: default;
-      pointer-events: none;
-    }
-    .cta-box.soon .cta-title { color: var(--night); }
-    .cta-box.soon .cta-desc { color: var(--ash); }
-    .cta-tag {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      border: 0.5px solid;
-      padding: 2px 6px;
-      margin-bottom: 10px;
-      display: inline-block;
-    }
-    .cta-tag.green {
-      color: var(--green);
-      border-color: rgba(45,90,39,0.3);
-      background: var(--green-bg);
-    }
-    .cta-tag.muted {
-      color: var(--ash);
-      border-color: var(--bone);
-      background: transparent;
-    }
-    .cta-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 20px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .cta-desc {
-      font-size: 12px;
-      font-weight: 300;
-      line-height: 1.65;
-      display: block;
-      margin-bottom: 14px;
-      flex: 1;
-    }
-    .cta-arrow {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-top: auto;
-      color: var(--ash);
-    }
-    .ig-link {
-      font-size: 10px;
-      font-weight: 300;
-      color: var(--ash);
-      text-decoration: none;
-      letter-spacing: 0.08em;
-      transition: color 0.15s;
-    }
-    .ig-link:hover { color: var(--night); }
-    .footer {
-      margin-top: auto;
-      padding-top: 44px;
-    }
-    .footer p {
-      font-size: 9px;
-      font-weight: 300;
-      color: var(--bone);
-      line-height: 1.9;
-      letter-spacing: 0.03em;
-    }
+    @media (max-width:520px) { .grid { grid-template-columns:1fr; } .logo { height:60px; } }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="side"></div>
-    <div class="page">
+  <div class="wrap">
+    <header><img class="logo" src="trace_logo_A_primary.png" alt="Trace"></header>
 
-      <div class="logo-wrap">
-        <img src="https://tracehomeco.github.io/trace_logo_A_primary.png" alt="Trace" style="height:160px;width:auto;display:block;">
-      </div>
-
-      <div class="eyebrow-wrap">
-        <span class="eyebrow">Home Health Assessment</span>
-        <span class="eyebrow-coming">Coming Summer 2026</span>
-      </div>
-
-      <h1 class="headline">Your home has<br>a health score.</h1>
-
-      <p class="body-text">A room-by-room assessment covering every area of your home &mdash; air, water, laundry, cookware, fragrance, and more. 80+ checkpoints for hidden toxin exposures, a personalized score for every room, and a budget-fitted swap plan with specific product recommendations at your own pace.</p>
-
-      <div class="cta-grid">
-
-        <a href="https://tracehomeco.github.io/trace-quiz" class="cta-box active">
-          <span class="cta-tag green">Free now</span>
-          <span class="cta-title">5-question preview</span>
-          <span class="cta-desc">Find out where your home stands across the 5 most common hidden toxin exposures.</span>
-          <span class="cta-arrow">Start &rarr;</span>
-        </a>
-
-        <div class="cta-box soon">
-          <span class="cta-tag muted">Coming soon</span>
-          <span class="cta-title">Full home assessment</span>
-          <span class="cta-desc">Every room. 80+ checkpoints. A personalized swap plan at your own pace.</span>
-          <span class="cta-arrow">Summer 2026</span>
+    <div class="hero">
+      <div>
+        <p class="label">The Home Health Standard</p>
+        <h1>Your home has<br>a health score.</h1>
+        <p class="lede">We verify the products and materials in your home against independent certifications, not marketing claims.</p>
+        <div class="actions">
+          <a class="btn" href="mailto:hello@tracehome.co?subject=Assessment%20request&amp;body=Name%3A%0AZip%20code%3A%0AHome%20type%3A%0APreferred%20timing%3A%0APhone%3A">Request an assessment</a>
+          <a class="text-link" href="https://tracehome.co/trace-quiz">Try the free 5-question preview</a>
         </div>
-
       </div>
-
-      <a href="https://instagram.com/tracehome" target="_blank" rel="noopener" class="ig-link">
-        @tracehome on Instagram
-      </a>
-
-      <div class="footer">
-        <p>For education only. Not medical advice.</p>
-        <p>&copy; 2026 Trace</p>
+      <div class="card" id="assessment">
+        <p class="label">In-person assessment &middot; San Diego</p>
+        <h2>A room-by-room walkthrough of your actual home</h2>
+        <p class="price">Starting at $250</p>
+        <ul>
+          <li>60 to 90 minutes in your home</li>
+          <li>60+ checkpoints, room by room</li>
+          <li>Your Trace Score</li>
+          <li>Swap plan with product links and a timeline, within a week</li>
+          <li>White-glove service available</li>
+        </ul>
+        <a class="btn" href="mailto:hello@tracehome.co?subject=Assessment%20request&amp;body=Name%3A%0AZip%20code%3A%0AHome%20type%3A%0APreferred%20timing%3A%0APhone%3A">Request an assessment</a>
+        <p class="small">Local to San Diego and Southern California for now.</p>
       </div>
-
     </div>
-    <div class="side right"></div>
+
+    <section class="intro">
+      <div>
+        <p class="label">About Trace</p>
+        <h2>What&rsquo;s actually in the spaces where you live.</h2>
+      </div>
+      <div>
+        <p>Trace is a home health platform setting the standard for what&rsquo;s actually in the spaces where people live, sleep, breathe and travel.</p>
+        <p style="margin-top:16px">Most &ldquo;clean&rdquo; claims are self-reported: a brand&rsquo;s own list, not independent verification. We check each room and identify exactly what&rsquo;s worth swapping and why, backed by independent certifications.</p>
+        <p class="standards">GOTS &middot; EWG &middot; NSF</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="label">How it works</p>
+      <h2>From walkthrough to a plan you can act on.</h2>
+      <div class="steps">
+        <div class="step"><span class="n">01</span><h3>We walk your home</h3><p>We go room by room and record the products and materials you actually use: what&rsquo;s in the cabinet, on the bed, on the stove.</p><p class="time">60&ndash;90 minutes</p></div>
+        <div class="step"><span class="n">02</span><h3>You get your score and plan</h3><p>Your Trace Score, plus a swap plan that names what&rsquo;s worth changing, why, and where to buy a verified alternative.</p><p class="time">Within a week</p></div>
+        <div class="step"><span class="n">03</span><h3>You swap at your pace</h3><p>Start with the highest-impact swaps or do it all at once. Your timeline sets the order, and white-glove help is available.</p><p class="time">Your schedule</p></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="label">What we look at</p>
+      <h2>A sample of the 60+ checkpoints.</h2>
+      <div class="grid">
+        <div class="cell"><h3>Water</h3><p>Filtration at the tap and under the sink, and what it&rsquo;s independently certified to reduce.</p></div>
+        <div class="cell"><h3>Cleaning products</h3><p>Ingredient disclosure and independent certification, not &ldquo;natural&rdquo; on the front label.</p></div>
+        <div class="cell"><h3>Laundry &amp; fragrance</h3><p>Detergents, dryer products, candles, diffusers and sprays, and where fragrance is hiding.</p></div>
+        <div class="cell"><h3>Mattress &amp; bedding</h3><p>Mattress, pillow and sheet materials, checked against certifications like GOTS, bed by bed.</p></div>
+        <div class="cell"><h3>Cookware &amp; kitchen</h3><p>Pan coatings, storage and everyday kitchenware.</p></div>
+        <div class="cell"><h3>Air</h3><p>Air purification and what the unit is independently tested for.</p></div>
+      </div>
+      <p class="note">This is a sample, not the full list. Trace verifies the products and materials in your home. We do not test for mold.</p>
+    </section>
+
+    <section class="stack">
+      <p class="label">Where Trace is going</p>
+      <h2>Beyond one home.</h2>
+      <div class="parts">
+        <div class="part"><p class="status">Available now</p><h3>In-person assessments</h3><p>A real, room-by-room assessment in your home, with a written plan.</p></div>
+        <div class="part"><p class="status">In development</p><h3>Web app</h3><p>The same assessment from your phone, with an instant score. A virtual option for homes outside San Diego.</p></div>
+        <div class="part"><p class="status">In development</p><h3>Verified by Trace</h3><p>Independent verification for short-term rentals, hotels and other places people stay, so travelers can see what&rsquo;s in the space.</p></div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div>
+        <p class="label">Questions</p>
+        <h2>Good to know.</h2>
+      </div>
+      <div>
+        <details><summary>Do you test for mold or toxins?</summary><p>No. We verify the products and materials in your home against independent certifications. We don&rsquo;t run lab tests.</p></details>
+        <details><summary>Do I have to replace everything?</summary><p>No. The plan ranks swaps by impact and you decide the pace. Many people start with the bedroom and kitchen.</p></details>
+        <details><summary>Does this work for renters?</summary><p>Yes. Most swaps are products, not renovations.</p></details>
+        <details><summary>What areas do you serve?</summary><p>San Diego and Southern California for now.</p></details>
+      </div>
+    </section>
+
+    <section class="cta">
+      <p class="label">Follow along</p>
+      <h2>Real swaps. Real homes.</h2>
+      <p>Room-by-room swaps, assessment footage, and the research behind every recommendation, on <a class="text-link" href="https://instagram.com/tracehomeco" target="_blank" rel="noopener">Instagram @tracehomeco</a>.</p>
+    </section>
+
+    <footer>
+      <p>Product and material verification as of October 2026. Trace verifies the products and materials in a home; it does not test for mold.</p>
+      <p>For education only. Not medical advice.</p>
+      <p>&copy; 2026 Trace &middot; <a href="mailto:hello@tracehome.co">hello@tracehome.co</a></p>
+    </footer>
   </div>
 </body>
 </html>
