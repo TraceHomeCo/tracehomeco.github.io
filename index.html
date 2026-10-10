@@ -61,7 +61,7 @@
     .frame { position:relative; }
     .frame img { display:block; width:100%; height:auto; mix-blend-mode:multiply; }
     .pin { position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:var(--night); color:var(--linen); font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:16px; line-height:30px; text-align:center; box-shadow:0 0 0 5px rgba(245,245,245,.7); }
-    .legend { display:grid; grid-template-columns:repeat(5,1fr); gap:28px; margin-top:36px; }
+    .legend { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:36px; }
     .legend div { border-top:1px solid var(--night); padding-top:14px; }
     .legend .n { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; color:var(--dusk); font-size:20px; }
     .legend h3 { font-size:16px; margin:2px 0 6px; }
@@ -146,26 +146,29 @@
     <section>
       <p class="label">Room by room</p>
       <h2>Start with where you sleep.</h2>
-      <p>You spend a third of your life in the bedroom. Here&rsquo;s what Trace looks at there.</p>
+      <p>We check 60+ things across the home. In the bedroom, that includes:</p>
       <div class="room">
         <div class="frame">
           <img src="trace_bedroom.jpg" alt="Illustration of a bedroom with numbered points showing what Trace checks" width="1600" height="899">
           <span class="pin" style="left:40%;top:77%">1</span>
-          <span class="pin" style="left:55%;top:62%">2</span>
+          <span class="pin" style="left:66%;top:66%">2</span>
           <span class="pin" style="left:76%;top:71%">3</span>
           <span class="pin" style="left:28.5%;top:58%">4</span>
-          <span class="pin" style="left:15%;top:45%">5</span>
+          <span class="pin" style="left:34%;top:66%">5</span>
+          <span class="pin" style="left:15%;top:45%">6</span>
         </div>
         <div class="legend">
-          <div><span class="n">01</span><h3>Mattress</h3><p>Materials and independent certifications.</p></div>
-          <div><span class="n">02</span><h3>Sheets &amp; pillows</h3><p>Organic and certified, or conventional.</p></div>
-          <div><span class="n">03</span><h3>Air</h3><p>What the purifier is independently tested for.</p></div>
-          <div><span class="n">04</span><h3>Fragrance</h3><p>Candles, sprays and diffusers.</p></div>
-          <div><span class="n">05</span><h3>Window &amp; light</h3><p>Coverings and evening light.</p></div>
+          <div><span class="n">01</span><h3>Mattress &amp; bedding</h3><p>Materials and independent certifications, bed by bed.</p></div>
+          <div><span class="n">02</span><h3>Sleepwear &amp; loungewear</h3><p>What you wear against your skin for hours.</p></div>
+          <div><span class="n">03</span><h3>Air purification</h3><p>What the unit is independently tested for.</p></div>
+          <div><span class="n">04</span><h3>Lighting</h3><p>Bulbs, evening light and what&rsquo;s near the bed.</p></div>
+          <div><span class="n">05</span><h3>Fragrance</h3><p>Candles, sprays and diffusers.</p></div>
+          <div><span class="n">06</span><h3>Window coverings</h3><p>Fabric and any treatments.</p></div>
         </div>
       </div>
     </section>
 
+    
     <section>
       <p class="label">How it works</p>
       <h2>From walkthrough to a plan you can act on.</h2>
@@ -177,17 +180,8 @@
     </section>
 
     <section>
-      <p class="label">What we look at</p>
-      <h2>A sample of the 60+ checkpoints.</h2>
-      <div class="grid">
-        <div class="cell"><h3>Water</h3><p>Filtration at the tap and under the sink, and what it&rsquo;s independently certified to reduce.</p></div>
-        <div class="cell"><h3>Cleaning products</h3><p>Ingredient disclosure and independent certification, not &ldquo;natural&rdquo; on the front label.</p></div>
-        <div class="cell"><h3>Laundry &amp; fragrance</h3><p>Detergents, dryer products, candles, diffusers and sprays, and where fragrance is hiding.</p></div>
-        <div class="cell"><h3>Mattress &amp; bedding</h3><p>Mattress, pillow and sheet materials, checked against certifications like GOTS, bed by bed.</p></div>
-        <div class="cell"><h3>Cookware &amp; kitchen</h3><p>Pan coatings, storage and everyday kitchenware.</p></div>
-        <div class="cell"><h3>Air</h3><p>Air purification and what the unit is independently tested for.</p></div>
-      </div>
-      <h3 style="margin-top:56px">What we scan for, and why</h3>
+      <p class="label">What we scan for</p>
+      <h2>And why it matters.</h2>
       <p class="note" style="margin-top:0">Everyday products can contain substances that researchers study for their effects on health. We look for the products most likely to contain them and point you to certified alternatives.</p>
       <div class="grid" style="grid-template-columns:repeat(2,1fr)">
         <div class="cell"><h3>Air</h3><p><strong>VOCs</strong> are compounds that evaporate from paints, furniture, cleaners and candles into the air you breathe. <strong>Fragrance</strong> can hide undisclosed ingredients, including phthalates.</p></div>
