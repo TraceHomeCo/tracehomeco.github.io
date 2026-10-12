@@ -154,7 +154,7 @@ button:focus-visible,.opt-btn:focus-visible{outline:2px solid var(--night);outli
     <h1>Trace Score</h1>
     <p class="sub" style="color:var(--night);font-weight:400;margin-bottom:6px;">Your home score is the new sleep score — diet and movement are fully tracked. Your environment almost never is. This is the missing pillar of health.</p>
     <p class="sub">Same questions as the Trace assessment. Answer based on what's actually in the home — almost none of this is regulated, so a low score reflects the industry, not the homeowner. Most homes we visit score around 25% on a first assessment — this isn't about doing everything perfectly, it's about knowing where things stand.</p>
-    <p class="sub" style="font-size:12px;color:var(--ash);">Scoring logic, if asked: your score is the percentage of things in your home already at the cleanest verified option — clean water filtration, safe cookware, that kind of thing. A few big ones — water, mattress, bedroom air — matter enough that if any are still missing, the score caps at 70% even if everything else is perfect. Once those are covered, the cap disappears and the score just reflects the percentage of everything else at the cleanest option too.</p>
+    <p class="sub" style="font-size:12px;color:var(--ash);">Scoring logic, if asked: your score is the percentage of things in your home already at the cleanest verified option — clean water filtration, safe cookware, that kind of thing. A few big ones — water, mattress, bedroom air, laundry detergent (and a crib mattress, if there's a nursery) — matter enough that if any are still missing, the score caps at 70% even if everything else is perfect. Once those are covered, the cap disappears and the score just reflects the percentage of everything else at the cleanest option too.</p>
 
     <div style="margin-top:28px;">
       <label for="visitLabel" style="font-size:12px;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Home / Client Label</label>
@@ -409,14 +409,15 @@ function updateFooter(){
   document.getElementById('progressLabel').textContent = `${answeredCount} of ${totalQuestions} answered`;
 
   const {overall} = computeScore();
-  document.getElementById('liveScore').textContent = overall + '%';
+  const pendingN = Object.keys(answers).filter(id => answers[id].letter === 'G').length;
+  document.getElementById('liveScore').textContent = overall + '%' + (pendingN ? ' · ' + pendingN + ' pending' : '');
   document.getElementById('revealBtn').disabled = answeredCount < Math.ceil(totalQuestions*0.5);
 }
 
 // Foundational checkpoints — research-backed high-exposure categories.
 // If breadth score exceeds 70% but any applicable Foundational item isn't
 // covered (0-2 points), the score caps at 70%.
-const FOUNDATIONAL_IDS = ['KIT_Q02', 'BED_Q01', 'BED_Q03', 'NUR_Q01'];
+const FOUNDATIONAL_IDS = ['KIT_Q02', 'BED_Q01', 'BED_Q03', 'NUR_Q01', 'LAU_Q01'];
 // An answer worth up to 2 points (e.g. whole-house water filtration) counts as covered.
 const FOUNDATIONAL_OK_MAX = 2;
 // Nobody gets a zero: the lowest score shown is the floor.
@@ -507,10 +508,18 @@ function showResults(){
   bandEl.className = 'score-band ' + band.cls;
   document.getElementById('scoreDesc').textContent = band.desc;
   const rng = computeRange();
-  const rangeText = rng.pending > 0 && rng.high > rng.low ? `Visit range ${rng.low}–${rng.high}% · ${rng.pending} item${rng.pending>1?'s':''} to verify after the visit. Final score comes with your swap plan within a week.` : 'Provisional score. Final score comes with your swap plan within a week.';
+  const wide = (rng.high - rng.low) > 15;
+  const rangeText = rng.pending === 0 ? 'Provisional score. Final score comes with your swap plan within a week.'
+    : wide ? `${rng.low}% confirmed today · ${rng.pending} item${rng.pending>1?'s':''} still to verify. Final score comes with your swap plan within a week.`
+    : `Visit range ${rng.low}–${rng.high}% · ${rng.pending} item${rng.pending>1?'s':''} to verify after the visit. Final score comes with your swap plan within a week.`;
   let rEl = document.getElementById('scoreRange');
   if(!rEl){ rEl = document.createElement('p'); rEl.id = 'scoreRange'; rEl.className = 'score-desc'; rEl.style.fontWeight = '500'; document.getElementById('scoreDesc').after(rEl); }
   rEl.textContent = rangeText;
+  let pEl = document.getElementById('pendingList');
+  if(!pEl){ pEl = document.createElement('p'); pEl.id = 'pendingList'; pEl.className = 'score-desc'; pEl.style.fontSize = '13px'; rEl.after(pEl); }
+  const pend = [];
+  ROOM_ORDER.forEach(r => Object.keys(DATA[r]).forEach(q => { if(answers[q] && answers[q].letter === 'G') pend.push(DATA[r][q].question_text.replace(/\?$/, '')); }));
+  pEl.textContent = pend.length ? 'To verify: ' + pend.join(' · ') : '';
 
   // Populate "already going well" — every question answered with the cleanest option
   const strongEl = document.getElementById('strongContainer');
@@ -610,6 +619,7 @@ function generateFindingsText(){
   let out = `TRACE HOME VISIT — FINDINGS SUMMARY\n`;
   if(labelInput) out += `${labelInput}\n`;
   const rg = computeRange();
+  const pendQ=[];ROOM_ORDER.forEach(r=>Object.keys(DATA[r]).forEach(q=>{if(answers[q]&&answers[q].letter==='G')pendQ.push(`${r}: ${DATA[r][q].question_text}`);}));
   out += `Visit score: ${rg.pending > 0 && rg.high > rg.low ? rg.low + '–' + rg.high + '%' : overall + '%'} (provisional, ${rg.pending} item(s) to verify; final score goes with the swap plan) — ${band.label}\n\n`;
 
   const motivation = document.getElementById('discMotivation').value.trim();
@@ -641,6 +651,7 @@ function generateFindingsText(){
     if(devices) out += `Devices: ${devices}\n`;
     out += `\n`;
   }
+  if(pendQ.length){ out += `TO VERIFY AFTER VISIT (answered Other / doesn't fit):\n`; pendQ.forEach(x=>{ out += `- ${x}\n`; }); out += `\n`; }
   const nl=[['nCleanerBrief','Cleaner / brief'],['nPlugins','Plug-ins, candles, sprays'],['nInserts','Duvet insert'],['nHumidity','Humidity / moisture (best practices, testing referral if needed)'],['nFieldTest','To verify after visit']].map(([id,l])=>[l,document.getElementById(id).value.trim()]).filter(x=>x[1]);
   if(nl.length){ out += `NOTED, NOT SCORED:\n`; nl.forEach(([l,v])=>{ out += `${l}: ${v}\n`; }); out += `\n`; }
   out += `PRIORITY SWAPS (swap_key references Trace product catalogue):\n`;
