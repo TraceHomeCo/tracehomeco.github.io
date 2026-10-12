@@ -237,6 +237,11 @@ button:focus-visible,.opt-btn:focus-visible{outline:2px solid var(--night);outli
       <div class="q-text">Duvet or comforter insert — fill type (wool, down, synthetic)</div>
       <textarea id="nInserts" placeholder="e.g. polyester fill, no cover" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:300;"></textarea>
     </div>
+    <div class="question">
+      <div class="q-text">Humidity or moisture — musty smells, condensation, past leaks, visible mold, or a mold concern? Hygrometer in the home?</div>
+      <textarea id="nHumidity" placeholder="e.g. musty smell in basement, no hygrometer; wants mold testing referral" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:300;"></textarea>
+    </div>
+
     <div class="question" style="padding-bottom:0;">
       <div class="q-text">Anything to field-test or look up after the visit (whole-house filtration type, mystery materials)</div>
       <textarea id="nFieldTest" placeholder="e.g. whole-house system, brand unknown" style="width:100%;min-height:56px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--night);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:300;"></textarea>
@@ -415,7 +420,7 @@ const FOUNDATIONAL_IDS = ['KIT_Q02', 'BED_Q01', 'BED_Q03', 'NUR_Q01'];
 // An answer worth up to 2 points (e.g. whole-house water filtration) counts as covered.
 const FOUNDATIONAL_OK_MAX = 2;
 // Nobody gets a zero: the lowest score shown is the floor.
-const SCORE_FLOOR = 10;
+const SCORE_FLOOR = 25;
 const completedSwaps = new Set();
 
 function toggleSwap(qid){
@@ -636,7 +641,7 @@ function generateFindingsText(){
     if(devices) out += `Devices: ${devices}\n`;
     out += `\n`;
   }
-  const nl=[['nCleanerBrief','Cleaner / brief'],['nPlugins','Plug-ins, candles, sprays'],['nInserts','Duvet insert'],['nFieldTest','To verify after visit']].map(([id,l])=>[l,document.getElementById(id).value.trim()]).filter(x=>x[1]);
+  const nl=[['nCleanerBrief','Cleaner / brief'],['nPlugins','Plug-ins, candles, sprays'],['nInserts','Duvet insert'],['nHumidity','Humidity / moisture (best practices, testing referral if needed)'],['nFieldTest','To verify after visit']].map(([id,l])=>[l,document.getElementById(id).value.trim()]).filter(x=>x[1]);
   if(nl.length){ out += `NOTED, NOT SCORED:\n`; nl.forEach(([l,v])=>{ out += `${l}: ${v}\n`; }); out += `\n`; }
   out += `PRIORITY SWAPS (swap_key references Trace product catalogue):\n`;
 
