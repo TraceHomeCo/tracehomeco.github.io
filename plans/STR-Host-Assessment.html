@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Trace Verified — Host Self-Assessment</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap');
+:root{--linen:#E4E0D8;--night:#1A1A1A;--green:#2D5A27;--amber:#8A6D3B;--red:#A3402D;--ash:#6F6C65;--line:rgba(26,26,26,0.14);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--linen);color:var(--night);-webkit-font-smoothing:antialiased;}
+.wrap{max-width:660px;margin:0 auto;padding:48px 24px 140px;}
+.eyebrow{font-size:12px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;}
+.divider{width:52px;height:1px;background:var(--line);margin-bottom:22px;}
+h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px;line-height:1.15;letter-spacing:-.01em;}
+.sub{font-size:15px;color:var(--ash);margin-top:12px;font-weight:300;line-height:1.6;}
+.how{margin-top:26px;border:1px solid var(--line);border-radius:10px;padding:18px 18px 6px;font-size:14px;line-height:1.55;}
+.how h3{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;}
+.how ol{margin:0 0 12px 18px;} .how li{margin-bottom:6px;}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;}
+.fields label,.lbl{font-size:12px;font-weight:500;color:var(--ash);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;}
+input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:11px 12px;font-family:inherit;font-size:14px;color:var(--night);background:#FAFAF8;}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--night);}
+textarea{min-height:64px;resize:vertical;}
+.cat{margin-top:50px;}
+.cat-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:28px;}
+.cat-proof{font-size:12.5px;color:var(--ash);margin-top:4px;font-weight:300;}
+.item{border-top:1px solid var(--line);padding:22px 0;margin-top:14px;}
+.tier{display:inline-block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:100px;padding:3px 9px;color:var(--ash);margin-bottom:10px;}
+.q{font-size:16px;line-height:1.45;margin-bottom:6px;}
+.hint{font-size:12.5px;color:var(--ash);font-weight:300;line-height:1.45;margin-bottom:12px;}
+.opts{display:flex;gap:8px;flex-wrap:wrap;}
+.opt{font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--night);border-radius:100px;padding:10px 18px;font-size:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.opt:hover{border-color:var(--night);}
+.opt.on{background:var(--night);color:var(--linen);border-color:var(--night);}
+.detail{margin-top:12px;}
+.detail input{font-size:13px;}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.prog{font-size:13px;color:var(--ash);}
+.btn{font-family:inherit;background:var(--night);color:var(--linen);border:none;padding:13px 24px;border-radius:100px;font-size:14px;cursor:pointer;}
+.btn.sec{background:transparent;color:var(--night);border:1px solid var(--line);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+#results{display:none;} #results.show{display:block;}
+.tier-big{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:60px;line-height:1.05;margin-top:8px;}
+.tier-note{font-size:15px;color:var(--ash);margin-top:12px;line-height:1.6;font-weight:300;max-width:520px;}
+.sec-title{font-size:12px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);margin:38px 0 14px;padding-top:30px;border-top:1px solid var(--line);}
+.row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.4;}
+.row:first-of-type{border-top:none;}
+.row.stack{flex-direction:column;gap:3px;}
+.row .t{font-size:11px;color:var(--amber);white-space:nowrap;min-width:64px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px;}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;}
+.fine{font-size:12.5px;color:var(--ash);line-height:1.6;margin-top:28px;font-weight:300;}
+.hide{display:none;}
+@media(max-width:480px){h1{font-size:32px;}.fields{grid-template-columns:1fr;}.tier-big{font-size:46px;}}
+</style>
+</head>
+<body>
+<div class="wrap" id="form">
+  <div class="eyebrow">Trace Verified · Short-Term Rentals</div>
+  <div class="divider"></div>
+  <h1>Host self-assessment</h1>
+  <p class="sub">About 20 minutes. This shows where your home stands against the Trace Verified standard and what, if anything, would move it up a level. Nothing here is a judgment on your home. It is a starting point for our review.</p>
+
+  <div class="how">
+    <h3>How it works</h3>
+    <ol>
+      <li>Answer each item. "Not yet" is a fine answer; it just becomes your gap list.</li>
+      <li>Where it asks for a brand or model, type it in. That is the main thing we review.</li>
+      <li>Press <b>Send to Trace</b> at the end. Then email photos and receipts for the items listed (a label, a tag, the unit itself) to hello@tracehome.co, or drop them in the folder we share with you.</li>
+      <li>Trace reviews your proof and confirms the tier. Nothing is approved from this form alone.</li>
+    </ol>
+  </div>
+
+  <div class="fields">
+    <div><label for="host">Your name</label><input type="text" id="host" placeholder="Host name"></div>
+    <div><label for="prop">Property</label><input type="text" id="prop" placeholder="Property name"></div>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="cat">
+    <div class="cat-name">Anything else</div>
+    <div class="item" style="margin-top:10px">
+      <div class="hint">Wellness extras (sauna, gym, yoga, a local chef) are listed on your page but are not scored. Anything you want us to know that the questions missed:</div>
+      <textarea id="extra"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="wrap hide" id="results">
+  <div class="eyebrow">Your starting point (self-reported)</div>
+  <div class="divider"></div>
+  <div class="tier-big" id="tierName"></div>
+  <p class="tier-note" id="tierNote"></p>
+
+  <div class="sec-title" id="gapTitle">What would move it up</div>
+  <div id="gaps"></div>
+
+  <div class="sec-title">Proof to send us</div>
+  <div id="proof"></div>
+
+  <div class="actions">
+    <button class="btn" id="mail">Send to Trace</button>
+    <button class="btn sec" id="copy">Copy summary</button>
+    <button class="btn sec" id="back">Edit answers</button>
+  </div>
+  <p class="fine">This is a self-reported starting point. The tier is confirmed only after Trace reviews your photos and receipts, and Trace keeps a dated record of what it reviewed. Trace verifies what the host controls and does not promise any particular level of exposure. Elite is also verified in person. Educational, not medical advice.</p>
+</div>
+
+<footer id="foot">
+  <div class="prog" id="prog">0 of 0 answered</div>
+  <button class="btn" id="go" disabled>See my starting point</button>
+</footer>
+
+<script>
+// type: yn = Yes / Not yet / Not sure ; disc = disclosure (any written answer counts)
+// tier: V = Trace Verified, E = Elevated, L = Elite
+const CATS = [
+ {name:"Scent", proof:"Proof: photos of each room, plus your attestation here.", items:[
+  {id:"scent1",t:"V",type:"yn",q:"No synthetic fragrance in the home: no candles, plug-ins, aerosol sprays or scented products.",h:"Disclosed organic essential oils are fine at Verified."},
+  {id:"scent2",t:"L",type:"yn",q:"No added scent at all, including essential oils.",h:""}
+ ]},
+ {name:"Cleaning and laundry", proof:"Proof: photos of every label.", items:[
+  {id:"clean1",t:"V",type:"yn",q:"Every cleaner you supply is EWG Verified and/or MADE SAFE.",h:"Include dish soap, surface and bathroom cleaners.",d:"List the cleaners and brands"},
+  {id:"clean2",t:"V",type:"yn",q:"Linens are washed with a fragrance-free detergent.",h:"",d:"Detergent brand"}
+ ]},
+ {name:"Items you supply to guests", proof:"Proof: label photos.", items:[
+  {id:"supply1",t:"V",type:"yn",q:"Soap, shampoo, dish soap and toilet paper you provide are fragrance-free.",h:"",d:"Brands you supply"},
+  {id:"supply2",t:"E",type:"yn",q:"Those same items are also certified (for example EWG Verified or MADE SAFE).",h:""}
+ ]},
+ {name:"Bedding and textiles", proof:"Proof: photos of the sewn-in tags showing fiber and any certification.", items:[
+  {id:"bed1",t:"V",type:"yn",q:"Sheets and towels are natural fiber (cotton, linen, silk or wool).",h:"",d:"Brand and fiber"},
+  {id:"bed2",t:"E",type:"yn",q:"Mattress and bedding are certified (GOTS, GREENGUARD Gold or similar).",h:"",d:"Mattress and bedding brands"},
+  {id:"bed3",t:"L",type:"yn",q:"Rugs and other textiles are natural fiber throughout.",h:""}
+ ]},
+ {name:"Kitchen", proof:"Proof: photos of the items and any labels.", items:[
+  {id:"kit1",t:"V",type:"yn",q:"Cookware, cups, bowls, cutting boards and utensils available to guests are low-tox: glass, ceramic, stainless steel, cast iron or wood, with no worn non-stick.",h:"",d:"What you have (materials and brands)"},
+  {id:"kit2",t:"E",type:"yn",q:"All cookware is low-tox, and food storage is glass or stainless steel.",h:""},
+  {id:"kit3",t:"L",type:"yn",q:"The whole kitchen is low-tox, including the coffee maker.",h:"",d:"Coffee maker brand and model"}
+ ]},
+ {name:"Air", proof:"Proof: photo of each unit and the spec sheet showing True HEPA.", items:[
+  {id:"air1",t:"V",type:"yn",q:"There is at least one air purifier in the home.",h:"",d:"Brand, model and where it sits"},
+  {id:"air2",t:"E",type:"yn",q:"There is a True HEPA purifier in every bedroom.",h:""},
+  {id:"air3",t:"L",type:"yn",q:"There is a True HEPA purifier in every sleeping and living space.",h:""}
+ ]},
+ {name:"Water", proof:"Proof: photo of the system, the model, and a filter receipt. Well water: a recent lab test report.", items:[
+  {id:"water1",t:"V",type:"disc",q:"Tell us what water filtration the home has, even if the answer is none.",h:"Kitchen, shower and whole-home. If you are on well water, say so and attach a recent test report.",d:"Describe it (or write “none”)"},
+  {id:"water2",t:"E",type:"yn",q:"Drinking water goes through reverse osmosis or a certified drinking-water filter.",h:"A filter only counts for what its certification covers.",d:"Brand and model"},
+  {id:"water3",t:"L",type:"yn",q:"There is whole-home filtration plus reverse osmosis.",h:"",d:"Brands and models"}
+ ]},
+ {name:"Pest control", proof:"Proof: your written policy or a service invoice.", items:[
+  {id:"pest1",t:"V",type:"disc",q:"Tell us your pest control approach.",h:"Who services the home, how often, and what they use if you know.",d:"Describe it"},
+  {id:"pest2",t:"E",type:"yn",q:"No synthetic pesticides are sprayed inside the home.",h:""}
+ ]},
+ {name:"Materials", proof:"Proof: the third-party test report.", items:[
+  {id:"mat1",t:"L",type:"yn",q:"The home has had third-party VOC testing.",h:"Optional, and Elite only."}
+ ]},
+ {name:"Wifi and electronics", proof:"Proof: photo of the router where it sits, and of any timer.", items:[
+  {id:"wifi1",t:"V",type:"disc",q:"Where is the wifi router?",h:"Which room, and whether it is near a bedroom.",d:"Describe the location"},
+  {id:"wifi2",t:"E",type:"yn",q:"Guests can use a timer or a wired (ethernet) option.",h:""},
+  {id:"wifi3",t:"L",type:"yn",q:"The router is out of the sleeping areas and on a timer.",h:""}
+ ]}
+];
+const TN={V:"Verified",E:"Elevated",L:"Elite"};
+const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
+let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v1")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("trace_str_v1",JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// prefill from link: ?p=Ciao%20Bella&h=Karyn
+const qs=new URLSearchParams(location.search);
+if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.get("h");
+
+function build(){
+  let h="";
+  CATS.forEach(c=>{
+    h+=`<div class="cat"><div class="cat-name">${esc(c.name)}</div><div class="cat-proof">${esc(c.proof)}</div>`;
+    c.items.forEach(i=>{
+      h+=`<div class="item" data-id="${i.id}"><span class="tier">${TN[i.t]}</span><div class="q">${esc(i.q)}</div>${i.h?`<div class="hint">${esc(i.h)}</div>`:""}`;
+      if(i.type==="yn"){
+        h+=`<div class="opts">${["Yes","Not yet","Not sure"].map(o=>`<button class="opt" data-a="${o}">${o}</button>`).join("")}</div>`;
+        if(i.d)h+=`<div class="detail"><input type="text" data-d="${i.id}" placeholder="${esc(i.d)} (optional)"></div>`;
+      } else {
+        h+=`<div class="detail" style="margin-top:0"><input type="text" data-d="${i.id}" placeholder="${esc(i.d)}"></div>`;
+      }
+      h+=`</div>`;
+    });
+    h+=`</div>`;
+  });
+  $("items").innerHTML=h;
+  $("host").value=S.host||""; $("prop").value=S.prop||""; $("extra").value=S.extra||"";
+  document.querySelectorAll(".item").forEach(el=>{
+    const id=el.dataset.id;
+    el.querySelectorAll(".opt").forEach(b=>{
+      if((S.a||{})[id]===b.dataset.a)b.classList.add("on");
+      b.onclick=()=>{S.a=S.a||{};S.a[id]=b.dataset.a;el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
+    });
+    const inp=el.querySelector("input[data-d]");
+    if(inp){inp.value=(S.d||{})[id]||"";inp.oninput=()=>{S.d=S.d||{};S.d[id]=inp.value;save();upd();};}
+  });
+  [["host"],["prop"],["extra"]].forEach(([k])=>$(k).oninput=()=>{S[k]=$(k).value;save();});
+  upd();
+}
+const met=i=>i.type==="disc"?!!((S.d||{})[i.id]||"").trim():(S.a||{})[i.id]==="Yes";
+const done=i=>i.type==="disc"?!!((S.d||{})[i.id]||"").trim():!!(S.a||{})[i.id];
+function upd(){
+  const n=ALL.filter(done).length;
+  $("prog").textContent=`${n} of ${ALL.length} answered`;
+  $("go").disabled=n<ALL.length;
+}
+function tierOf(){
+  const need=t=>ALL.filter(i=>i.t===t&&!met(i));
+  const v=need("V"),e=need("E"),l=need("L");
+  if(v.length)return{name:"Not yet Verified",next:"Verified",gaps:v,rest:[...e,...l]};
+  if(e.length)return{name:"Trace Verified",next:"Elevated",gaps:e,rest:l};
+  if(l.length)return{name:"Trace Elevated",next:"Elite",gaps:l,rest:[]};
+  return{name:"Trace Elite",next:null,gaps:[],rest:[]};
+}
+function summary(){
+  const t=tierOf(), p=S.prop||"(property)", h=S.host||"";
+  let s=`TRACE VERIFIED — HOST SELF-ASSESSMENT\nProperty: ${p}\nHost: ${h}\nSelf-reported starting point: ${t.name}\n\n`;
+  CATS.forEach(c=>{s+=`${c.name.toUpperCase()}\n`;c.items.forEach(i=>{
+    const a=i.type==="disc"?"Disclosed":((S.a||{})[i.id]||"—"), d=((S.d||{})[i.id]||"").trim();
+    s+=`- [${TN[i.t]}] ${i.q}\n  ${a}${d?" — "+d:""}\n`;});s+="\n";});
+  if((S.extra||"").trim())s+=`NOTES\n${S.extra.trim()}\n\n`;
+  s+="Photos and receipts to follow.";return s;
+}
+function show(){
+  const t=tierOf();
+  $("tierName").textContent=t.name;
+  $("tierNote").textContent=t.next
+    ? (t.name==="Not yet Verified"
+        ? "Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
+        : `This is your self-reported level. The items below are what would reach ${t.next}.`)
+    : "Every item is answered as met. Elite is confirmed in person, so the next step is scheduling that.";
+  $("gapTitle").textContent=t.next?`To reach ${t.next}`:"Nothing outstanding";
+  const row=i=>`<div class="row"><div class="t">${TN[i.t]}</div><div>${esc(i.q)}</div></div>`;
+  $("gaps").innerHTML=t.gaps.length?t.gaps.map(row).join(""):`<div class="row"><div>You are all set at this level.</div></div>`;
+  $("proof").innerHTML=CATS.map(c=>{
+    const mine=c.items.filter(i=>met(i)||(S.a||{})[i.id]==="Not sure");
+    return mine.length?`<div class="row stack"><div class="t">${esc(c.name)}</div><div>${esc(c.proof.replace(/^Proof:\s*/,"").replace(/^./,m=>m.toUpperCase()))}</div></div>`:"";
+  }).join("")||`<div class="row"><div>None yet.</div></div>`;
+  $("form").classList.add("hide");$("foot").classList.add("hide");$("results").classList.remove("hide");$("results").classList.add("show");
+  window.scrollTo(0,0);
+}
+$("go").onclick=show;
+$("back").onclick=()=>{$("results").classList.add("hide");$("results").classList.remove("show");$("form").classList.remove("hide");$("foot").classList.remove("hide");window.scrollTo(0,0);};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy summary",1800);}catch(e){prompt("Copy this:",summary());}};
+$("mail").onclick=()=>{location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||""))+"&body="+encodeURIComponent(summary());};
+build();
+</script>
+</body>
+</html>
