@@ -191,9 +191,25 @@ const CATS = [
   {id:"l6",t:"L",q:"Main furnishings have had third-party VOC testing, or are GREENGUARD Gold certified.",h:"Optional, and Elite only.",d:"What was tested and by whom"}
  ]}
 ];
+// Pre-verified products from Trace's catalog (examples as of Oct 2026). Any product that meets the criteria qualifies; no brand pays to be listed.
+// Picking one of these makes the estimate firm. "Other" is counted, but flagged for Trace to check.
+const BR={
+ v3:["Package Free Shop Unscented","Branch Basics","Molly's Suds Unscented"],
+ v4:["Branch Basics Concentrate","Attitude All-Purpose Unscented"],
+ v5:["Quince Organic Percale","Happsy Organic","Pact","Boll & Branch","Coyuchi","SIJO French Linen","The Modern Dane Linen"],
+ v6:["Coway Airmega 200M","IQAir"],
+ e1:["Coway Airmega 200M","IQAir"],
+ e2:["Cloud RO (under-sink)","Waterdrop G3P600","Waterdrop X12"],
+ e3:["Naturepedic EOS","Avocado GreenFoam"],
+ e4:["Pact","Boll & Branch"],
+ e6:["Cast iron","Stainless steel","Carbon steel","Enameled cast iron","Glass"],
+ l1:["Aquasana Rhino Whole House"],
+ l2:["Coyuchi","Boll & Branch","SIJO French Linen","The Modern Dane Linen"],
+ l4:["Waveform Lux24 Circadian (2400K)"]
+};
 const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
 const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
-let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){}
+let S={s:{},d:{}}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("trace_str_v2",JSON.stringify(S))}catch(e){}};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -210,7 +226,8 @@ function build(){
     c.items.forEach(i=>{
       h+=`<div class="item" data-id="${i.id}"><span class="tier">${TN[i.t]}</span><div class="q">${esc(i.q)}</div>${i.h?`<div class="hint">${esc(i.h)}</div>`:""}`;
       h+=`<div class="opts">${["Yes","Not yet","Not sure"].map(o=>`<button class="opt" data-a="${o}">${o}</button>`).join("")}</div>`;
-      if(i.d)h+=`<div class="detail"><input type="text" data-d="${i.id}" placeholder="${esc(i.d)} (optional)"></div>`;
+      if(BR[i.id])h+=`<div class="detail"><select data-s="${i.id}"><option value="">Which one? (if yes)</option>${BR[i.id].map(b=>`<option>${esc(b)}</option>`).join("")}<option value="__other">Other, not on this list</option></select><input type="text" data-d="${i.id}" placeholder="Other brand and model, or any detail (optional)" style="margin-top:8px"></div><div class="hint" style="margin:6px 0 0">Not on the list? Type it in. If it meets the standard it counts, and Trace checks it during review.</div>`;
+      else if(i.d)h+=`<div class="detail"><input type="text" data-d="${i.id}" placeholder="${esc(i.d)} (optional)"></div>`;
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -226,6 +243,8 @@ function build(){
     });
     const inp=el.querySelector("input[data-d]");
     if(inp){inp.value=(S.d||{})[id]||"";inp.oninput=()=>{S.d=S.d||{};S.d[id]=inp.value;save();};}
+    const sel=el.querySelector("select[data-s]");
+    if(sel){sel.value=(S.s||{})[id]||"";sel.onchange=()=>{S.s=S.s||{};S.s[id]=sel.value;save();};}
   });
   upd();
 }
@@ -240,6 +259,8 @@ function upd(){
 // Scoring (draft weighting for review): floor 25; the 6 Verified items add up to 45 (Verified complete = 70);
 // each Elevated pick +3 (all 6 = 88); each Elite item +1 (+2 more when Trace witnesses = 96).
 // Scores for homes below a tier are capped under that tier.
+const listed=i=>!BR[i.id]||BR[i.id].includes((S.s||{})[i.id]);
+const pending=i=>ans(i)==="Yes"&&!listed(i);
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
   const V=ALL.filter(i=>i.t==="V"),E=ALL.filter(i=>i.t==="E"),L=ALL.filter(i=>i.t==="L");
@@ -254,8 +275,8 @@ function calc(unsureCounts){
 const TIERNAME=["Not yet Verified","Trace Verified","Trace Elevated","Trace Elite (witnessed check pending)"];
 function est(){
   const lo=calc(false),hi=calc(true);
-  const MIN=[25,70,79,88];
-  const low=Math.max(MIN[lo.tier],lo.score-5), high=Math.max(hi.score,lo.score);
+  const pend=ALL.filter(pending).length;
+  const low=Math.max(25,lo.score-Math.min(5,pend)), high=Math.max(hi.score,lo.score);
   return{lo,hi,low,high};
 }
 function gapsFor(){
@@ -275,12 +296,13 @@ function intakeMissing(){
   return miss;
 }
 function ref(){ if(!S.ref){S.ref="STR-"+Date.now().toString(36).toUpperCase();save();} return S.ref; }
+function detail(i){const a=(S.s||{})[i.id],b=((S.d||{})[i.id]||"").trim();return [a&&a!=="__other"?a:"",b].filter(Boolean).join(" / ");}
 function summary(){
   const r=est();
   let s=`TRACE VERIFIED — HOST SELF-ASSESSMENT\nReference: ${ref()}\nProperty: ${S.prop||""}\nAddress: ${S.addr||""}\nBedrooms: ${S.beds||""}\nListed on: ${S.platform||""} ${S.url||""}\nHost: ${S.host||""} (${S.role||"role not given"})\nEmail: ${S.email||""}\nPhone: ${S.phone||""}\nSelf-reported estimate: ${TIERNAME[r.lo.tier]}; score range ${r.low}-${r.high} (estimate, final after review)\n\n`;
   CATS.forEach(c=>{s+=`${c.name.toUpperCase()}\n`;c.items.forEach(i=>{
-    const d=((S.d||{})[i.id]||"").trim();
-    s+=`- [${TN[i.t]}] ${i.q}\n  ${ans(i)||"—"}${d?" — "+d:""}\n`;});s+="\n";});
+    const d=detail(i);
+    s+=`- [${TN[i.t]}] ${i.q}\n  ${ans(i)||"—"}${d?" — "+d:""}${pending(i)?" [not on pre-verified list: Trace to check]":""}\n`;});s+="\n";});
   if((S.extra||"").trim())s+=`NOTES\n${S.extra.trim()}\n\n`;
   s+="Agreement accepted: yes\nPhotos and receipts to follow.";return s;
 }
@@ -288,7 +310,7 @@ function payload(){
   const r=est();
   return{ref:ref(),submitted:new Date().toISOString(),host:S.host||"",email:S.email||"",phone:S.phone||"",role:S.role||"",property:S.prop||"",address:S.addr||"",bedrooms:S.beds||"",platform:S.platform||"",listing:S.url||"",
     tier:TIERNAME[r.lo.tier],scoreLow:r.low,scoreHigh:r.high,notes:S.extra||"",agreement:true,
-    answers:ALL.map(i=>({id:i.id,tier:TN[i.t],question:i.q,answer:ans(i)||"",detail:((S.d||{})[i.id]||"").trim()})),summary:summary()};
+    answers:ALL.map(i=>({id:i.id,tier:TN[i.t],question:i.q,answer:ans(i)||"",detail:detail(i),preverified:ans(i)==="Yes"?listed(i):null})),summary:summary()};
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
@@ -297,6 +319,8 @@ function show(){
     :t===3?"Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
   if(r.hi.tier>t)note+=` If your "Not sure" answers check out, this home could reach ${TIERNAME[r.hi.tier].replace(" (witnessed check pending)","")}.`;
+  const pl=ALL.filter(pending);
+  if(pl.length)note+=` ${pl.length} of your answers use a product that is not on our pre-verified list. We count them for now, and Trace will check them in review, so the final tier or score may shift.`;
   $("tierNote").textContent=note;
   $("scoreRange").textContent=`Estimated score: ${r.low}–${r.high} of 100`;
   $("scoreNote").textContent="This is an estimate from your answers. Items you could not yet confirm widen the range. Trace sets the final tier and score after reviewing your photos and receipts.";
