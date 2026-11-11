@@ -251,24 +251,24 @@ function upd(){
   $("go").disabled=n<ALL.length;
 }
 
-// Scoring (draft weighting for review): floor 25; the 6 Verified items add up to 45 (Verified complete = 70);
-// each Elevated pick +3 (all 6 = 88); each Elite item +1 (+2 more when Trace witnesses = 96).
-// Scores for homes below a tier are capped under that tier.
+// Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
+// Below Verified: 25 + up to 44 across the six core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (89 at six).
+// Elite: 90, +1 per Elite item (96 at six).
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
   const V=ALL.filter(i=>i.t==="V"),E=ALL.filter(i=>i.t==="E"),L=ALL.filter(i=>i.t==="L");
   const v=V.filter(m).length,e=E.filter(m).length,l=L.filter(m).length;
-  let tier;
-  if(v<V.length)tier=0; else if(e<3)tier=1; else if(e<E.length||l<L.length)tier=2; else tier=3;
-  let sc=25+45*v/V.length+3*e+l;
-  if(tier===0)sc=Math.min(sc,69);
-  if(tier<=2&&tier>=1)sc=Math.min(sc,tier===1?78:87);
-  return{tier,score:Math.round(Math.min(sc,94)),v,e,l};
+  let tier,sc;
+  if(v<V.length){tier=0;sc=25+44*v/V.length;}
+  else if(e<3){tier=1;sc=70+3*e;}
+  else if(e<E.length||l<L.length){tier=2;sc=Math.min(89,80+3*(e-3));}
+  else{tier=3;sc=90+l;}
+  return{tier,score:Math.round(sc),v,e,l};
 }
 const TIERNAME=["Not yet Verified","Trace Verified","Trace Elevated","Trace Elite (witnessed check pending)"];
 function est(){
   const lo=calc(false),hi=calc(true);
-  const MIN=[25,70,79,88];
+  const MIN=[25,70,80,90];
   const low=Math.max(MIN[lo.tier],lo.score-5), high=Math.max(hi.score,lo.score);
   return{lo,hi,low,high};
 }
