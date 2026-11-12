@@ -92,8 +92,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
     <div><label for="prop">Property name <span class="req">*</span></label><input type="text" id="prop"></div>
     <div><label for="beds">Number of bedrooms</label><input type="text" id="beds" inputmode="numeric"></div>
     <div class="full"><label for="addr">Property address (street, city, state, zip) <span class="req">*</span></label><input type="text" id="addr" autocomplete="street-address"></div>
-    <div><label for="platform">Where it is listed</label><select id="platform"><option value="">Select</option><option>Haven With</option><option>Airbnb</option><option>Vrbo</option><option>Booking.com</option><option>Direct booking</option><option>Other</option></select></div>
-    <div><label for="url">Listing link</label><input type="text" id="url" placeholder="https://"></div>
+    <div class="full"><label for="url">Listing link (optional)</label><input type="text" id="url" placeholder="https://"></div>
   </div>
 
   <div id="items"></div>
@@ -211,7 +210,7 @@ let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){
 const save=()=>{try{localStorage.setItem("trace_str_v2",JSON.stringify(S))}catch(e){}};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const FIELDS=["host","email","phone","role","prop","beds","addr","platform","url","extra"];
+const FIELDS=["host","email","phone","role","prop","beds","addr","url","extra"];
 
 // prefill from link: ?p=Ciao%20Bella&h=Karyn&pl=Haven%20With
 const qs=new URLSearchParams(location.search);
