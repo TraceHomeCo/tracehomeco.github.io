@@ -159,16 +159,17 @@ const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. Cleaners and guests do not bring their own.",h:"The host controls what is used in the home.",d:"Who cleans, and how products are supplied"},
   {id:"v2",t:"V",q:"Anyone who cleans has a short written brief on which products may be used.",h:"A one-page note is enough. Trace can send a template."},
-  {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:"Detergent brand"},
-  {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand"]},
+  {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["Detergent brand","Scent, if any (list each essential oil)"]},
+  {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand","Scent, if any (list each essential oil)"]},
   {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name."}
  ]},
  {name:"Bedding and textiles", proof:"Proof: photos of the sewn-in tags showing fiber and any certification.", items:[
-  {id:"v5",t:"V",q:"Sheets and towels are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:["Sheets: brand and fiber","Towels: brand and fiber"]},
+  {id:"v5",t:"V",q:"Sheets and towels are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:["Sheets: brand and fiber","Towels: brand and fiber (cotton, linen or hemp)"]},
   {id:"e3",t:"E",q:"At least one bedroom has an organic (GOTS or GOLS) or GREENGUARD Gold mattress.",h:"",d:"Mattress brand and model"},
   {id:"e4",t:"E",q:"Bedding and pillows are certified natural fiber.",h:"For example GOTS organic cotton.",d:["Bedding brand","Pillow brand"]},
-  {id:"e5",t:"E",q:"Towels are certified (GOTS or OEKO-TEX).",h:"Look for the certification on the sewn-in tag or the product page.",d:"Towel brand"},
-  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:"Bath soap brand"},
+  {id:"e5",t:"E",q:"Towels are certified (GOTS or OEKO-TEX).",h:"Natural fiber towels qualify for Verified. This pick is for towels that also carry GOTS or OEKO-TEX certification. Look on the sewn-in tag or product page.",d:["Towel brand","Certification (GOTS or OEKO-TEX)"]},
+  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:["Bath soap brand","Scent, if any (list each essential oil)"]},
+  {id:"l8",t:"L",q:"Towels are organic (GOTS organic).",h:"Certified organic cotton or linen, shown on the tag.",d:"Towel brand"},
   {id:"l2",t:"L",q:"Bedding is organic, inserts are natural fill, and all textiles in the home are natural fiber.",h:"Includes rugs, throws and curtains.",d:"What you have"}
  ]},
  {name:"Air", proof:"Proof: a photo of each unit, or of the filter showing its rating. For True HEPA, the spec sheet too.", items:[
@@ -210,6 +211,7 @@ const SUG={
  e5:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"],["Pact","https://wearpact.com"]],
  l1:[["Aquasana Rhino Whole House","https://www.aquasana.com"]],
  l2:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"],["The Modern Dane Linen","https://themoderndane.com"]],
+ l8:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"]],
  l4:[["Waveform Lux24 Circadian (2400K)","https://www.waveformlighting.com"]]
 };
 // Certifier directories, so a host can find certified products beyond our examples.
@@ -217,6 +219,7 @@ const DIR={
  e5:[["GOTS database","https://global-standard.org"],["OEKO-TEX label check","https://www.oeko-tex.com/en/label-check"]],
  e7:[["EWG Verified","https://www.ewg.org/ewgverified"],["MADE SAFE","https://madesafe.org"]],
  e3:[["GOTS database","https://global-standard.org"]],
+ l8:[["GOTS database","https://global-standard.org"]],
  e4:[["GOTS database","https://global-standard.org"]],
  l7:[["AHAM Verifide","https://www.ahamverifide.org"]],
  e2:[["NSF certified products","https://www.nsf.org"]]
