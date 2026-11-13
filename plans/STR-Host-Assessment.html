@@ -154,7 +154,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 const ENDPOINT = "";
 
 // type: yn = Yes / Not yet / Not sure
-// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 6 to reach Elevated, all 6 for Elite), L = Elite checkpoint
+// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 7 to reach Elevated, all 7 for Elite), L = Elite checkpoint
 const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. Cleaners and guests do not bring their own.",h:"The host controls what is used in the home.",d:"Who cleans, and how products are supplied"},
@@ -167,7 +167,8 @@ const CATS = [
   {id:"v5",t:"V",q:"Sheets and towels are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:["Sheets: brand and fiber","Towels: brand and fiber"]},
   {id:"e3",t:"E",q:"At least one bedroom has an organic (GOTS or GOLS) or GREENGUARD Gold mattress.",h:"",d:"Mattress brand and model"},
   {id:"e4",t:"E",q:"Bedding and pillows are certified natural fiber.",h:"For example GOTS organic cotton.",d:["Bedding brand","Pillow brand"]},
-  {id:"e5",t:"E",q:"Towels are certified (GOTS or OEKO-TEX), or the bath soap is EWG Verified or MADE SAFE.",h:"Either one counts.",d:"Brand"},
+  {id:"e5",t:"E",q:"Towels are certified (GOTS or OEKO-TEX).",h:"Look for the certification on the sewn-in tag or the product page.",d:"Towel brand"},
+  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:"Bath soap brand"},
   {id:"l2",t:"L",q:"Bedding is organic, inserts are natural fill, and all textiles in the home are natural fiber.",h:"Includes rugs, throws and curtains.",d:"What you have"}
  ]},
  {name:"Air", proof:"Proof: a photo of each unit, or of the filter showing its rating. For True HEPA, the spec sheet too.", items:[
@@ -206,9 +207,19 @@ const SUG={
  e2:[["Cloud RO (under-sink)","https://cloudwaterfilters.com/buy/cloud-ro"],["Waterdrop","https://www.waterdrop.com"]],
  e3:[["Naturepedic EOS","https://www.naturepedic.com"],["Avocado GreenFoam","https://www.avocadogreenmattress.com"]],
  e4:[["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
+ e5:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"],["Pact","https://wearpact.com"]],
  l1:[["Aquasana Rhino Whole House","https://www.aquasana.com"]],
  l2:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"],["The Modern Dane Linen","https://themoderndane.com"]],
  l4:[["Waveform Lux24 Circadian (2400K)","https://www.waveformlighting.com"]]
+};
+// Certifier directories, so a host can find certified products beyond our examples.
+const DIR={
+ e5:[["GOTS database","https://global-standard.org"],["OEKO-TEX label check","https://www.oeko-tex.com/en/label-check"]],
+ e7:[["EWG Verified","https://www.ewg.org/ewgverified"],["MADE SAFE","https://madesafe.org"]],
+ e3:[["GOTS database","https://global-standard.org"]],
+ e4:[["GOTS database","https://global-standard.org"]],
+ l7:[["AHAM Verifide","https://www.ahamverifide.org"]],
+ e2:[["NSF certified products","https://www.nsf.org"]]
 };
 const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
 const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
@@ -259,7 +270,7 @@ function upd(){
 }
 
 // Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
-// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (89 at six).
+// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (capped at 89).
 // Elite: 90 plus up to 6 across the Elite items (96 when all are met).
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
@@ -284,7 +295,7 @@ function gapsFor(){
   const unmet=t=>ALL.filter(i=>i.t===t&&ans(i)!=="Yes");
   if(c.tier===0)return{next:"Verified",list:unmet("V"),note:`All ${ALL.filter(i=>i.t==="V").length} Verified items are required.`};
   if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Any ${3-c.e} more of these picks gets you to Elevated.`};
-  if(c.tier===2)return{next:"Elite",list:[...unmet("E"),...unmet("L")],note:"Elite needs all six picks, every Elite item, and a witnessed check by Trace."};
+  if(c.tier===2)return{next:"Elite",list:[...unmet("E"),...unmet("L")],note:`Elite needs all ${ALL.filter(i=>i.t==="E").length} picks, every Elite item, and a witnessed check by Trace.`};
   return{next:null,list:[],note:""};
 }
 function intakeMissing(){
@@ -322,7 +333,8 @@ function show(){
   $("scoreRange").textContent=`Estimated score: ${r.low}–${r.high} of 100`;
   $("scoreNote").textContent="This is an estimate from your answers. Items you could not yet confirm widen the range. Trace sets the final tier and score after reviewing your photos.";
   $("gapTitle").textContent=g.next?`To reach ${g.next}`:"Nothing outstanding";
-  const sug=i=>(SUG[i.id]?`<div class="hint" style="margin:4px 0 0">Options that qualify: ${SUG[i.id].map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`).join(" · ")}</div>`:"");
+  const lnk=x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`;
+  const sug=i=>{const a=SUG[i.id],d=DIR[i.id];if(!a&&!d)return"";return `<div class="hint" style="margin:4px 0 0">${a?`Examples that qualify: ${a.map(lnk).join(" · ")}`:""}${a&&d?"<br>":""}${d?`Find certified products: ${d.map(lnk).join(" · ")}`:""}</div>`;};
   const row=i=>`<div class="row"><div class="t">${TN[i.t]}</div><div>${esc(i.q)}${sug(i)}</div></div>`;
   $("gaps").innerHTML=(g.list.length?`<div class="hint">${esc(g.note)} You do not have to buy these. Any product that meets the standard counts, and Trace reviews anything outside our catalog.</div>`+g.list.map(row).join(""):`<div class="row"><div>You are all set at this level.</div></div>`);
   $("proof").innerHTML=CATS.map(c=>{
