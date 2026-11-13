@@ -159,13 +159,14 @@ const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. Cleaners and guests do not bring their own.",h:"The host controls what is used in the home.",d:"Who cleans, and how products are supplied"},
   {id:"v2",t:"V",q:"Anyone who cleans has a short written brief on which products may be used.",h:"A one-page note is enough. Trace can send a template."},
-  {id:"v3",t:"V",q:"Laundry detergent and cleaners are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:"Detergent and cleaner brands"},
+  {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:"Detergent brand"},
+  {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand"]},
   {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name."}
  ]},
  {name:"Bedding and textiles", proof:"Proof: photos of the sewn-in tags showing fiber and any certification.", items:[
-  {id:"v5",t:"V",q:"Sheets and towels are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:"Brand and fiber"},
+  {id:"v5",t:"V",q:"Sheets and towels are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:["Sheets: brand and fiber","Towels: brand and fiber"]},
   {id:"e3",t:"E",q:"At least one bedroom has an organic (GOTS or GOLS) or GREENGUARD Gold mattress.",h:"",d:"Mattress brand and model"},
-  {id:"e4",t:"E",q:"Bedding and pillows are certified natural fiber.",h:"For example GOTS organic cotton.",d:"Bedding and pillow brands"},
+  {id:"e4",t:"E",q:"Bedding and pillows are certified natural fiber.",h:"For example GOTS organic cotton.",d:["Bedding brand","Pillow brand"]},
   {id:"e5",t:"E",q:"Towels are certified (GOTS or OEKO-TEX), or the bath soap is EWG Verified or MADE SAFE.",h:"Either one counts.",d:"Brand"},
   {id:"l2",t:"L",q:"Bedding is organic, inserts are natural fill, and all textiles in the home are natural fiber.",h:"Includes rugs, throws and curtains.",d:"What you have"}
  ]},
@@ -197,6 +198,7 @@ const CATS = [
 // Suggested options shown only for items a host has not met. Examples from Trace's catalog, not a required list: any product that meets the standard qualifies, and Trace reviews anything outside the catalog.
 const SUG={
  v3:[["Branch Basics","https://branchbasics.com"],["Attitude Unscented","https://attitudeliving.com"],["Molly's Suds Unscented","https://mollyssuds.com"],["Package Free Shop Unscented","https://packagefreeshop.com"]],
+ v7:[["Branch Basics Concentrate","https://branchbasics.com"],["Attitude All-Purpose Unscented","https://attitudeliving.com"],["Molly's Suds Unscented","https://mollyssuds.com"]],
  v5:[["Quince Organic Percale","https://www.quince.com"],["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
  v6:[["Coway Airmega 200M","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
  e1:[["Coway Airmega 200M","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
@@ -220,6 +222,9 @@ const FIELDS=["host","email","phone","role","prop","beds","addr","url","onsite",
 const qs=new URLSearchParams(location.search);
 if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.get("h"); if(qs.get("pl")&&!S.platform)S.platform=qs.get("pl");
 
+// An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
+const dkeys=i=>Array.isArray(i.d)?i.d.map((l,n)=>[i.id+"."+n,l]):[[i.id,i.d]];
+const dtext=i=>!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
 function build(){
   let h="";
   CATS.forEach(c=>{
@@ -227,7 +232,7 @@ function build(){
     c.items.forEach(i=>{
       h+=`<div class="item" data-id="${i.id}"><span class="tier">${TN[i.t]}</span><div class="q">${esc(i.q)}</div>${i.h?`<div class="hint">${esc(i.h)}</div>`:""}`;
       h+=`<div class="opts">${["Yes","Not yet","Not sure"].map(o=>`<button class="opt" data-a="${o}">${o}</button>`).join("")}</div>`;
-      if(i.d)h+=`<div class="detail"><input type="text" data-d="${i.id}" placeholder="${esc(i.d)} (optional)"></div>`;
+      if(i.d)h+=dkeys(i).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)} (optional)"></div>`).join("");
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -241,8 +246,7 @@ function build(){
       if((S.a||{})[id]===b.dataset.a)b.classList.add("on");
       b.onclick=()=>{S.a=S.a||{};S.a[id]=b.dataset.a;el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
     });
-    const inp=el.querySelector("input[data-d]");
-    if(inp){inp.value=(S.d||{})[id]||"";inp.oninput=()=>{S.d=S.d||{};S.d[id]=inp.value;save();};}
+    el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();};});
   });
   upd();
 }
@@ -255,7 +259,7 @@ function upd(){
 }
 
 // Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
-// Below Verified: 25 + up to 44 across the six core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (89 at six).
+// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (89 at six).
 // Elite: 90 plus up to 6 across the Elite items (96 when all are met).
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
@@ -296,7 +300,7 @@ function summary(){
   const r=est();
   let s=`TRACE VERIFIED — HOST SELF-ASSESSMENT\nReference: ${ref()}\nProperty: ${S.prop||""}\nAddress: ${S.addr||""}\nBedrooms: ${S.beds||""}\nListed on: ${S.platform||""} ${S.url||""}\nOn-site contact: ${S.onsite||""}\nHost: ${S.host||""} (${S.role||"role not given"})\nEmail: ${S.email||""}\nPhone: ${S.phone||""}\nSelf-reported estimate: ${TIERNAME[r.lo.tier]}; score range ${r.low}-${r.high} (estimate, final after review)\n\n`;
   CATS.forEach(c=>{s+=`${c.name.toUpperCase()}\n`;c.items.forEach(i=>{
-    const d=((S.d||{})[i.id]||"").trim();
+    const d=dtext(i);
     s+=`- [${TN[i.t]}] ${i.q}\n  ${ans(i)||"—"}${d?" — "+d:""}\n`;});s+="\n";});
   if((S.extra||"").trim())s+=`NOTES\n${S.extra.trim()}\n\n`;
   s+="Agreement accepted: yes\nPhotos and receipts to follow.";return s;
@@ -305,7 +309,7 @@ function payload(){
   const r=est();
   return{ref:ref(),submitted:new Date().toISOString(),host:S.host||"",email:S.email||"",phone:S.phone||"",role:S.role||"",property:S.prop||"",address:S.addr||"",bedrooms:S.beds||"",platform:S.platform||"",listing:S.url||"",onsite:S.onsite||"",
     tier:TIERNAME[r.lo.tier],scoreLow:r.low,scoreHigh:r.high,notes:S.extra||"",agreement:true,
-    answers:ALL.map(i=>({id:i.id,tier:TN[i.t],question:i.q,answer:ans(i)||"",detail:((S.d||{})[i.id]||"").trim()})),summary:summary()};
+    answers:ALL.map(i=>({id:i.id,tier:TN[i.t],question:i.q,answer:ans(i)||"",detail:dtext(i)})),summary:summary()};
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
