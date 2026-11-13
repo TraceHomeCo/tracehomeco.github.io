@@ -137,6 +137,8 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 
   <div class="actions">
     <button class="btn" id="send">Send to Trace</button>
+    <button class="btn sec" id="gmail">Open in Gmail</button>
+    <button class="btn sec" id="outlook">Open in Outlook</button>
     <button class="btn sec" id="copy">Copy summary</button>
     <button class="btn sec" id="back">Edit answers</button>
   </div>
@@ -361,6 +363,22 @@ function msg(t,c){$("msg").textContent=t;$("msg").className="msg "+(c||"");}
 function mailFallback(){
   location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(summary());
 }
+const SUBJ=()=>"Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")";
+// Opens a draft in a webmail tab. The full summary is copied to the clipboard and also placed in the draft when it is short enough for the link.
+async function webmail(kind){
+  const miss=intakeMissing();
+  if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
+  if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
+  const full=summary();
+  let copied=false; try{await navigator.clipboard.writeText(full);copied=true;}catch(e){}
+  const body=full.length<1500?full:(copied?"Your assessment summary is copied. Paste it here (Ctrl+V or Cmd+V), then press send.\n\nReference: "+ref():full.slice(0,1400)+"\n\n[Summary cut off. Press Copy summary on the assessment page and paste the rest.]");
+  const to="hello@tracehome.co",su=encodeURIComponent(SUBJ()),b=encodeURIComponent(body);
+  const url=kind==="gmail"?`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${b}`:`https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${su}&body=${b}`;
+  window.open(url,"_blank","noopener");
+  msg("A draft opened in a new tab"+(copied&&full.length>=1500?" and your summary is copied; paste it into the draft":"")+". Press send there to finish. If it did not open, press Copy summary and email it to hello@tracehome.co.","ok");
+}
+$("gmail").onclick=()=>webmail("gmail");
+$("outlook").onclick=()=>webmail("outlook");
 $("go").onclick=show;
 $("back").onclick=()=>{$("results").classList.add("hide");$("results").classList.remove("show");$("form").classList.remove("hide");$("foot").classList.remove("hide");window.scrollTo(0,0);};
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy summary",1800);}catch(e){prompt("Copy this:",summary());}};
@@ -368,7 +386,7 @@ $("send").onclick=async()=>{
   const miss=intakeMissing();
   if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
   if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
-  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish.","ok");return;}
+  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
   $("send").disabled=true;msg("Sending…");
   try{
     await fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload())});
