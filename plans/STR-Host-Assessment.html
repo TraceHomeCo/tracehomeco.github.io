@@ -281,7 +281,7 @@ function upd(){
 }
 
 // Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
-// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (capped at 89).
+// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80 at three picks, rising evenly to 89 at all picks.
 // Elite: 90 plus up to 6 across the Elite items (96 when all are met).
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
@@ -290,7 +290,7 @@ function calc(unsureCounts){
   let tier,sc;
   if(v<V.length){tier=0;sc=25+44*v/V.length;}
   else if(e<3){tier=1;sc=70+3*e;}
-  else if(e<E.length||l<L.length){tier=2;sc=Math.min(89,80+3*(e-3));}
+  else if(e<E.length||l<L.length){tier=2;sc=80+9*(e-3)/(E.length-3);}
   else{tier=3;sc=90+Math.round(6*l/L.length);}
   return{tier,score:Math.round(sc),v,e,l};
 }
