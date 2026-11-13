@@ -154,7 +154,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 const ENDPOINT = "";
 
 // type: yn = Yes / Not yet / Not sure
-// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
+// t: V = Trace Verified (all required), E = Elevated pick (any 5 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
 const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. If anyone else cleans, they have a short written brief on which products may be used.",h:"Cleaners and guests do not bring their own. A one-page brief is enough, and Trace can send a template.",d:"Who cleans, and how products are supplied"},
@@ -280,18 +280,19 @@ function upd(){
   $("go").disabled=n<ALL.length;
 }
 
-// Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
-// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80 at three picks, rising evenly to 89 at all picks.
-// Elite: 90 plus up to 6 across the Elite items (96 when all are met).
+// Scoring (draft for review). Whole points per item, so a report can list each line.
+// Below Verified: 25 + 7 per Verified item (max 60). Verified: all Verified items = 70, +2 per Elevated pick.
+// Elevated: 5 or more picks (80 to 88). Elite: all picks and all Elite items = 90, +1 per Elite item (99); 100 is held for the witnessed check.
+const ELEV=5; // Elevated picks needed for the Elevated tier
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
   const V=ALL.filter(i=>i.t==="V"),E=ALL.filter(i=>i.t==="E"),L=ALL.filter(i=>i.t==="L");
   const v=V.filter(m).length,e=E.filter(m).length,l=L.filter(m).length;
   let tier,sc;
-  if(v<V.length){tier=0;sc=25+44*v/V.length;}
-  else if(e<3){tier=1;sc=70+3*e;}
-  else if(e<E.length||l<L.length){tier=2;sc=80+9*(e-3)/(E.length-3);}
-  else{tier=3;sc=90+Math.round(6*l/L.length);}
+  if(v<V.length){tier=0;sc=25+7*v;}
+  else if(e<ELEV){tier=1;sc=70+2*e;}
+  else if(e<E.length||l<L.length){tier=2;sc=70+2*e;}
+  else{tier=3;sc=90+l;}
   return{tier,score:Math.round(sc),v,e,l};
 }
 const TIERNAME=["Not yet Verified","Trace Verified","Trace Elevated","Trace Elite (witnessed check pending)"];
@@ -305,7 +306,7 @@ function gapsFor(){
   const c=calc(false);
   const unmet=t=>ALL.filter(i=>i.t===t&&ans(i)!=="Yes");
   if(c.tier===0)return{next:"Verified",list:unmet("V"),note:`All ${ALL.filter(i=>i.t==="V").length} Verified items are required.`};
-  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Any ${3-c.e} more of these picks gets you to Elevated.`};
+  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Any ${ELEV-c.e} more of these picks gets you to Elevated.`};
   if(c.tier===2)return{next:"Elite",list:[...unmet("E"),...unmet("L")],note:`Elite needs all ${ALL.filter(i=>i.t==="E").length} picks, every Elite item, and a witnessed check by Trace.`};
   return{next:null,list:[],note:""};
 }
