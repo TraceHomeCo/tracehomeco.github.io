@@ -154,11 +154,10 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 const ENDPOINT = "";
 
 // type: yn = Yes / Not yet / Not sure
-// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 8 to reach Elevated, all 8 for Elite), L = Elite checkpoint
+// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
 const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
-  {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. Cleaners and guests do not bring their own.",h:"The host controls what is used in the home.",d:"Who cleans, and how products are supplied"},
-  {id:"v2",t:"V",q:"Anyone who cleans has a short written brief on which products may be used.",h:"A one-page note is enough. Trace can send a template."},
+  {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. If anyone else cleans, they have a short written brief on which products may be used.",h:"Cleaners and guests do not bring their own. A one-page brief is enough, and Trace can send a template.",d:"Who cleans, and how products are supplied"},
   {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["Detergent brand","Scent, if any (list each essential oil)"]},
   {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand","Scent, if any (list each essential oil)"]},
   {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name."}
@@ -169,6 +168,7 @@ const CATS = [
   {id:"e4",t:"E",q:"Sheets are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS sheets count here and for Elite.",d:["Sheet brand","Certification (GOTS or OEKO-TEX)"]},
   {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",d:["Duvet or comforter brand","Pillow brand","Certification (GOTS or OEKO-TEX)"]},
   {id:"e5",t:"E",q:"Towels are cotton, linen or hemp, with no polyester, nylon or bamboo.",h:"Sheets are the Verified item. Towels are an Elevated pick.",d:"Towel brand and fiber"},
+  {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",d:["Towel brand","Certification (GOTS or OEKO-TEX)"]},
   {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:["Bath soap brand","Scent, if any (list each essential oil)"]},
   {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",d:["Towel brand","GOTS license number, if on the tag"]},
   {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",d:"Sheet brand"},
@@ -210,6 +210,7 @@ const SUG={
  e2:[["Cloud RO (under-sink)","https://cloudwaterfilters.com/buy/cloud-ro"],["Waterdrop","https://www.waterdrop.com"]],
  e3:[["Naturepedic EOS","https://www.naturepedic.com"],["Avocado GreenFoam","https://www.avocadogreenmattress.com"]],
  e4:[["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
+ e9:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"]],
  e8:[["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
  e5:[["Coyuchi","https://www.coyuchi.com"],["Boll & Branch","https://www.bollandbranch.com"],["Pact","https://wearpact.com"]],
  l1:[["Aquasana Rhino Whole House","https://www.aquasana.com"]],
@@ -221,6 +222,7 @@ const SUG={
 // Certifier directories, so a host can find certified products beyond our examples.
 const DIR={
  e7:[["EWG Verified","https://www.ewg.org/ewgverified"],["MADE SAFE","https://madesafe.org"]],
+ e9:[["GOTS database","https://global-standard.org"],["OEKO-TEX label check","https://www.oeko-tex.com/en/label-check"]],
  e3:[["GOTS database","https://global-standard.org"]],
  l8:[["GOTS database","https://global-standard.org"]],
  l2:[["GOTS database","https://global-standard.org"]],
