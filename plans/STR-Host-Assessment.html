@@ -293,7 +293,7 @@ function photoList(){
   PHROOMS.forEach(r=>{if(by[r]){out.push({room:r,items:[...by[r]].map(t=>({n:++n,t}))});}});
   return out;
 }
-const photoText=()=>{const l=photoList();return l.length?"PHOTOS TO GATHER\n"+l.map(r=>r.room+"\n"+r.items.map(x=>`  ${x.n}. ${x.t}`).join("\n")).join("\n\n")+"\n\nName each photo with its number (for example \"3 sheet tag\"). After you send your assessment, Trace will email you a link to drop the photos in.":"";};
+const photoText=()=>{const l=photoList();return l.length?"PHOTOS TO GATHER\n"+l.map(r=>r.room+"\n"+r.items.map(x=>`  ${x.n}. ${x.t}`).join("\n")).join("\n\n")+"\n\nName each photo with its number (for example \"3 sheet tag\"). After you send your assessment, Trace will email you a link to drop the photos in. Please send them within 10 days; if you need more time, just ask.":"";};
 const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
 // Ladders: one question that covers several levels of the same product. Picking a level marks the items up to that level as met.
 const LADS=[
@@ -451,9 +451,9 @@ function payload(){
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
-  $("tierName").textContent=TIERNAME[t];
+  $("tierName").textContent=t===0?TIERNAME[0]:"Your answers meet "+TIERNAME[t];
   let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
-    :t>=1&&t<3?"Congratulations! Based on your answers, this home meets the Trace Verified standard. Trace confirms it after reviewing your photos, so gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
+    :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
     :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
   if(r.hi.tier>t)note+=` If your "Not sure" answers check out, this home could reach ${TIERNAME[r.hi.tier].replace(" (witnessed check pending)","")}.`;
@@ -466,7 +466,7 @@ function show(){
   const row=i=>`<div class="row"><div class="t">${i.t==="V"?"Needed":"Next step"}</div><div>${esc(i.q)}${sug(i)}</div></div>`;
   $("gaps").innerHTML=(g.list.length?`<div class="hint">${esc(g.note)} You do not have to buy these. Any product that meets the standard counts, and Trace reviews anything outside our catalog.</div>`+g.list.map(row).join(""):`<div class="row"><div>You are all set at this level.</div></div>`);
   const pl=photoList();
-  $("proof").innerHTML=pl.length?`<div class="hint">Gather these now, in one walk through your home. After you press Send to Trace, we will email you a link to drop them in. A photo of the label or tag as it is today is enough, and a screenshot of an order history works too.</div>`+pl.map(r=>`<div class="row stack"><div class="t">${esc(r.room)}</div><div>${r.items.map(x=>`${x.n}. ${esc(x.t)}`).join("<br>")}</div></div>`).join(""):`<div class="row"><div>No photos needed yet.</div></div>`;
+  $("proof").innerHTML=pl.length?`<div class="hint">Gather these now, in one walk through your home. After you press Send to Trace, we will email you a link to drop them in. Please send them within 10 days. If you need more time, just ask. A photo of the label or tag as it is today is enough, and a screenshot of an order history works too.</div>`+pl.map(r=>`<div class="row stack"><div class="t">${esc(r.room)}</div><div>${r.items.map(x=>`${x.n}. ${esc(x.t)}`).join("<br>")}</div></div>`).join(""):`<div class="row"><div>No photos needed yet.</div></div>`;
   $("msg").textContent="";$("msg").className="msg";
   $("left").classList.add("hide");
   $("form").classList.add("hide");$("foot").classList.add("hide");$("results").classList.remove("hide");$("results").classList.add("show");
