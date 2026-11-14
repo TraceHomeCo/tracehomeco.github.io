@@ -186,7 +186,7 @@ const CATS = [
   {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",g:"bedding",lv:1},
   {id:"e5",t:"E",q:"Towels are natural fiber only (cotton, linen or hemp). Polyester, nylon, bamboo and rayon do not qualify.",h:"Sheets are the Verified item. Towels are an Elevated pick.",g:"towels",lv:1},
   {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",g:"towels",lv:2},
-  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:["Bath soap brand","Scent, if any (list each essential oil)"]},
+  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
   {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"towels",lv:3},
   {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"sheets",lv:3},
   {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
@@ -197,8 +197,8 @@ const CATS = [
   {id:"l7",t:"L",q:"Every bedroom has a True HEPA purifier (H13 or better), independently verified.",h:"True HEPA means H13 or better, with no ionizer or ozone function. A third-party HEPA test, or a certification such as AHAM Verifide or CARB, supports it.",d:"Brands and models"}
  ]},
  {name:"Water", proof:"Proof: photo of the system, the model, and a filter order or receipt if you have one. Well water: a recent lab test report.", items:[
-  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:1},
-  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",g:"water",lv:2}
+  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:2},
+  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",g:"water",lv:3}
  ]},
  {name:"Kitchen", proof:"Proof: photos of the cookware and any labels.", items:[
   {id:"e6",t:"E",q:"Cookware is low-tox: no non-stick or ceramic-coated pans.",h:"Cast iron, stainless steel, carbon steel, enameled cast iron and glass all qualify.",d:"What you have (materials and brands)"}
@@ -261,16 +261,20 @@ const LADS=[
  {id:"bedding",q:"Which best describes your duvet or comforter and pillows?",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover.",
   levels:["Not certified, or I am not sure","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic, with natural fabric and natural fill (cotton, wool, down, feathers or latex). **Polyester or other synthetic fill does not qualify.**"],
   d:[["Duvet or comforter: cover fabric and fill (for example, cotton cover, wool fill)",1],["Pillows: cover fabric and fill",1],["Which certification (OEKO-TEX or GOTS) and the number, if you know",1]]},
- {id:"water",q:"Which best describes your drinking water?",h:"A filter only counts for what its certification covers. Well water: a recent lab test report is the proof.",
-  levels:["Unfiltered tap water, or I am not sure","Drinking water goes through reverse osmosis or an NSF-certified filter","Drinking water is filtered as above, and the home also has whole-home water filtration"],
-  d:[["Drinking water system brand and model",1],["Whole-home system brand and model",2]]},
+ {id:"water",q:"Which best describes your drinking water?",h:"A filter only counts for what its certification covers. Certification is by model, so check yours. Well water: a recent lab test report is the proof.",
+  levels:["Unfiltered tap water, or I am not sure","Bottled or delivered water (spring or jug delivery), or a filter with no certification. We record it, but it does not count toward a pick","Certified filter or reverse osmosis: a pitcher, fridge, faucet, countertop or under-sink filter certified to an NSF/ANSI standard (for example some Brita or Clearly Filtered models), or a reverse osmosis system","Certified filter or reverse osmosis as above, and the home also has whole-home water filtration"],
+  d:[["What you use (type and brand)",1],["Model and certification, if you know (for example NSF/ANSI 53)",2],["Whole-home system brand and model",3]]},
  {id:"scent",q:"Which best describes scent in the home?",h:"Candles and diffusers are fine at the middle level only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",
   levels:["Plug-ins, air fresheners, scented candles or fragranced sprays are used","None of those are used. Any essential oils are disclosed below","No added scent anywhere in the home, including essential oils"],
-  d:[["Essential oils or scented items in use, if any (list each)",9]]}
+  d:[["Essential oils or scented items in use, if any (list each)",9]]},
+ {id:"bath",q:"Which best describes the bath soap (body wash or bar soap) you provide?",h:"Examples of certified products: Branch Basics, Attitude Unscented. These are examples, not a required list. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
+  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: EWG Verified or MADE SAFE","Not provided in the home (N/A)"],na:3,
+  d:[["Bath soap brand and product",1],["Scent, if any (list each essential oil)",1]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
 const gkeys=g=>g.d.map(([l,min],n)=>["g."+g.id+"."+n,l,min]);
 const gitems=id=>ALL.filter(i=>i.g===id);
+const gfirst=i=>gitems(i.g)[0].id===i.id;
 const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
 let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("trace_str_v2",JSON.stringify(S))}catch(e){}};
@@ -289,18 +293,18 @@ const isOpt=l=>/if any|if on the tag|if you know|other textiles/i.test(l);
 const empty=k=>!((S.d||{})[k]||"").trim();
 const needed=()=>[
   ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
-  ...LADS.flatMap(g=>{const sel=(S.g||{})[g.id];return typeof sel!=="number"?[]:gkeys(g).filter(([k,l,min])=>sel>=min&&!isOpt(l)&&empty(k)).map(([k])=>k);})
+  ...LADS.flatMap(g=>{const sel=(S.g||{})[g.id];return typeof sel!=="number"||sel===g.na?[]:gkeys(g).filter(([k,l,min])=>sel>=min&&!isOpt(l)&&empty(k)).map(([k])=>k);})
 ];
 const dkeys=i=>Array.isArray(i.d)?i.d.map((l,n)=>[i.id+"."+n,l]):[[i.id,i.d]];
 const gtext=g=>gkeys(g).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?l+": "+v:"";}).filter(Boolean).join("; ");
-const dtext=i=>i.g?(i.lv===1?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
+const dtext=i=>i.g?(gfirst(i)?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
 function build(){
   let h="";
   CATS.forEach(c=>{
-    if(c.items.every(i=>i.g&&i.lv>1&&!c.items.some(x=>x.g===i.g&&x.lv===1)))return;
+    if(c.items.every(i=>i.g&&!gfirst(i)&&!c.items.some(x=>x.g===i.g&&gfirst(x))))return;
     h+=`<div class="cat"><div class="cat-name">${esc(c.name)}</div><div class="cat-proof">${esc(c.proof)}</div>`;
     c.items.forEach(i=>{
-      if(i.g){ if(i.lv===1){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
+      if(i.g){ if(gfirst(i)){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
         h+=`<div class="item" data-g="${g.id}"><div class="q">${esc(g.q)}</div><div class="hint">${esc(g.h)}</div>`;
         h+=`<div class="opts" style="flex-direction:column;align-items:stretch">${g.levels.map((l,n)=>`<button class="opt" data-lv="${n}" style="text-align:left">${fmt(l)}</button>`).join("")}<button class="opt" data-lv="unsure" style="text-align:left">Not sure</button></div>`;
         h+=gkeys(g).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)}${isOpt(l)?" (optional)":" (required)"}"></div>`).join("");
@@ -321,7 +325,7 @@ function build(){
       const v=b.dataset.lv==="unsure"?"unsure":+b.dataset.lv;
       if((S.g||{})[gid]===v)b.classList.add("on");
       b.onclick=()=>{S.g=S.g||{};S.g[gid]=v;S.a=S.a||{};
-        gitems(gid).forEach(it=>{S.a[it.id]=v==="unsure"?"Not sure":(it.lv<=v?"Yes":"Not yet");});
+        gitems(gid).forEach(it=>{S.a[it.id]=v==="unsure"?"Not sure":(LAD[gid].na===v||it.lv<=v?"Yes":"Not yet");});
         el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
     });
     el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();upd();};});
