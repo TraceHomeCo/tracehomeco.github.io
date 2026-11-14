@@ -109,7 +109,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   <div class="fields">
     <div><label for="host">Your name <span class="req">*</span></label><input type="text" id="host" autocomplete="name"></div>
     <div><label for="email">Email <span class="req">*</span></label><input type="email" id="email" autocomplete="email"></div>
-    <div><label for="phone">Phone</label><input type="tel" id="phone" autocomplete="tel"></div>
+    <div><label for="phone">Phone <span class="req">*</span></label><input type="tel" id="phone" autocomplete="tel"></div>
     <div><label for="role">Your role</label><select id="role"><option value="">Select</option><option>Owner</option><option>Co-host</option><option>Property manager</option><option>Other</option></select></div>
     <div><label for="prop">Property name <span class="req">*</span></label><input type="text" id="prop"></div>
     <div><label for="beds">Number of bedrooms</label><input type="text" id="beds" inputmode="numeric"></div>
@@ -132,7 +132,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 </div>
 
 <div class="wrap hide" id="results">
-  <img class="logo" src="../trace_logo_transparent.png" alt="Trace" style="margin-bottom:22px">
+  <img class="logo" src="../trace_logo_transparent.png" alt="Trace" style="margin-bottom:36px">
   <div class="eyebrow">Your estimate (self-reported)</div>
   <div class="divider"></div>
   <div class="tier-big" id="tierName"></div>
@@ -440,6 +440,7 @@ function intakeMissing(){
   const miss=[];
   if(!(S.host||"").trim())miss.push("your name");
   if(!/^\S+@\S+\.\S+$/.test((S.email||"").trim()))miss.push("a valid email");
+  if(((S.phone||"").match(/\d/g)||[]).length<7)miss.push("a phone number");
   if(!(S.prop||"").trim())miss.push("the property name");
   if(!(S.addr||"").trim())miss.push("the property address");
   return miss;
@@ -487,7 +488,13 @@ function show(){
 }
 function msg(t,c){$("msg").textContent=t;$("msg").className="msg "+(c||"");}
 function mailFallback(){
-  location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(summary());
+  // Long links get cut off by some email apps, so a long summary is copied to the clipboard and the draft says to paste it.
+  const full=summary();let body=full;
+  if(full.length>1500){
+    try{navigator.clipboard.writeText(full);}catch(e){}
+    body="Hello Trace,\n\nMy assessment summary is copied to my clipboard. I will paste it below (Ctrl+V or Cmd+V) before sending.\n\nReference: "+ref()+"\nProperty: "+(S.prop||"")+"\nHost: "+(S.host||"")+"\n\n";
+  }
+  location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(body);
 }
 const SUBJ=()=>"Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")";
 // Opens a draft in a webmail tab. The full summary is copied to the clipboard and also placed in the draft when it is short enough for the link.
@@ -519,7 +526,7 @@ function leftList(){
   LADS.filter(g=>(S.g||{})[g.id]===undefined).forEach(g=>out.push({sel:`.item[data-g="${g.id}"]`,t:"Answer: "+g.q}));
   const seen=new Set();
   needed().forEach(k=>{const q=qOf(k);if(seen.has(q.sel))return;seen.add(q.sel);out.push({sel:q.sel,t:"Add the details for: "+q.t});});
-  const F={"your name":"host","a valid email":"email","the property name":"prop","the property address":"addr"};
+  const F={"your name":"host","a valid email":"email","a phone number":"phone","the property name":"prop","the property address":"addr"};
   const first=[];
   intakeMissing().forEach(m=>first.push({sel:"#"+F[m],t:"Add "+m}));
   return first.concat(out);
@@ -540,7 +547,7 @@ $("send").onclick=async()=>{
   const miss=intakeMissing();
   if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
   if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
-  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
+  if(!ENDPOINT){mailFallback();msg("Your email app should open. If the message looks empty, paste (Ctrl+V or Cmd+V) the summary that was copied for you, then press send. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
   $("send").disabled=true;msg("Sending…");
   try{
     await fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload())});
