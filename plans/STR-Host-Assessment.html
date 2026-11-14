@@ -166,16 +166,16 @@ const CATS = [
   {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name."}
  ]},
  {name:"Bedding and textiles", proof:"Proof: photos of the sewn-in tags showing fiber and any certification.", items:[
-  {id:"v5",t:"V",q:"Sheets are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",d:"Sheet brand and fiber"},
+  {id:"v5",t:"V",q:"Sheets are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",g:"sheets",lv:1},
   {id:"e3",t:"E",q:"At least one bedroom has an organic (GOTS or GOLS) or GREENGUARD Gold mattress.",h:"",d:"Mattress brand and model"},
-  {id:"e4",t:"E",q:"Sheets are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS sheets count here and for Elite.",d:["Sheet brand","Certification (GOTS or OEKO-TEX)"]},
-  {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",d:["Duvet or comforter brand","Pillow brand","Certification (GOTS or OEKO-TEX)"]},
-  {id:"e5",t:"E",q:"Towels are cotton, linen or hemp, with no polyester, nylon or bamboo.",h:"Sheets are the Verified item. Towels are an Elevated pick.",d:"Towel brand and fiber"},
-  {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",d:["Towel brand","Certification (GOTS or OEKO-TEX)"]},
+  {id:"e4",t:"E",q:"Sheets are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS sheets count here and for Elite.",g:"sheets",lv:2},
+  {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",g:"bedding",lv:1},
+  {id:"e5",t:"E",q:"Towels are cotton, linen or hemp, with no polyester, nylon or bamboo.",h:"Sheets are the Verified item. Towels are an Elevated pick.",g:"towels",lv:1},
+  {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",g:"towels",lv:2},
   {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:["Bath soap brand","Scent, if any (list each essential oil)"]},
-  {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",d:["Towel brand","GOTS license number, if on the tag"]},
-  {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",d:"Sheet brand"},
-  {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",d:["Duvet or comforter brand","Duvet cover fabric and fill (for example, organic cotton shell, wool fill)","Pillow brand","Pillow fabric and fill","Other textiles (rugs, throws, curtains)"]}
+  {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"towels",lv:3},
+  {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"sheets",lv:3},
+  {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
  ]},
  {name:"Air", proof:"Proof: a photo of each unit, or of the filter showing its rating. For True HEPA, the spec sheet too.", items:[
   {id:"v6",t:"V",q:"An air purifier is running in the home, or the HVAC uses a MERV 13 or higher filter.",h:"Any air purifier counts, in a living area or a bedroom. It should not be an ozone generator, and any ionizer function should be off. A MERV 13 or higher filter in a ducted system also counts.",d:"Brand and model, or filter rating"},
@@ -236,6 +236,21 @@ const DIR={
  e2:[["NSF certified products","https://www.nsf.org"]]
 };
 const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
+// Ladders: one question that covers several levels of the same product. Picking a level marks the items up to that level as met.
+const LADS=[
+ {id:"sheets",q:"Which best describes your sheets?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
+  levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber: cotton, linen, wool or hemp, with no polyester, nylon or bamboo","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
+  d:[["Sheet brand and fiber",1],["Certification (GOTS or OEKO-TEX)",2]]},
+ {id:"towels",q:"Which best describes your towels?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
+  levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber: cotton, linen or hemp, with no polyester, nylon or bamboo","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
+  d:[["Towel brand and fiber",1],["Certification (GOTS or OEKO-TEX)",2]]},
+ {id:"bedding",q:"Which best describes your duvet or comforter and pillows?",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover.",
+  levels:["Not certified, or I am not sure","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic, with natural fabric and natural fill (cotton, wool, down, feathers or latex), and no polyester or synthetic fill"],
+  d:[["Duvet or comforter brand",1],["Duvet cover fabric and fill",1],["Pillow brand",1],["Pillow fabric and fill",1],["Other textiles (rugs, throws, curtains)",9]]}
+];
+const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
+const gkeys=g=>g.d.map(([l,min],n)=>["g."+g.id+"."+n,l,min]);
+const gitems=id=>ALL.filter(i=>i.g===id);
 const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
 let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("trace_str_v2",JSON.stringify(S))}catch(e){}};
@@ -250,14 +265,24 @@ if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.ge
 // An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
 // A product box is required when the host answers Yes, except boxes marked optional below.
 const isOpt=l=>/if any|if on the tag|other textiles/i.test(l);
-const needed=()=>ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&!((S.d||{})[k]||"").trim()).map(([k])=>k));
+const empty=k=>!((S.d||{})[k]||"").trim();
+const needed=()=>[
+  ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
+  ...LADS.flatMap(g=>{const sel=(S.g||{})[g.id];return typeof sel!=="number"?[]:gkeys(g).filter(([k,l,min])=>sel>=min&&!isOpt(l)&&empty(k)).map(([k])=>k);})
+];
 const dkeys=i=>Array.isArray(i.d)?i.d.map((l,n)=>[i.id+"."+n,l]):[[i.id,i.d]];
-const dtext=i=>!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
+const gtext=g=>gkeys(g).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?l+": "+v:"";}).filter(Boolean).join("; ");
+const dtext=i=>i.g?(i.lv===1?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
 function build(){
   let h="";
   CATS.forEach(c=>{
     h+=`<div class="cat"><div class="cat-name">${esc(c.name)}</div><div class="cat-proof">${esc(c.proof)}</div>`;
     c.items.forEach(i=>{
+      if(i.g){ if(i.lv===1){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
+        h+=`<div class="item" data-g="${g.id}"><span class="tier">${esc(tiers)}</span><div class="q">${esc(g.q)}</div><div class="hint">${esc(g.h)}</div>`;
+        h+=`<div class="opts" style="flex-direction:column;align-items:stretch">${g.levels.map((l,n)=>`<button class="opt" data-lv="${n}" style="text-align:left">${esc(l)}</button>`).join("")}<button class="opt" data-lv="unsure" style="text-align:left">Not sure</button></div>`;
+        h+=gkeys(g).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)}${isOpt(l)?" (optional)":" (required)"}"></div>`).join("");
+        h+=`</div>`;} return; }
       h+=`<div class="item" data-id="${i.id}"><span class="tier">${TN[i.t]}</span><div class="q">${esc(i.q)}</div>${i.h?`<div class="hint">${esc(i.h)}</div>`:""}`;
       h+=`<div class="opts">${["Yes","Not yet","Not sure"].map(o=>`<button class="opt" data-a="${o}">${o}</button>`).join("")}</div>`;
       if(i.d)h+=dkeys(i).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)}${isOpt(l)?" (optional)":" (required if Yes)"}"></div>`).join("");
@@ -268,7 +293,18 @@ function build(){
   $("items").innerHTML=h;
   FIELDS.forEach(k=>{$(k).value=S[k]||"";$(k).oninput=()=>{S[k]=$(k).value;save();};});
   ["agree1","agree2","agree3"].forEach(k=>{$(k).checked=!!(S.ag||{})[k];$(k).onchange=()=>{S.ag=S.ag||{};S.ag[k]=$(k).checked;save();};});
-  document.querySelectorAll(".item").forEach(el=>{
+  document.querySelectorAll(".item[data-g]").forEach(el=>{
+    const gid=el.dataset.g;
+    el.querySelectorAll(".opt").forEach(b=>{
+      const v=b.dataset.lv==="unsure"?"unsure":+b.dataset.lv;
+      if((S.g||{})[gid]===v)b.classList.add("on");
+      b.onclick=()=>{S.g=S.g||{};S.g[gid]=v;S.a=S.a||{};
+        gitems(gid).forEach(it=>{S.a[it.id]=v==="unsure"?"Not sure":(it.lv<=v?"Yes":"Not yet");});
+        el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
+    });
+    el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();upd();};});
+  });
+  document.querySelectorAll(".item[data-id]").forEach(el=>{
     const id=el.dataset.id;
     el.querySelectorAll(".opt").forEach(b=>{
       if((S.a||{})[id]===b.dataset.a)b.classList.add("on");
@@ -281,10 +317,10 @@ function build(){
 const ans=i=>(S.a||{})[i.id];
 const done=i=>!!ans(i);
 function upd(){
-  const n=ALL.filter(done).length,nd=needed();
-  $("prog").textContent=`${n} of ${ALL.length} answered`+(nd.length?` · ${nd.length} brand${nd.length>1?"s":""} still needed`:"");
+  const UI=ALL.filter(i=>!i.g).length+LADS.length,n=ALL.filter(i=>!i.g&&done(i)).length+LADS.filter(g=>(S.g||{})[g.id]!==undefined).length,nd=needed();
+  $("prog").textContent=`${n} of ${UI} answered`+(nd.length?` · ${nd.length} brand${nd.length>1?"s":""} still needed`:"");
   document.querySelectorAll("input[data-d]").forEach(inp=>inp.classList.toggle("need",nd.includes(inp.dataset.d)));
-  $("go").disabled=n<ALL.length||nd.length>0;
+  $("go").disabled=n<UI||nd.length>0;
 }
 
 // Scoring (draft for review). Whole points per item, so a report can list each line.
