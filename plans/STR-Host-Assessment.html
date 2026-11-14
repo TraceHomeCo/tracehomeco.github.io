@@ -466,9 +466,10 @@ function payload(){
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
   {const nm=TIERNAME[t].replace(" (witnessed check pending)","");
-  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}${t>=1?"!":""}</span>`;
-  $("sealcap").textContent=t===0?"":t===3?"Pending photo review and the witnessed check":"Pending photo review";}
-  let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
+  const nV=ALL.filter(i=>i.t==="V").length,almost=t===0&&r.lo.v>=nV-2;
+  $("tierName").innerHTML=t===0?esc(almost?"Almost there":nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}${t>=1?"!":""}</span>`;
+  $("sealcap").textContent=t===0?`You meet ${r.lo.v} of ${nV} Verified items.`:t===3?"Pending photo review and the witnessed check":"Pending photo review";}
+  let note=t===0?"Here is what is left to reach Trace Verified. Most of it is product swaps at restock and documenting what you already own. Send this to Trace and we will send you a short swap list. Once the items are swapped, we re-check, so you do not start over."
     :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
     :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
@@ -476,7 +477,7 @@ function show(){
   $("tierNote").textContent=note;
   $("scoreRange").textContent=r.low===r.high?`Estimated score: ${r.low} of 100`:`Estimated score: ${r.low}–${r.high} of 100`;
   $("scoreNote").textContent="This is an estimate from your answers. Items you could not yet confirm widen the range. Trace sets the final tier and score after reviewing your photos.";
-  $("gapTitle").textContent=!g.next?"Nothing outstanding":t===0?`To reach ${g.next}`:"Ways to go further (optional)";
+  $("gapTitle").textContent=!g.next?"Nothing outstanding":t===0?`What is left to reach ${g.next}`:"Ways to go further (optional)";
   const lnk=x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`;
   const sug=i=>{const a=SUG[i.id],d=DIR[i.id];if(!a&&!d)return"";return `<div class="hint" style="margin:4px 0 0">${a?`Examples that qualify: ${a.map(lnk).join(" · ")}`:""}${a&&d?"<br>":""}${d?`Find certified products: ${d.map(lnk).join(" · ")}`:""}</div>`;};
   const row=i=>`<div class="row"><div class="t">${i.t==="V"?"Needed":"Next step"}</div><div>${esc(i.q)}${sug(i)}</div></div>`;
