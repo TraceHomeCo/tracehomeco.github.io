@@ -11,8 +11,12 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--linen);color:var(--night);-webkit-font-smoothing:antialiased;}
 .wrap{max-width:660px;margin:0 auto;padding:48px 24px 140px;}
-.logo{display:block;height:110px;width:auto;margin:0 0 26px;}
-@media(max-width:520px){.logo{height:90px;margin-bottom:20px;}}
+.logo{display:block;height:104px;width:auto;margin:0;}
+.head{display:flex;align-items:center;gap:22px;margin-bottom:26px;}
+.head .eyebrow{margin-bottom:10px;}.head .divider{margin-bottom:14px;}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:6px;}
+.btn.small{padding:8px 18px;font-size:13px;border-color:var(--night);}
+@media(max-width:520px){.logo{height:76px;}.head{gap:14px;}.head h1{font-size:32px;}.head .eyebrow{font-size:10px;letter-spacing:.12em;}}
 .eyebrow{font-size:12px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;}
 .divider{width:52px;height:1px;background:var(--line);margin-bottom:22px;}
 h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px;line-height:1.15;letter-spacing:-.01em;}
@@ -78,10 +82,15 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 </head>
 <body>
 <div class="wrap" id="form">
-  <a href="https://tracehome.co" aria-label="Trace home" style="display:block"><img class="logo" src="../trace_logo_transparent.png" alt="Trace"></a>
-  <div class="eyebrow">Trace Verified · Short-Term Rentals</div>
-  <div class="divider"></div>
-  <h1>Host self-assessment</h1>
+  <div class="topbar"><button class="btn sec small" id="startover" type="button">Start over</button></div>
+  <div class="head">
+    <a href="https://tracehome.co" aria-label="Trace home" style="display:block"><img class="logo" src="../trace_logo_transparent.png" alt="Trace"></a>
+    <div>
+      <div class="eyebrow">Trace Verified · Short-Term Rentals</div>
+      <div class="divider"></div>
+      <h1>Host self-assessment</h1>
+    </div>
+  </div>
   <p class="sub">About 20 minutes. This gives you an estimated score range for your home right away, and shows what could move it up. Nothing here is a judgment on your home. Trace confirms the final result after reviewing your photos.</p>
 
   <div class="how">
@@ -93,8 +102,6 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
       <li>Trace reviews your proof and confirms the result. Nothing is approved from this form alone, and no result can be bought.</li>
     </ol>
   </div>
-
-  <p class="fine" id="startrow" style="margin:6px 0 0"><button class="linkbtn" id="startover" type="button">Start over</button> Clears everything saved on this device.</p>
 
   <div class="fields">
     <div><label for="host">Your name <span class="req">*</span></label><input type="text" id="host" autocomplete="name"></div>
