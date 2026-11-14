@@ -192,8 +192,8 @@ const ENDPOINT = "";
 // type: yn = Yes / Not yet / Not sure
 // t: V = Trace Verified (all required), E = Elevated pick (any 5 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
 const CATS = [
- {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
-  {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. If anyone else cleans, they have a short written brief on which products may be used.",h:"Cleaners and guests do not bring their own. A one-page brief is enough, and Trace can send a template.",d:"Who cleans, and how products are supplied"},
+ {name:"Cleaning and laundry", proof:"Proof: photos of every label.", items:[
+  {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home, and cleaners do not bring their own.",h:"If someone else cleans, tell them to use only what you provide. Trace can send a one-page note you can share with them if that helps.",d:"Who cleans, and how products are supplied"},
   {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["Detergent brand","Scent, if any (list each essential oil)"]},
   {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand","Scent, if any (list each essential oil)"]},
   {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",g:"scent",lv:1}
@@ -270,7 +270,6 @@ const DIR={
 };
 // Photos a host should gather, by room. Shared text is listed once.
 const PH={
- v1:["Laundry and cleaning area","Your written cleaner brief (a photo or a PDF), if someone else cleans"],
  v3:["Laundry and cleaning area","Laundry detergent: the front and the ingredient label"],
  v7:["Laundry and cleaning area","All-purpose cleaner, bathroom cleaner and dish soap: the front and the ingredient label of each"],
  v4:["Every main room","One photo of each main room showing no plug-ins, air fresheners or scented candles. If you use essential oils, the bottle labels"],
@@ -467,7 +466,7 @@ function payload(){
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
   {const nm=TIERNAME[t].replace(" (witnessed check pending)","");
-  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}</span>`;
+  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}${t>=1?"!":""}</span>`;
   $("sealcap").textContent=t===0?"":t===3?"Pending photo review and the witnessed check":"Pending photo review";}
   let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
     :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
