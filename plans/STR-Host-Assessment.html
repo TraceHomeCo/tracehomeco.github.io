@@ -48,6 +48,9 @@ select{appearance:none;-webkit-appearance:none;}
 .detail{margin-top:12px;}
 .detail input{font-size:13px;}
 footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+#left{position:fixed;left:0;right:0;bottom:64px;background:var(--linen);border-top:1px solid var(--line);padding:14px 24px;max-height:45vh;overflow:auto;font-size:14px;box-shadow:0 -6px 14px rgba(0,0,0,.06);}
+#left.hide{display:none;}
+#left a{color:var(--night);cursor:pointer;text-decoration:underline;display:block;margin:6px 0;}
 .prog{font-size:13px;color:var(--ash);}
 .btn{font-family:inherit;background:var(--night);color:var(--linen);border:none;padding:13px 24px;border-radius:100px;font-size:14px;cursor:pointer;}
 .btn.sec{background:transparent;color:var(--night);border:1px solid var(--line);}
@@ -82,9 +85,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
     <h3>How it works</h3>
     <ol>
       <li>Add your details, then answer each item. "Not yet" is a fine answer; it becomes your gap list.</li>
-      <li>Where it asks for a brand or model, type it in. That is the main thing we review.</li>
-      <li>See your estimated tier and score range, accept the agreement, and press <b>Send to Trace</b>. Then email photos of the items listed (a label, a tag, the unit itself) as they are today to hello@tracehome.co. A screenshot of your order history works too. Receipts are not required.</li>
-      <li>Trace reviews your proof and confirms the tier and score. Nothing is approved from this form alone, and no tier can be bought.</li>
+      <li>Where it asks for a fiber, brand or model, type what you know. That is the main thing we review. The bar at the bottom shows what is still missing.</li>
+      <li>See your estimated score range, accept the agreement, and press <b>Send to Trace</b>. Trace then sends you a short list of the photos it needs (a label, a tag, the unit itself) as they are today. A screenshot of your order history works too. Receipts are not required.</li>
+      <li>Trace reviews your proof and confirms the result. Nothing is approved from this form alone, and no result can be bought.</li>
     </ol>
   </div>
 
@@ -157,8 +160,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   <p class="fine">This is a self-reported estimate. The tier and score are confirmed only after Trace reviews your photos, and Trace keeps a dated record of what it reviewed. Trace verifies what the host controls and does not promise any particular level of exposure. Elite also requires a witnessed check by Trace, in person or by live video. Educational, not medical advice.</p>
 </div>
 
+<div id="left" class="hide"></div>
 <footer id="foot">
-  <div class="prog" id="prog">0 of 0 answered</div>
+  <div><div class="prog" id="prog">0 of 0 answered</div><button class="linkbtn" id="leftbtn" type="button" style="font-size:13px">What is left?</button></div>
   <button class="btn" id="go" disabled>See my estimate</button>
 </footer>
 
@@ -415,6 +419,7 @@ function show(){
     return mine.length?`<div class="row stack"><div class="t">${esc(c.name)}</div><div>${esc(c.proof.replace(/^Proof:\s*/,"").replace(/^./,m=>m.toUpperCase()))}</div></div>`:"";
   }).join("")||`<div class="row"><div>None yet.</div></div>`;
   $("msg").textContent="";$("msg").className="msg";
+  $("left").classList.add("hide");
   $("form").classList.add("hide");$("foot").classList.add("hide");$("results").classList.remove("hide");$("results").classList.add("show");
   window.scrollTo(0,0);
 }
@@ -445,6 +450,26 @@ function startOver(){
   location.href=location.pathname;
 }
 $("startover").onclick=startOver;$("startover2").onclick=startOver;
+function leftList(){
+  const out=[];
+  const qOf=k=>{const m=k.match(/^g\.([a-z]+)\./);return m?{sel:`.item[data-g="${m[1]}"]`,t:LAD[m[1]].q}:{sel:`.item[data-id="${k.split(".")[0]}"]`,t:ALL.find(i=>i.id===k.split(".")[0]).q};};
+  ALL.filter(i=>!i.g&&!done(i)).forEach(i=>out.push({sel:`.item[data-id="${i.id}"]`,t:"Answer: "+i.q}));
+  LADS.filter(g=>(S.g||{})[g.id]===undefined).forEach(g=>out.push({sel:`.item[data-g="${g.id}"]`,t:"Answer: "+g.q}));
+  const seen=new Set();
+  needed().forEach(k=>{const q=qOf(k);if(seen.has(q.sel))return;seen.add(q.sel);out.push({sel:q.sel,t:"Add the details for: "+q.t});});
+  const F={"your name":"host","a valid email":"email","the property name":"prop","the property address":"addr"};
+  const first=[];
+  intakeMissing().forEach(m=>first.push({sel:"#"+F[m],t:"Add "+m}));
+  return first.concat(out);
+}
+function showLeft(){
+  const panel=$("left"),list=leftList();
+  if(!panel.classList.contains("hide")){panel.classList.add("hide");return;}
+  panel.innerHTML=list.length?`<div class="hint" style="margin:0 0 6px">Tap one to jump to it.</div>`+list.map((x,n)=>`<a data-n="${n}">${esc(x.t)}</a>`).join(""):`<div>Nothing is missing. You can press See my estimate.</div>`;
+  panel.querySelectorAll("a").forEach(a=>a.onclick=()=>{const el=document.querySelector(list[+a.dataset.n].sel);panel.classList.add("hide");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});});
+  panel.classList.remove("hide");
+}
+$("leftbtn").onclick=showLeft;
 $("go").onclick=show;
 $("back").onclick=()=>{$("results").classList.add("hide");$("results").classList.remove("show");$("form").classList.remove("hide");$("foot").classList.remove("hide");window.scrollTo(0,0);};
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy summary",1800);}catch(e){prompt("Copy this:",summary());}};
