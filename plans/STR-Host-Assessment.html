@@ -65,6 +65,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 .hide{display:none;}
 .item,.opt{scroll-margin-bottom:110px;}
 @media(max-width:480px){.fields{grid-template-columns:1fr;}h1{font-size:32px;}.fields{grid-template-columns:1fr;}.tier-big{font-size:46px;}}
+.detail input.need{border-color:#b3472f}
 </style>
 </head>
 <body>
@@ -247,6 +248,9 @@ const qs=new URLSearchParams(location.search);
 if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.get("h"); if(qs.get("pl")&&!S.platform)S.platform=qs.get("pl");
 
 // An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
+// A product box is required when the host answers Yes, except boxes marked optional below.
+const isOpt=l=>/if any|if on the tag|other textiles/i.test(l);
+const needed=()=>ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&!((S.d||{})[k]||"").trim()).map(([k])=>k));
 const dkeys=i=>Array.isArray(i.d)?i.d.map((l,n)=>[i.id+"."+n,l]):[[i.id,i.d]];
 const dtext=i=>!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
 function build(){
@@ -256,7 +260,7 @@ function build(){
     c.items.forEach(i=>{
       h+=`<div class="item" data-id="${i.id}"><span class="tier">${TN[i.t]}</span><div class="q">${esc(i.q)}</div>${i.h?`<div class="hint">${esc(i.h)}</div>`:""}`;
       h+=`<div class="opts">${["Yes","Not yet","Not sure"].map(o=>`<button class="opt" data-a="${o}">${o}</button>`).join("")}</div>`;
-      if(i.d)h+=dkeys(i).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)} (optional)"></div>`).join("");
+      if(i.d)h+=dkeys(i).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)}${isOpt(l)?" (optional)":" (required if Yes)"}"></div>`).join("");
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -270,16 +274,17 @@ function build(){
       if((S.a||{})[id]===b.dataset.a)b.classList.add("on");
       b.onclick=()=>{S.a=S.a||{};S.a[id]=b.dataset.a;el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
     });
-    el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();};});
+    el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();upd();};});
   });
   upd();
 }
 const ans=i=>(S.a||{})[i.id];
 const done=i=>!!ans(i);
 function upd(){
-  const n=ALL.filter(done).length;
-  $("prog").textContent=`${n} of ${ALL.length} answered`;
-  $("go").disabled=n<ALL.length;
+  const n=ALL.filter(done).length,nd=needed();
+  $("prog").textContent=`${n} of ${ALL.length} answered`+(nd.length?` · ${nd.length} brand${nd.length>1?"s":""} still needed`:"");
+  document.querySelectorAll("input[data-d]").forEach(inp=>inp.classList.toggle("need",nd.includes(inp.dataset.d)));
+  $("go").disabled=n<ALL.length||nd.length>0;
 }
 
 // Scoring (draft for review). Whole points per item, so a report can list each line.
