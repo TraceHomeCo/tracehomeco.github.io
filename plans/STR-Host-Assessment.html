@@ -62,6 +62,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 .btn.sec{background:transparent;color:var(--night);border:1px solid var(--line);}
 .btn:disabled{opacity:.35;cursor:not-allowed;}
 #results{display:none;} #results.show{display:block;}
+.tier-big .meet{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;}
 .tier-big{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:60px;line-height:1.05;margin-top:8px;}
 .tier-note{font-size:15px;color:var(--ash);margin-top:12px;line-height:1.6;font-weight:300;max-width:520px;}
 .sec-title{font-size:12px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);margin:38px 0 14px;padding-top:30px;border-top:1px solid var(--line);}
@@ -93,6 +94,8 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   </div>
   <p class="sub">About 20 minutes. This gives you an estimated score range for your home right away, and shows what could move it up. Nothing here is a judgment on your home. Trace confirms the final result after reviewing your photos.</p>
 
+  <p class="sub" style="margin-top:-6px">Guests are starting to look for stays that make careful choices about what is in the home. By completing this, you are helping lead that shift in the travel marketplace.</p>
+
   <div class="how">
     <h3>How it works</h3>
     <ol>
@@ -106,7 +109,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   <div class="fields">
     <div><label for="host">Your name <span class="req">*</span></label><input type="text" id="host" autocomplete="name"></div>
     <div><label for="email">Email <span class="req">*</span></label><input type="email" id="email" autocomplete="email"></div>
-    <div><label for="phone">Phone</label><input type="tel" id="phone" autocomplete="tel"></div>
+    <div><label for="phone">Phone <span class="req">*</span></label><input type="tel" id="phone" autocomplete="tel"></div>
     <div><label for="role">Your role</label><select id="role"><option value="">Select</option><option>Owner</option><option>Co-host</option><option>Property manager</option><option>Other</option></select></div>
     <div><label for="prop">Property name <span class="req">*</span></label><input type="text" id="prop"></div>
     <div><label for="beds">Number of bedrooms</label><input type="text" id="beds" inputmode="numeric"></div>
@@ -129,10 +132,11 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 </div>
 
 <div class="wrap hide" id="results">
-  <img class="logo" src="../trace_logo_transparent.png" alt="Trace">
+  <img class="logo" src="../trace_logo_transparent.png" alt="Trace" style="margin-bottom:36px">
   <div class="eyebrow">Your estimate (self-reported)</div>
   <div class="divider"></div>
   <div class="tier-big" id="tierName"></div>
+  <div class="fine" id="sealcap" style="margin-top:8px"></div>
   <p class="tier-note" id="tierNote"></p>
 
   <div class="score">
@@ -198,7 +202,7 @@ const CATS = [
   {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",g:"bedding",lv:1},
   {id:"e5",t:"E",q:"Towels are natural fiber only (cotton, linen or hemp). Polyester, nylon, bamboo and rayon do not qualify.",h:"Sheets are the Verified item. Towels are an Elevated pick.",g:"towels",lv:1},
   {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",g:"towels",lv:2},
-  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
+  {id:"e7",t:"E",q:"Bath products (body wash or soap, shampoo, conditioner) are EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
   {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"towels",lv:3},
   {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"sheets",lv:3},
   {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
@@ -278,7 +282,7 @@ const PH={
  e5:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
  e9:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
  l8:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
- e7:["Bathroom","Bath soap: the front of the bottle or wrapper, showing the certification"],
+ e7:["Bathroom","Body wash, soap, shampoo and conditioner: the front and ingredient label of each, showing the certification"],
  e2:["Kitchen and water","Drinking water: the filter or system and its model name, or the bottle label. Well water: your latest lab report"],
  l1:["Kitchen and water","Whole-home water system and its model name"],
  e6:["Kitchen and water","Cookware: one photo of your pots and pans, plus the label on any pan that is not cast iron or stainless"],
@@ -320,9 +324,9 @@ const LADS=[
  {id:"scent",q:"Which best describes scent in the home?",h:"Candles and diffusers are fine at the middle level only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",
   levels:["Plug-ins, air fresheners, scented candles or fragranced sprays are used","None of those are used. Any essential oils are disclosed below","No added scent anywhere in the home, including essential oils"],
   d:[["Essential oils or scented items in use, if any (list each)",9]]},
- {id:"bath",q:"Which best describes the bath soap (body wash or bar soap) you provide?",h:"Examples of certified products: Branch Basics, Attitude Unscented. These are examples, not a required list. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
-  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: EWG Verified or MADE SAFE","Not provided in the home (N/A)"],na:3,
-  d:[["Bath soap brand and product",1],["Scent, if any (list each essential oil)",1]]}
+ {id:"bath",q:"Which best describes the bath products you provide (body wash or soap, shampoo, conditioner)?",h:"Pick the level that fits everything you provide. Examples of brands to look into: Branch Basics, Attitude Unscented. Certification is by product, so check the specific one. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
+  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: the products I provide are EWG Verified or MADE SAFE","None provided in the home (N/A)"],na:3,
+  d:[["Body wash or bar soap: brand and product",1],["Shampoo and conditioner: brand and product, if provided",1],["Scent, if any (list each essential oil)",1]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
 const gkeys=g=>g.d.map(([l,min,max],n)=>["g."+g.id+"."+n,l,min,max===undefined?99:max]);
@@ -342,7 +346,7 @@ if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.ge
 
 // An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
 // A product box is required when the host answers Yes, except boxes marked optional below.
-const isOpt=l=>/if any|if on the tag|if you know|other textiles/i.test(l);
+const isOpt=l=>/if any|if on the tag|if you know|if provided|other textiles/i.test(l);
 const empty=k=>!((S.d||{})[k]||"").trim();
 const needed=()=>[
   ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
@@ -428,7 +432,7 @@ function gapsFor(){
   const c=calc(false);
   const unmet=t=>ALL.filter(i=>i.t===t&&ans(i)!=="Yes");
   if(c.tier===0)return{next:"Verified",list:unmet("V"),note:`All ${ALL.filter(i=>i.t==="V").length} Verified items are required.`};
-  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`You are already Trace Verified. If you want to go further, any ${ELEV-c.e} more of these reaches Elevated.`};
+  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Your answers already meet Trace Verified. If you want to go further, any ${ELEV-c.e} more of these reaches Elevated.`};
   if(c.tier===2)return{next:"Elite",list:[...unmet("E"),...unmet("L")],note:`Elite needs all ${ALL.filter(i=>i.t==="E").length} picks, every Elite item, and a witnessed check by Trace.`};
   return{next:null,list:[],note:""};
 }
@@ -436,6 +440,7 @@ function intakeMissing(){
   const miss=[];
   if(!(S.host||"").trim())miss.push("your name");
   if(!/^\S+@\S+\.\S+$/.test((S.email||"").trim()))miss.push("a valid email");
+  if(((S.phone||"").match(/\d/g)||[]).length<7)miss.push("a phone number");
   if(!(S.prop||"").trim())miss.push("the property name");
   if(!(S.addr||"").trim())miss.push("the property address");
   return miss;
@@ -458,14 +463,16 @@ function payload(){
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
-  $("tierName").textContent=t===0?TIERNAME[0]:"Your answers meet "+TIERNAME[t];
+  {const nm=TIERNAME[t].replace(" (witnessed check pending)","");
+  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}</span>`;
+  $("sealcap").textContent=t===0?"":t===3?"Pending photo review and the witnessed check":"Pending photo review";}
   let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
     :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
     :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
   if(r.hi.tier>t)note+=` If your "Not sure" answers check out, this home could reach ${TIERNAME[r.hi.tier].replace(" (witnessed check pending)","")}.`;
   $("tierNote").textContent=note;
-  $("scoreRange").textContent=`Estimated score: ${r.low}–${r.high} of 100`;
+  $("scoreRange").textContent=r.low===r.high?`Estimated score: ${r.low} of 100`:`Estimated score: ${r.low}–${r.high} of 100`;
   $("scoreNote").textContent="This is an estimate from your answers. Items you could not yet confirm widen the range. Trace sets the final tier and score after reviewing your photos.";
   $("gapTitle").textContent=!g.next?"Nothing outstanding":t===0?`To reach ${g.next}`:"Ways to go further (optional)";
   const lnk=x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`;
@@ -481,7 +488,13 @@ function show(){
 }
 function msg(t,c){$("msg").textContent=t;$("msg").className="msg "+(c||"");}
 function mailFallback(){
-  location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(summary());
+  // Long links get cut off by some email apps, so a long summary is copied to the clipboard and the draft says to paste it.
+  const full=summary();let body=full;
+  if(full.length>1500){
+    try{navigator.clipboard.writeText(full);}catch(e){}
+    body="Hello Trace,\n\nMy assessment summary is copied to my clipboard. I will paste it below (Ctrl+V or Cmd+V) before sending.\n\nReference: "+ref()+"\nProperty: "+(S.prop||"")+"\nHost: "+(S.host||"")+"\n\n";
+  }
+  location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(body);
 }
 const SUBJ=()=>"Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")";
 // Opens a draft in a webmail tab. The full summary is copied to the clipboard and also placed in the draft when it is short enough for the link.
@@ -513,7 +526,7 @@ function leftList(){
   LADS.filter(g=>(S.g||{})[g.id]===undefined).forEach(g=>out.push({sel:`.item[data-g="${g.id}"]`,t:"Answer: "+g.q}));
   const seen=new Set();
   needed().forEach(k=>{const q=qOf(k);if(seen.has(q.sel))return;seen.add(q.sel);out.push({sel:q.sel,t:"Add the details for: "+q.t});});
-  const F={"your name":"host","a valid email":"email","the property name":"prop","the property address":"addr"};
+  const F={"your name":"host","a valid email":"email","a phone number":"phone","the property name":"prop","the property address":"addr"};
   const first=[];
   intakeMissing().forEach(m=>first.push({sel:"#"+F[m],t:"Add "+m}));
   return first.concat(out);
@@ -534,7 +547,7 @@ $("send").onclick=async()=>{
   const miss=intakeMissing();
   if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
   if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
-  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
+  if(!ENDPOINT){mailFallback();msg("Your email app should open. If the message looks empty, paste (Ctrl+V or Cmd+V) the summary that was copied for you, then press send. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
   $("send").disabled=true;msg("Sending…");
   try{
     await fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload())});
