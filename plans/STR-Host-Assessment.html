@@ -248,10 +248,10 @@ const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
 const LADS=[
  {id:"sheets",q:"Which best describes your sheets?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
   levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber only: cotton, linen, wool or hemp. **Polyester, nylon, bamboo and rayon do not qualify.**","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
-  d:[["Sheet brand and fiber",1],["Certification (GOTS or OEKO-TEX)",2]]},
+  d:[["Sheet fiber (for example, 100% cotton percale)",1],["Brand, if you know it",1],["Certification (GOTS or OEKO-TEX)",2]]},
  {id:"towels",q:"Which best describes your towels?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
   levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber only: cotton, linen or hemp. **Polyester, nylon, bamboo and rayon do not qualify.**","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
-  d:[["Towel brand and fiber",1],["Certification (GOTS or OEKO-TEX)",2]]},
+  d:[["Towel fiber (for example, 100% cotton terry)",1],["Brand, if you know it",1],["Certification (GOTS or OEKO-TEX)",2]]},
  {id:"bedding",q:"Which best describes your duvet or comforter and pillows?",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover.",
   levels:["Not certified, or I am not sure","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic, with natural fabric and natural fill (cotton, wool, down, feathers or latex). **Polyester or other synthetic fill does not qualify.**"],
   d:[["Duvet or comforter: cover fabric and fill (for example, cotton cover, wool fill)",1],["Pillows: cover fabric and fill",1],["Certification (OEKO-TEX or GOTS), and the number if it is on the tag",1]]},
@@ -279,7 +279,7 @@ if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.ge
 
 // An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
 // A product box is required when the host answers Yes, except boxes marked optional below.
-const isOpt=l=>/if any|if on the tag|other textiles/i.test(l);
+const isOpt=l=>/if any|if on the tag|if you know|other textiles/i.test(l);
 const empty=k=>!((S.d||{})[k]||"").trim();
 const needed=()=>[
   ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
