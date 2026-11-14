@@ -62,11 +62,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 .btn.sec{background:transparent;color:var(--night);border:1px solid var(--line);}
 .btn:disabled{opacity:.35;cursor:not-allowed;}
 #results{display:none;} #results.show{display:block;}
-.resulthead{display:flex;align-items:center;gap:20px;margin-top:8px;}
-.seal{flex:none;width:84px;height:84px;border-radius:50%;background:var(--night);color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;border:6px solid var(--line);}
-.seal.t0{background:transparent;color:var(--ash);}
-.seal.t1{border-color:#2E7D32;}.seal.t2{border-color:#B08D57;}.seal.t3{border-color:#A3402D;}
-.resulthead .tier-big{margin-top:0;font-size:38px;}
+.tier-big .meet{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;}
 .tier-big{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:60px;line-height:1.05;margin-top:8px;}
 .tier-note{font-size:15px;color:var(--ash);margin-top:12px;line-height:1.6;font-weight:300;max-width:520px;}
 .sec-title{font-size:12px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);margin:38px 0 14px;padding-top:30px;border-top:1px solid var(--line);}
@@ -81,7 +77,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 .fine{font-size:12.5px;color:var(--ash);line-height:1.6;margin-top:28px;font-weight:300;}
 .hide{display:none;}
 .item,.opt{scroll-margin-bottom:110px;}
-@media(max-width:480px){.fields{grid-template-columns:1fr;}h1{font-size:32px;}.fields{grid-template-columns:1fr;}.tier-big{font-size:46px;}.seal{width:68px;height:68px;font-size:30px;border-width:5px;}.resulthead{gap:14px;}.resulthead .tier-big{font-size:30px;}}
+@media(max-width:480px){.fields{grid-template-columns:1fr;}h1{font-size:32px;}.fields{grid-template-columns:1fr;}.tier-big{font-size:46px;}}
 .detail input.need{border-color:#b3472f}
 </style>
 </head>
@@ -139,10 +135,8 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   <img class="logo" src="../trace_logo_transparent.png" alt="Trace" style="margin-bottom:22px">
   <div class="eyebrow">Your estimate (self-reported)</div>
   <div class="divider"></div>
-  <div class="resulthead">
-    <div class="seal t0" id="seal" aria-hidden="true"></div>
-    <div><div class="tier-big" id="tierName"></div><div class="fine" id="sealcap" style="margin-top:6px"></div></div>
-  </div>
+  <div class="tier-big" id="tierName"></div>
+  <div class="fine" id="sealcap" style="margin-top:8px"></div>
   <p class="tier-note" id="tierNote"></p>
 
   <div class="score">
@@ -208,7 +202,7 @@ const CATS = [
   {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",g:"bedding",lv:1},
   {id:"e5",t:"E",q:"Towels are natural fiber only (cotton, linen or hemp). Polyester, nylon, bamboo and rayon do not qualify.",h:"Sheets are the Verified item. Towels are an Elevated pick.",g:"towels",lv:1},
   {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",g:"towels",lv:2},
-  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
+  {id:"e7",t:"E",q:"Bath products (body wash or soap, shampoo, conditioner) are EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
   {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"towels",lv:3},
   {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"sheets",lv:3},
   {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
@@ -288,7 +282,7 @@ const PH={
  e5:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
  e9:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
  l8:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
- e7:["Bathroom","Bath soap: the front of the bottle or wrapper, showing the certification"],
+ e7:["Bathroom","Body wash, soap, shampoo and conditioner: the front and ingredient label of each, showing the certification"],
  e2:["Kitchen and water","Drinking water: the filter or system and its model name, or the bottle label. Well water: your latest lab report"],
  l1:["Kitchen and water","Whole-home water system and its model name"],
  e6:["Kitchen and water","Cookware: one photo of your pots and pans, plus the label on any pan that is not cast iron or stainless"],
@@ -330,9 +324,9 @@ const LADS=[
  {id:"scent",q:"Which best describes scent in the home?",h:"Candles and diffusers are fine at the middle level only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",
   levels:["Plug-ins, air fresheners, scented candles or fragranced sprays are used","None of those are used. Any essential oils are disclosed below","No added scent anywhere in the home, including essential oils"],
   d:[["Essential oils or scented items in use, if any (list each)",9]]},
- {id:"bath",q:"Which best describes the bath soap (body wash or bar soap) you provide?",h:"Examples of certified products: Branch Basics, Attitude Unscented. These are examples, not a required list. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
-  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: EWG Verified or MADE SAFE","Not provided in the home (N/A)"],na:3,
-  d:[["Bath soap brand and product",1],["Scent, if any (list each essential oil)",1]]}
+ {id:"bath",q:"Which best describes the bath products you provide (body wash or soap, shampoo, conditioner)?",h:"Pick the level that fits everything you provide. Examples of brands to look into: Branch Basics, Attitude Unscented. Certification is by product, so check the specific one. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
+  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: the products I provide are EWG Verified or MADE SAFE","None provided in the home (N/A)"],na:3,
+  d:[["Body wash or bar soap: brand and product",1],["Shampoo and conditioner: brand and product, if provided",1],["Scent, if any (list each essential oil)",1]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
 const gkeys=g=>g.d.map(([l,min,max],n)=>["g."+g.id+"."+n,l,min,max===undefined?99:max]);
@@ -352,7 +346,7 @@ if(qs.get("p")&&!S.prop)S.prop=qs.get("p"); if(qs.get("h")&&!S.host)S.host=qs.ge
 
 // An item's detail can be one field (string) or several (array of labels), so each product gets its own box.
 // A product box is required when the host answers Yes, except boxes marked optional below.
-const isOpt=l=>/if any|if on the tag|if you know|other textiles/i.test(l);
+const isOpt=l=>/if any|if on the tag|if you know|if provided|other textiles/i.test(l);
 const empty=k=>!((S.d||{})[k]||"").trim();
 const needed=()=>[
   ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
@@ -468,9 +462,9 @@ function payload(){
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
-  $("tierName").textContent=t===0?TIERNAME[0]:"Your answers meet "+TIERNAME[t];
-  $("seal").className="seal t"+t;$("seal").textContent=t===0?"\u2013":"\u2713";
-  $("sealcap").textContent=t===0?"":"Pending photo review";
+  {const nm=TIERNAME[t].replace(" (witnessed check pending)","");
+  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}</span>`;
+  $("sealcap").textContent=t===0?"":t===3?"Pending photo review and the witnessed check":"Pending photo review";}
   let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
     :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
     :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
