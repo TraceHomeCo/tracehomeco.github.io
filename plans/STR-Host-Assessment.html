@@ -211,9 +211,8 @@ const CATS = [
   {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
  ]},
  {name:"Air", proof:"Proof: a photo of each unit, or of the filter showing its rating. For True HEPA, the spec sheet too.", items:[
-  {id:"v6",t:"V",q:"An air purifier is running in the home, or the HVAC uses a MERV 13 or higher filter.",h:"Any air purifier counts, in a living area or a bedroom. It should not be an ozone generator, and any ionizer function should be off. A MERV 13 or higher filter in a ducted system also counts.",d:"Brand and model, or filter rating"},
-  {id:"e1",t:"E",q:"Every bedroom has an air purifier.",h:"Any purifier counts. It should not be an ozone generator, and any ionizer function should be off.",d:"Brands and models"},
-  {id:"l7",t:"L",q:"Every bedroom has a True HEPA purifier (H13 or better), independently verified.",h:"True HEPA means H13 or better, with no ionizer or ozone function. A third-party HEPA test, or a certification such as AHAM Verifide or CARB, supports it.",d:"Brands and models"}
+  {id:"e1",t:"E",q:"An air purifier is running in the home, or the HVAC uses a MERV 13 or higher filter.",h:"Any air purifier counts, in a living area or a bedroom. It should not be an ozone generator, and any ionizer function should be off. A MERV 13 or higher filter in a ducted system also counts.",g:"air",lv:1},
+  {id:"l7",t:"L",q:"Every bedroom has a True HEPA purifier (H13 or better), independently verified.",h:"True HEPA means H13 or better, with no ionizer or ozone function. A third-party HEPA test, or a certification such as AHAM Verifide or CARB, supports it.",g:"air",lv:2}
  ]},
  {name:"Water", proof:"Proof: photo of the system, the model, and a filter order or receipt if you have one. Well water: a recent lab test report.", items:[
   {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:2},
@@ -240,9 +239,8 @@ const SUG={
  v3:[["Branch Basics","https://branchbasics.com"],["Attitude Unscented","https://attitudeliving.com"],["Molly's Suds Unscented","https://mollyssuds.com"],["Package Free Shop Unscented","https://packagefreeshop.com"]],
  v7:[["Branch Basics Concentrate","https://branchbasics.com"],["Attitude All-Purpose Unscented","https://attitudeliving.com"],["Molly's Suds Unscented","https://mollyssuds.com"]],
  v5:[["Quince Organic Percale","https://www.quince.com"],["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
- v6:[["Coway Airmega 200M","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
- e1:[["Coway Airmega 200M","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
- l7:[["Coway Airmega 200M","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
+ e1:[["Levoit Core 300 (about $100)","https://levoit.com"],["Levoit Vital 100 (about $120)","https://levoit.com"],["Medify MA-25 (about $139)","https://www.medifyair.com"],["IKEA STARKVIND (about $149)","https://www.ikea.com"],["Coway Airmega","https://www.cowaymega.com"]],
+ l7:[["Coway Airmega","https://www.cowaymega.com"],["IQAir","https://www.iqair.com"]],
  e2:[["Cloud RO (under-sink)","https://cloudwaterfilters.com/buy/cloud-ro"],["Waterdrop","https://www.waterdrop.com"]],
  e3:[["Naturepedic EOS","https://www.naturepedic.com"],["Avocado GreenFoam","https://www.avocadogreenmattress.com"]],
  e4:[["Pact","https://wearpact.com"],["Boll & Branch","https://www.bollandbranch.com"]],
@@ -288,7 +286,6 @@ const PH={
  e2:["Kitchen and water","Drinking water: the filter or system and its model name, or the bottle label. Well water: your latest lab report"],
  l1:["Kitchen and water","Whole-home water system and its model name"],
  e6:["Kitchen and water","Cookware: one photo of your pots and pans, plus the label on any pan that is not cast iron or stainless"],
- v6:["Living area and bedrooms","Each air purifier: the whole unit and its model label, or the HVAC filter edge showing MERV 13 or higher"],
  e1:["Living area and bedrooms","Each air purifier: the whole unit and its model label, or the HVAC filter edge showing MERV 13 or higher"],
  l7:["Living area and bedrooms","True HEPA: the spec sheet or product page showing H13 or better, and any AHAM Verifide or CARB listing"],
  l5:["Documents","Your pest control policy or the latest service invoice"],
@@ -328,7 +325,11 @@ const LADS=[
   d:[["Essential oils or scented items in use, if any (list each)",9]]},
  {id:"bath",q:"Which best describes the bath products you provide (body wash or soap, shampoo, conditioner)?",h:"Pick the level that fits everything you provide. Examples of brands to look into: Branch Basics, Attitude Unscented. Certification is by product, so check the specific one. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
   levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: the products I provide are EWG Verified or MADE SAFE","None provided in the home (N/A)"],na:3,
-  d:[["Body wash or bar soap: brand and product",1],["Shampoo and conditioner: brand and product, if provided",1],["Scent, if any (list each essential oil)",1]]}
+  d:[["Body wash or bar soap: brand and product",1],["Shampoo and conditioner: brand and product, if provided",1],["Scent, if any (list each essential oil)",1]]},
+ {id:"air",q:"Which best describes the air purifiers in your home?",h:"Any purifier counts at the first level. It should not be an ozone generator, and any ionizer function should be off. A MERV 13 or higher filter in a ducted system also counts. Many good purifiers cost about $100 to $150.",
+  levels:["No air purifier, or I am not sure","An air purifier is running in the home (any room), or the HVAC uses a MERV 13 or higher filter","Every bedroom has a True HEPA purifier (H13 or better), independently verified (AHAM Verifide or CARB)"],
+  map:{0:{e1:"Not yet",l7:"Not yet"},1:{e1:"Yes",l7:"Not yet"},2:{e1:"Yes",l7:"Yes"}},
+  d:[["Brand and model, or the filter rating",1,2]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
 const gkeys=g=>g.d.map(([l,min,max],n)=>["g."+g.id+"."+n,l,min,max===undefined?99:max]);
@@ -466,9 +467,10 @@ function payload(){
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
   {const nm=TIERNAME[t].replace(" (witnessed check pending)","");
-  $("tierName").innerHTML=t===0?esc(nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}${t>=1?"!":""}</span>`;
-  $("sealcap").textContent=t===0?"":t===3?"Pending photo review and the witnessed check":"Pending photo review";}
-  let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
+  const nV=ALL.filter(i=>i.t==="V").length,almost=t===0&&r.lo.v>=nV-2;
+  $("tierName").innerHTML=t===0?esc(almost?"Almost there":nm):`<span class="meet">Your answers meet</span><span style="white-space:nowrap">${esc(nm)}${t>=1?"!":""}</span>`;
+  $("sealcap").textContent=t===0?`You meet ${r.lo.v} of ${nV} Verified items.`:t===3?"Pending photo review and the witnessed check":"Pending photo review";}
+  let note=t===0?"Here is what is left to reach Trace Verified. Most of it is product swaps at restock and documenting what you already own. Send this to Trace and we will send you a short swap list. Once the items are swapped, we re-check, so you do not start over."
     :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
     :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
@@ -476,7 +478,7 @@ function show(){
   $("tierNote").textContent=note;
   $("scoreRange").textContent=r.low===r.high?`Estimated score: ${r.low} of 100`:`Estimated score: ${r.low}–${r.high} of 100`;
   $("scoreNote").textContent="This is an estimate from your answers. Items you could not yet confirm widen the range. Trace sets the final tier and score after reviewing your photos.";
-  $("gapTitle").textContent=!g.next?"Nothing outstanding":t===0?`To reach ${g.next}`:"Ways to go further (optional)";
+  $("gapTitle").textContent=!g.next?"Nothing outstanding":t===0?`What is left to reach ${g.next}`:"Ways to go further (optional)";
   const lnk=x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`;
   const sug=i=>{const a=SUG[i.id],d=DIR[i.id];if(!a&&!d)return"";return `<div class="hint" style="margin:4px 0 0">${a?`Examples that qualify: ${a.map(lnk).join(" · ")}`:""}${a&&d?"<br>":""}${d?`Find certified products: ${d.map(lnk).join(" · ")}`:""}</div>`;};
   const row=i=>`<div class="row"><div class="t">${i.t==="V"?"Needed":"Next step"}</div><div>${esc(i.q)}${sug(i)}</div></div>`;
