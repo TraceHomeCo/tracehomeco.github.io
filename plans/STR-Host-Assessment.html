@@ -11,6 +11,8 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--linen);color:var(--night);-webkit-font-smoothing:antialiased;}
 .wrap{max-width:660px;margin:0 auto;padding:48px 24px 140px;}
+.logo{display:block;height:110px;width:auto;margin:0 0 26px;}
+@media(max-width:520px){.logo{height:90px;margin-bottom:20px;}}
 .eyebrow{font-size:12px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;}
 .divider{width:52px;height:1px;background:var(--line);margin-bottom:22px;}
 h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px;line-height:1.15;letter-spacing:-.01em;}
@@ -48,6 +50,9 @@ select{appearance:none;-webkit-appearance:none;}
 .detail{margin-top:12px;}
 .detail input{font-size:13px;}
 footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+#left{position:fixed;left:0;right:0;bottom:64px;background:var(--linen);border-top:1px solid var(--line);padding:14px 24px;max-height:45vh;overflow:auto;font-size:14px;box-shadow:0 -6px 14px rgba(0,0,0,.06);}
+#left.hide{display:none;}
+#left a{color:var(--night);cursor:pointer;text-decoration:underline;display:block;margin:6px 0;}
 .prog{font-size:13px;color:var(--ash);}
 .btn{font-family:inherit;background:var(--night);color:var(--linen);border:none;padding:13px 24px;border-radius:100px;font-size:14px;cursor:pointer;}
 .btn.sec{background:transparent;color:var(--night);border:1px solid var(--line);}
@@ -73,20 +78,23 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 </head>
 <body>
 <div class="wrap" id="form">
+  <a href="https://tracehome.co" aria-label="Trace home" style="display:block"><img class="logo" src="../trace_logo_transparent.png" alt="Trace"></a>
   <div class="eyebrow">Trace Verified · Short-Term Rentals</div>
   <div class="divider"></div>
   <h1>Host self-assessment</h1>
-  <p class="sub">About 20 minutes. This gives you an estimated tier and score range for your home right away, and shows what would move it up a level. Nothing here is a judgment on your home. Trace confirms the final tier and score after reviewing your photos.</p>
+  <p class="sub">About 20 minutes. This gives you an estimated score range for your home right away, and shows what could move it up. Nothing here is a judgment on your home. Trace confirms the final result after reviewing your photos.</p>
 
   <div class="how">
     <h3>How it works</h3>
     <ol>
       <li>Add your details, then answer each item. "Not yet" is a fine answer; it becomes your gap list.</li>
-      <li>Where it asks for a brand or model, type it in. That is the main thing we review.</li>
-      <li>See your estimated tier and score range, accept the agreement, and press <b>Send to Trace</b>. Then email photos of the items listed (a label, a tag, the unit itself) as they are today to hello@tracehome.co. A screenshot of your order history works too. Receipts are not required.</li>
-      <li>Trace reviews your proof and confirms the tier and score. Nothing is approved from this form alone, and no tier can be bought.</li>
+      <li>Where it asks for a fiber, brand or model, type what you know. That is the main thing we review. The bar at the bottom shows what is still missing.</li>
+      <li>See your estimated score range, accept the agreement, and press <b>Send to Trace</b>. Trace then sends you a short list of the photos it needs (a label, a tag, the unit itself) as they are today. A screenshot of your order history works too. Receipts are not required.</li>
+      <li>Trace reviews your proof and confirms the result. Nothing is approved from this form alone, and no result can be bought.</li>
     </ol>
   </div>
+
+  <p class="fine" id="startrow" style="margin:6px 0 0"><button class="linkbtn" id="startover" type="button">Start over</button> Clears everything saved on this device.</p>
 
   <div class="fields">
     <div><label for="host">Your name <span class="req">*</span></label><input type="text" id="host" autocomplete="name"></div>
@@ -114,6 +122,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 </div>
 
 <div class="wrap hide" id="results">
+  <img class="logo" src="../trace_logo_transparent.png" alt="Trace">
   <div class="eyebrow">Your estimate (self-reported)</div>
   <div class="divider"></div>
   <div class="tier-big" id="tierName"></div>
@@ -127,8 +136,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
   <div class="sec-title" id="gapTitle">What would move it up</div>
   <div id="gaps"></div>
 
-  <div class="sec-title">Proof to send us</div>
+  <div class="sec-title">Photos to gather</div>
   <div id="proof"></div>
+  <div class="actions" style="margin-top:12px"><button class="btn sec" id="copyphotos" type="button">Copy photo list</button></div>
 
   <!-- DRAFT agreement and privacy wording: have counsel review before wide release. -->
   <div class="agree">
@@ -150,13 +160,14 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
       <button class="btn sec" id="copy">Copy summary</button>
     </div>
   </div>
-  <div class="backrow"><button class="linkbtn" id="back">&larr; Edit my answers</button> <span class="fine">Your answers are saved on this device if you leave the page.</span></div>
+  <div class="backrow"><button class="linkbtn" id="back">&larr; Edit my answers</button> <span class="fine">Your answers are saved on this device if you leave the page. <button class="linkbtn" id="startover2" type="button">Start over</button></span></div>
   <div class="msg" id="msg" role="status"></div>
   <p class="fine">This is a self-reported estimate. The tier and score are confirmed only after Trace reviews your photos, and Trace keeps a dated record of what it reviewed. Trace verifies what the host controls and does not promise any particular level of exposure. Elite also requires a witnessed check by Trace, in person or by live video. Educational, not medical advice.</p>
 </div>
 
+<div id="left" class="hide"></div>
 <footer id="foot">
-  <div class="prog" id="prog">0 of 0 answered</div>
+  <div><div class="prog" id="prog">0 of 0 answered</div><button class="linkbtn" id="leftbtn" type="button" style="font-size:13px">What is left?</button></div>
   <button class="btn" id="go" disabled>See my estimate</button>
 </footer>
 
@@ -180,7 +191,7 @@ const CATS = [
   {id:"e8",t:"E",q:"Duvet or comforter and pillows are certified: OEKO-TEX Standard 100 or GOTS.",h:"Covers the bedding on top of the sheets and the pillows.",g:"bedding",lv:1},
   {id:"e5",t:"E",q:"Towels are natural fiber only (cotton, linen or hemp). Polyester, nylon, bamboo and rayon do not qualify.",h:"Sheets are the Verified item. Towels are an Elevated pick.",g:"towels",lv:1},
   {id:"e9",t:"E",q:"Towels are certified: OEKO-TEX Standard 100 or GOTS.",h:"OEKO-TEX Standard 100 tests the finished product for listed substances. GOTS also requires organic fiber, so GOTS towels count here and for Elite.",g:"towels",lv:2},
-  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",d:["Bath soap brand","Scent, if any (list each essential oil)"]},
+  {id:"e7",t:"E",q:"Bath soap (body wash or bar soap) is EWG Verified or MADE SAFE.",h:"The product itself carries the certification, not just the brand.",g:"bath",lv:2},
   {id:"l8",t:"L",q:"Towels are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"towels",lv:3},
   {id:"l2",t:"L",q:"Sheets are organic: GOTS certified.",h:"GOTS means the fiber is certified organic. Look for the GOTS label and license number on the tag.",g:"sheets",lv:3},
   {id:"l9",t:"L",q:"Duvet or comforter and pillows are natural fabric with natural fill, and are GOTS organic. No polyester or other synthetic fill.",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover. Natural fill means cotton, wool, down or feathers, or latex. All other textiles in the home (rugs, throws, curtains) should be natural fiber too.",g:"bedding",lv:2}
@@ -191,8 +202,8 @@ const CATS = [
   {id:"l7",t:"L",q:"Every bedroom has a True HEPA purifier (H13 or better), independently verified.",h:"True HEPA means H13 or better, with no ionizer or ozone function. A third-party HEPA test, or a certification such as AHAM Verifide or CARB, supports it.",d:"Brands and models"}
  ]},
  {name:"Water", proof:"Proof: photo of the system, the model, and a filter order or receipt if you have one. Well water: a recent lab test report.", items:[
-  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:1},
-  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",g:"water",lv:2}
+  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:2},
+  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",g:"water",lv:3}
  ]},
  {name:"Kitchen", proof:"Proof: photos of the cookware and any labels.", items:[
   {id:"e6",t:"E",q:"Cookware is low-tox: no non-stick or ceramic-coated pans.",h:"Cast iron, stainless steel, carbon steel, enameled cast iron and glass all qualify.",d:"What you have (materials and brands)"}
@@ -243,28 +254,73 @@ const DIR={
  l7:[["AHAM Verifide","https://www.ahamverifide.org"]],
  e2:[["NSF certified products","https://www.nsf.org"]]
 };
+// Photos a host should gather, by room. Shared text is listed once.
+const PH={
+ v1:["Laundry and cleaning area","Your written cleaner brief (a photo or a PDF), if someone else cleans"],
+ v3:["Laundry and cleaning area","Laundry detergent: the front and the ingredient label"],
+ v7:["Laundry and cleaning area","All-purpose cleaner, bathroom cleaner and dish soap: the front and the ingredient label of each"],
+ v4:["Every main room","One photo of each main room showing no plug-ins, air fresheners or scented candles. If you use essential oils, the bottle labels"],
+ l3:["Every main room","One photo of each main room showing no plug-ins, air fresheners or scented candles. If you use essential oils, the bottle labels"],
+ v5:["Bedroom","Sheets: the sewn-in tag showing fiber, and the certification label if certified"],
+ e4:["Bedroom","Sheets: the sewn-in tag showing fiber, and the certification label if certified"],
+ l2:["Bedroom","Sheets: the sewn-in tag showing fiber, and the certification label if certified"],
+ e8:["Bedroom","Duvet or comforter and pillows: the tags showing cover fabric, fill and any certification"],
+ l9:["Bedroom","Duvet or comforter and pillows: the tags showing cover fabric, fill and any certification"],
+ e3:["Bedroom","Mattress: the label or the product page showing GOTS, GOLS or GREENGUARD Gold"],
+ l4:["Bedroom","Each bedroom lamp, with the bulb or its package showing the color temperature"],
+ e5:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
+ e9:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
+ l8:["Bathroom","Towels: the sewn-in tag showing fiber, and the certification label if certified"],
+ e7:["Bathroom","Bath soap: the front of the bottle or wrapper, showing the certification"],
+ e2:["Kitchen and water","Drinking water: the filter or system and its model name, or the bottle label. Well water: your latest lab report"],
+ l1:["Kitchen and water","Whole-home water system and its model name"],
+ e6:["Kitchen and water","Cookware: one photo of your pots and pans, plus the label on any pan that is not cast iron or stainless"],
+ v6:["Living area and bedrooms","Each air purifier: the whole unit and its model label, or the HVAC filter edge showing MERV 13 or higher"],
+ e1:["Living area and bedrooms","Each air purifier: the whole unit and its model label, or the HVAC filter edge showing MERV 13 or higher"],
+ l7:["Living area and bedrooms","True HEPA: the spec sheet or product page showing H13 or better, and any AHAM Verifide or CARB listing"],
+ l5:["Documents","Your pest control policy or the latest service invoice"],
+ l6:["Documents","The VOC test report or GREENGUARD Gold certificate for your main furnishings"]
+};
+const PHROOMS=["Laundry and cleaning area","Every main room","Bedroom","Bathroom","Kitchen and water","Living area and bedrooms","Documents"];
+function photoList(){
+  const by={};
+  ALL.forEach(i=>{
+    if(!PH[i.id])return; const a=ans(i); if(a!=="Yes"&&a!=="Not sure")return;
+    if(i.g&&LAD[i.g].na!==undefined&&(S.g||{})[i.g]===LAD[i.g].na)return; // not provided: no photo
+    const [room,text]=PH[i.id]; (by[room]=by[room]||new Set()).add(text);
+  });
+  let n=0; const out=[];
+  PHROOMS.forEach(r=>{if(by[r]){out.push({room:r,items:[...by[r]].map(t=>({n:++n,t}))});}});
+  return out;
+}
+const photoText=()=>{const l=photoList();return l.length?"PHOTOS TO GATHER\n"+l.map(r=>r.room+"\n"+r.items.map(x=>`  ${x.n}. ${x.t}`).join("\n")).join("\n\n")+"\n\nName each photo with its number (for example \"3 sheet tag\"). After you send your assessment, Trace will email you a link to drop the photos in. Please send them within 10 days; if you need more time, just ask.":"";};
 const TN={V:"Verified",E:"Elevated pick",L:"Elite"};
 // Ladders: one question that covers several levels of the same product. Picking a level marks the items up to that level as met.
 const LADS=[
  {id:"sheets",q:"Which best describes your sheets?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
   levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber only: cotton, linen, wool or hemp. **Polyester, nylon, bamboo and rayon do not qualify.**","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
-  d:[["Sheet fiber (for example, 100% cotton percale)",1],["Brand, if you know it",1],["Certification (GOTS or OEKO-TEX)",2]]},
+  d:[["Sheet fiber (for example, 100% cotton percale)",1],["Brand, if you know it",1],["Which one (GOTS or OEKO-TEX) and the number, if you know",2]]},
  {id:"towels",q:"Which best describes your towels?",h:"Pick the highest level that applies. A GOTS organic set also meets the lower levels.",
   levels:["Not natural fiber, or I am not sure what they are made of","Natural fiber only: cotton, linen or hemp. **Polyester, nylon, bamboo and rayon do not qualify.**","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic"],
-  d:[["Towel fiber (for example, 100% cotton terry)",1],["Brand, if you know it",1],["Certification (GOTS or OEKO-TEX)",2]]},
+  d:[["Towel fiber (for example, 100% cotton terry)",1],["Brand, if you know it",1],["Which one (GOTS or OEKO-TEX) and the number, if you know",2]]},
  {id:"bedding",q:"Which best describes your duvet or comforter and pillows?",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover.",
   levels:["Not certified, or I am not sure","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic, with natural fabric and natural fill (cotton, wool, down, feathers or latex). **Polyester or other synthetic fill does not qualify.**"],
-  d:[["Duvet or comforter: cover fabric and fill (for example, cotton cover, wool fill)",1],["Pillows: cover fabric and fill",1],["Certification (OEKO-TEX or GOTS), and the number if it is on the tag",1]]},
- {id:"water",q:"Which best describes your drinking water?",h:"A filter only counts for what its certification covers. Well water: a recent lab test report is the proof.",
-  levels:["Unfiltered tap water, or I am not sure","Drinking water goes through reverse osmosis or an NSF-certified filter","Drinking water is filtered as above, and the home also has whole-home water filtration"],
-  d:[["Drinking water system brand and model",1],["Whole-home system brand and model",2]]},
+  d:[["Duvet or comforter: cover fabric and fill (for example, cotton cover, wool fill)",1],["Pillows: cover fabric and fill",1],["Which certification (OEKO-TEX or GOTS) and the number, if you know",1]]},
+ {id:"water",q:"Which best describes your drinking water?",h:"A filter only counts for what its certification covers. Certification is by model, so check yours. Well water: a recent lab test report is the proof. If guests buy their own drinking water, pick the second to last choice.",
+  levels:["Unfiltered tap water, or I am not sure","Plastic bottled or delivered water (spring or jug delivery), or a filter with no certification. We record it, but it does not count toward a pick","Glass-bottled water","Certified filter or reverse osmosis: a pitcher, fridge, faucet, countertop or under-sink filter certified to an NSF/ANSI standard (for example some Brita or Clearly Filtered models), or a reverse osmosis system","Certified filter or reverse osmosis as above, and the home also has whole-home water filtration","No drinking water is provided (guests buy their own)","Other (describe it below; Trace will verify it and your estimate will show a range until then)"],na:5,
+  map:{0:{e2:"Not yet",l1:"Not yet"},1:{e2:"Not yet",l1:"Not yet"},2:{e2:"Yes",l1:"Not yet"},3:{e2:"Yes",l1:"Not yet"},4:{e2:"Yes",l1:"Yes"},5:{e2:"Yes",l1:"Not yet"},6:{e2:"Not sure",l1:"Not yet"}},
+  d:[["What you use (type and brand). For Other, describe it",1,4],["Model and certification, if you know (for example NSF/ANSI 53)",3,4],["Whole-home system brand and model",4,4],["What you use. For Other, describe it",6,6]]},
  {id:"scent",q:"Which best describes scent in the home?",h:"Candles and diffusers are fine at the middle level only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",
   levels:["Plug-ins, air fresheners, scented candles or fragranced sprays are used","None of those are used. Any essential oils are disclosed below","No added scent anywhere in the home, including essential oils"],
-  d:[["Essential oils or scented items in use, if any (list each)",9]]}
+  d:[["Essential oils or scented items in use, if any (list each)",9]]},
+ {id:"bath",q:"Which best describes the bath soap (body wash or bar soap) you provide?",h:"Examples of certified products: Branch Basics, Attitude Unscented. These are examples, not a required list. Any product with the certification counts, and Trace confirms it in the certifier's directory.",
+  levels:["Conventional","Green or eco-labeled, but not certified (a natural or eco claim on the label)","Non-toxic and certified: EWG Verified or MADE SAFE","Not provided in the home (N/A)"],na:3,
+  d:[["Bath soap brand and product",1],["Scent, if any (list each essential oil)",1]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
-const gkeys=g=>g.d.map(([l,min],n)=>["g."+g.id+"."+n,l,min]);
+const gkeys=g=>g.d.map(([l,min,max],n)=>["g."+g.id+"."+n,l,min,max===undefined?99:max]);
 const gitems=id=>ALL.filter(i=>i.g===id);
+const gfirst=i=>gitems(i.g)[0].id===i.id;
 const ALL=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.name})));
 let S={}; try{S=JSON.parse(localStorage.getItem("trace_str_v2")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("trace_str_v2",JSON.stringify(S))}catch(e){}};
@@ -283,18 +339,18 @@ const isOpt=l=>/if any|if on the tag|if you know|other textiles/i.test(l);
 const empty=k=>!((S.d||{})[k]||"").trim();
 const needed=()=>[
   ...ALL.filter(i=>i.d&&ans(i)==="Yes").flatMap(i=>dkeys(i).filter(([k,l])=>!isOpt(l)&&empty(k)).map(([k])=>k)),
-  ...LADS.flatMap(g=>{const sel=(S.g||{})[g.id];return typeof sel!=="number"?[]:gkeys(g).filter(([k,l,min])=>sel>=min&&!isOpt(l)&&empty(k)).map(([k])=>k);})
+  ...LADS.flatMap(g=>{const sel=(S.g||{})[g.id];return typeof sel!=="number"||sel===g.na?[]:gkeys(g).filter(([k,l,min,max])=>sel>=min&&sel<=max&&!isOpt(l)&&empty(k)).map(([k])=>k);})
 ];
 const dkeys=i=>Array.isArray(i.d)?i.d.map((l,n)=>[i.id+"."+n,l]):[[i.id,i.d]];
 const gtext=g=>gkeys(g).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?l+": "+v:"";}).filter(Boolean).join("; ");
-const dtext=i=>i.g?(i.lv===1?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
+const dtext=i=>i.g?(gfirst(i)?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{const v=((S.d||{})[k]||"").trim();return v?(Array.isArray(i.d)?l+": ":"")+v:"";}).filter(Boolean).join("; ");
 function build(){
   let h="";
   CATS.forEach(c=>{
-    if(c.items.every(i=>i.g&&i.lv>1&&!c.items.some(x=>x.g===i.g&&x.lv===1)))return;
+    if(c.items.every(i=>i.g&&!gfirst(i)&&!c.items.some(x=>x.g===i.g&&gfirst(x))))return;
     h+=`<div class="cat"><div class="cat-name">${esc(c.name)}</div><div class="cat-proof">${esc(c.proof)}</div>`;
     c.items.forEach(i=>{
-      if(i.g){ if(i.lv===1){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
+      if(i.g){ if(gfirst(i)){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
         h+=`<div class="item" data-g="${g.id}"><div class="q">${esc(g.q)}</div><div class="hint">${esc(g.h)}</div>`;
         h+=`<div class="opts" style="flex-direction:column;align-items:stretch">${g.levels.map((l,n)=>`<button class="opt" data-lv="${n}" style="text-align:left">${fmt(l)}</button>`).join("")}<button class="opt" data-lv="unsure" style="text-align:left">Not sure</button></div>`;
         h+=gkeys(g).map(([k,l])=>`<div class="detail"><input type="text" data-d="${k}" placeholder="${esc(l)}${isOpt(l)?" (optional)":" (required)"}"></div>`).join("");
@@ -315,7 +371,7 @@ function build(){
       const v=b.dataset.lv==="unsure"?"unsure":+b.dataset.lv;
       if((S.g||{})[gid]===v)b.classList.add("on");
       b.onclick=()=>{S.g=S.g||{};S.g[gid]=v;S.a=S.a||{};
-        gitems(gid).forEach(it=>{S.a[it.id]=v==="unsure"?"Not sure":(it.lv<=v?"Yes":"Not yet");});
+        gitems(gid).forEach(it=>{const g=LAD[gid];S.a[it.id]=v==="unsure"?"Not sure":g.map?g.map[v][it.id]:(g.na===v||it.lv<=v?"Yes":"Not yet");});
         el.querySelectorAll(".opt").forEach(x=>x.classList.toggle("on",x===b));save();upd();};
     });
     el.querySelectorAll("input[data-d]").forEach(inp=>{const k=inp.dataset.d;inp.value=(S.d||{})[k]||"";inp.oninput=()=>{S.d=S.d||{};S.d[k]=inp.value;save();upd();};});
@@ -385,7 +441,7 @@ function summary(){
     const d=dtext(i);
     s+=`- [${TN[i.t]}] ${i.q}\n  ${ans(i)||"—"}${d?" — "+d:""}\n`;});s+="\n";});
   if((S.extra||"").trim())s+=`NOTES\n${S.extra.trim()}\n\n`;
-  s+="Agreement accepted: yes\nPhotos and receipts to follow.";return s;
+  const pt=photoText();if(pt)s+=pt+"\n\n";s+="Agreement accepted: yes\nPhotos to follow.";return s;
 }
 function payload(){
   const r=est();
@@ -395,9 +451,10 @@ function payload(){
 }
 function show(){
   const r=est(),t=r.lo.tier,g=gapsFor();
-  $("tierName").textContent=TIERNAME[t];
+  $("tierName").textContent=t===0?TIERNAME[0]:"Your answers meet "+TIERNAME[t];
   let note=t===0?"Here is what stands between this home and Trace Verified. Most of it is product swaps at restock and documenting what you already own."
-    :t===3?"Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
+    :t>=1&&t<3?"Congratulations! Your answers meet the Trace Verified standard. Once we confirm your photos, your home is officially Trace Verified. Gather the photos listed below. We will email you a link to drop them in after you send this. The items under Ways to go further are optional."
+    :t===3?"Congratulations! Every item is answered as met. Elite is confirmed by a witnessed check, so the next step is scheduling that with Trace."
     :"This is your self-reported level. The items below are what would reach "+g.next+".";
   if(r.hi.tier>t)note+=` If your "Not sure" answers check out, this home could reach ${TIERNAME[r.hi.tier].replace(" (witnessed check pending)","")}.`;
   $("tierNote").textContent=note;
@@ -408,11 +465,10 @@ function show(){
   const sug=i=>{const a=SUG[i.id],d=DIR[i.id];if(!a&&!d)return"";return `<div class="hint" style="margin:4px 0 0">${a?`Examples that qualify: ${a.map(lnk).join(" · ")}`:""}${a&&d?"<br>":""}${d?`Find certified products: ${d.map(lnk).join(" · ")}`:""}</div>`;};
   const row=i=>`<div class="row"><div class="t">${i.t==="V"?"Needed":"Next step"}</div><div>${esc(i.q)}${sug(i)}</div></div>`;
   $("gaps").innerHTML=(g.list.length?`<div class="hint">${esc(g.note)} You do not have to buy these. Any product that meets the standard counts, and Trace reviews anything outside our catalog.</div>`+g.list.map(row).join(""):`<div class="row"><div>You are all set at this level.</div></div>`);
-  $("proof").innerHTML=CATS.map(c=>{
-    const mine=c.items.filter(i=>ans(i)==="Yes"||ans(i)==="Not sure");
-    return mine.length?`<div class="row stack"><div class="t">${esc(c.name)}</div><div>${esc(c.proof.replace(/^Proof:\s*/,"").replace(/^./,m=>m.toUpperCase()))}</div></div>`:"";
-  }).join("")||`<div class="row"><div>None yet.</div></div>`;
+  const pl=photoList();
+  $("proof").innerHTML=pl.length?`<div class="hint">Gather these now, in one walk through your home. After you press Send to Trace, we will email you a link to drop them in. Please send them within 10 days. If you need more time, just ask. A photo of the label or tag as it is today is enough, and a screenshot of an order history works too.</div>`+pl.map(r=>`<div class="row stack"><div class="t">${esc(r.room)}</div><div>${r.items.map(x=>`${x.n}. ${esc(x.t)}`).join("<br>")}</div></div>`).join(""):`<div class="row"><div>No photos needed yet.</div></div>`;
   $("msg").textContent="";$("msg").className="msg";
+  $("left").classList.add("hide");
   $("form").classList.add("hide");$("foot").classList.add("hide");$("results").classList.remove("hide");$("results").classList.add("show");
   window.scrollTo(0,0);
 }
@@ -436,6 +492,34 @@ async function webmail(kind){
 }
 $("gmail").onclick=()=>webmail("gmail");
 $("outlook").onclick=()=>webmail("outlook");
+function startOver(){
+  if(!confirm("Clear all your answers and start over? This cannot be undone."))return;
+  try{localStorage.removeItem("trace_str_v2");}catch(e){}
+  S={};
+  location.href=location.pathname;
+}
+$("startover").onclick=startOver;$("startover2").onclick=startOver;
+function leftList(){
+  const out=[];
+  const qOf=k=>{const m=k.match(/^g\.([a-z]+)\./);return m?{sel:`.item[data-g="${m[1]}"]`,t:LAD[m[1]].q}:{sel:`.item[data-id="${k.split(".")[0]}"]`,t:ALL.find(i=>i.id===k.split(".")[0]).q};};
+  ALL.filter(i=>!i.g&&!done(i)).forEach(i=>out.push({sel:`.item[data-id="${i.id}"]`,t:"Answer: "+i.q}));
+  LADS.filter(g=>(S.g||{})[g.id]===undefined).forEach(g=>out.push({sel:`.item[data-g="${g.id}"]`,t:"Answer: "+g.q}));
+  const seen=new Set();
+  needed().forEach(k=>{const q=qOf(k);if(seen.has(q.sel))return;seen.add(q.sel);out.push({sel:q.sel,t:"Add the details for: "+q.t});});
+  const F={"your name":"host","a valid email":"email","the property name":"prop","the property address":"addr"};
+  const first=[];
+  intakeMissing().forEach(m=>first.push({sel:"#"+F[m],t:"Add "+m}));
+  return first.concat(out);
+}
+function showLeft(){
+  const panel=$("left"),list=leftList();
+  if(!panel.classList.contains("hide")){panel.classList.add("hide");return;}
+  panel.innerHTML=list.length?`<div class="hint" style="margin:0 0 6px">Tap one to jump to it.</div>`+list.map((x,n)=>`<a data-n="${n}">${esc(x.t)}</a>`).join(""):`<div>Nothing is missing. You can press See my estimate.</div>`;
+  panel.querySelectorAll("a").forEach(a=>a.onclick=()=>{const el=document.querySelector(list[+a.dataset.n].sel);panel.classList.add("hide");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});});
+  panel.classList.remove("hide");
+}
+$("leftbtn").onclick=showLeft;
+$("copyphotos").onclick=async()=>{const t=photoText();try{await navigator.clipboard.writeText(t);$("copyphotos").textContent="Copied";setTimeout(()=>$("copyphotos").textContent="Copy photo list",1800);}catch(e){prompt("Copy this:",t);}};
 $("go").onclick=show;
 $("back").onclick=()=>{$("results").classList.add("hide");$("results").classList.remove("show");$("form").classList.remove("hide");$("foot").classList.remove("hide");window.scrollTo(0,0);};
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy summary",1800);}catch(e){prompt("Copy this:",summary());}};
