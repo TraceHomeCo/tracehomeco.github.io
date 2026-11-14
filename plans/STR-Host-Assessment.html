@@ -163,7 +163,7 @@ const CATS = [
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. If anyone else cleans, they have a short written brief on which products may be used.",h:"Cleaners and guests do not bring their own. A one-page brief is enough, and Trace can send a template.",d:"Who cleans, and how products are supplied"},
   {id:"v3",t:"V",q:"Laundry detergent is fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["Detergent brand","Scent, if any (list each essential oil)"]},
   {id:"v7",t:"V",q:"Household cleaners (all-purpose, bathroom and dish soap) are fragrance-free and dye-free.",h:"A product scented only with essential oils is fine if every oil is listed on the label. Any product that meets this qualifies.",d:["All-purpose cleaner brand","Bathroom cleaner brand","Dish soap brand","Scent, if any (list each essential oil)"]},
-  {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name."}
+  {id:"v4",t:"V",q:"No plug-ins, air fresheners, scented candles or fragranced sprays are used in the home.",h:"Candles and diffusers are fine only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",g:"scent",lv:1}
  ]},
  {name:"Bedding and textiles", proof:"Proof: photos of the sewn-in tags showing fiber and any certification.", items:[
   {id:"v5",t:"V",q:"Sheets are cotton, linen, wool or hemp, with no polyester, nylon or bamboo.",h:"",g:"sheets",lv:1},
@@ -183,14 +183,14 @@ const CATS = [
   {id:"l7",t:"L",q:"Every bedroom has a True HEPA purifier (H13 or better), independently verified.",h:"True HEPA means H13 or better, with no ionizer or ozone function. A third-party HEPA test, or a certification such as AHAM Verifide or CARB, supports it.",d:"Brands and models"}
  ]},
  {name:"Water", proof:"Proof: photo of the system, the model, and a filter order or receipt if you have one. Well water: a recent lab test report.", items:[
-  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",d:"Brand and model"},
-  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",d:"Brand and model"}
+  {id:"e2",t:"E",q:"Drinking water goes through reverse osmosis or an NSF-certified filter.",h:"A filter only counts for what its certification covers.",g:"water",lv:1},
+  {id:"l1",t:"L",q:"The home has whole-home water filtration.",h:"",g:"water",lv:2}
  ]},
  {name:"Kitchen", proof:"Proof: photos of the cookware and any labels.", items:[
   {id:"e6",t:"E",q:"Cookware is low-tox: no non-stick or ceramic-coated pans.",h:"Cast iron, stainless steel, carbon steel, enameled cast iron and glass all qualify.",d:"What you have (materials and brands)"}
  ]},
  {name:"Scent", proof:"Proof: photos of each room, plus your attestation here.", items:[
-  {id:"l3",t:"L",q:"No added scent anywhere in the home, including essential oils.",h:""}
+  {id:"l3",t:"L",q:"No added scent anywhere in the home, including essential oils.",h:"",g:"scent",lv:2}
  ]},
  {name:"Lighting", proof:"Proof: photos of bedroom lamps and bulbs.", items:[
   {id:"l4",t:"L",q:"Bedrooms have circadian-friendly lighting: warm, low-blue bulbs for evening use.",h:"",d:"Bulb brands or color temperature"}
@@ -246,7 +246,13 @@ const LADS=[
   d:[["Towel brand and fiber",1],["Certification (GOTS or OEKO-TEX)",2]]},
  {id:"bedding",q:"Which best describes your duvet or comforter and pillows?",h:"Many synthetic duvets and pillows are filled with polyester, so check the fill as well as the cover.",
   levels:["Not certified, or I am not sure","Certified: OEKO-TEX Standard 100 or GOTS","GOTS organic, with natural fabric and natural fill (cotton, wool, down, feathers or latex), and no polyester or synthetic fill"],
-  d:[["Duvet or comforter brand",1],["Duvet cover fabric and fill",1],["Pillow brand",1],["Pillow fabric and fill",1],["Other textiles (rugs, throws, curtains)",9]]}
+  d:[["Duvet or comforter brand",1],["Duvet cover fabric and fill",1],["Pillow brand",1],["Pillow fabric and fill",1],["Other textiles (rugs, throws, curtains)",9]]},
+ {id:"water",q:"Which best describes your drinking water?",h:"A filter only counts for what its certification covers. Well water: a recent lab test report is the proof.",
+  levels:["Unfiltered tap water, or I am not sure","Drinking water goes through reverse osmosis or an NSF-certified filter","Drinking water is filtered as above, and the home also has whole-home water filtration"],
+  d:[["Drinking water system brand and model",1],["Whole-home system brand and model",2]]},
+ {id:"scent",q:"Which best describes scent in the home?",h:"Candles and diffusers are fine at the middle level only if scented with essential oils and every oil is listed. This is about what is not in the home, so there is no product to name.",
+  levels:["Plug-ins, air fresheners, scented candles or fragranced sprays are used","None of those are used. Any essential oils are disclosed below","No added scent anywhere in the home, including essential oils"],
+  d:[["Essential oils or scented items in use, if any (list each)",9]]}
 ];
 const LAD=Object.fromEntries(LADS.map(g=>[g.id,g]));
 const gkeys=g=>g.d.map(([l,min],n)=>["g."+g.id+"."+n,l,min]);
@@ -276,6 +282,7 @@ const dtext=i=>i.g?(i.lv===1?gtext(LAD[i.g]):""):!i.d?"":dkeys(i).map(([k,l])=>{
 function build(){
   let h="";
   CATS.forEach(c=>{
+    if(c.items.every(i=>i.g&&i.lv>1&&!c.items.some(x=>x.g===i.g&&x.lv===1)))return;
     h+=`<div class="cat"><div class="cat-name">${esc(c.name)}</div><div class="cat-proof">${esc(c.proof)}</div>`;
     c.items.forEach(i=>{
       if(i.g){ if(i.lv===1){const g=LAD[i.g],tiers=[...new Set(gitems(g.id).map(x=>TN[x.t]))].join(" to ");
