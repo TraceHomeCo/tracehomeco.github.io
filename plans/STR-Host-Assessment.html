@@ -137,6 +137,8 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 
   <div class="actions">
     <button class="btn" id="send">Send to Trace</button>
+    <button class="btn sec" id="gmail">Open in Gmail</button>
+    <button class="btn sec" id="outlook">Open in Outlook</button>
     <button class="btn sec" id="copy">Copy summary</button>
     <button class="btn sec" id="back">Edit answers</button>
   </div>
@@ -154,7 +156,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--linen);border-top
 const ENDPOINT = "";
 
 // type: yn = Yes / Not yet / Not sure
-// t: V = Trace Verified (all required), E = Elevated pick (any 3 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
+// t: V = Trace Verified (all required), E = Elevated pick (any 5 of 9 to reach Elevated, all 9 for Elite), L = Elite checkpoint
 const CATS = [
  {name:"Cleaning and laundry", proof:"Proof: photos of every label, plus your cleaner brief.", items:[
   {id:"v1",t:"V",q:"You buy every cleaning and laundry product used in the home. If anyone else cleans, they have a short written brief on which products may be used.",h:"Cleaners and guests do not bring their own. A one-page brief is enough, and Trace can send a template.",d:"Who cleans, and how products are supplied"},
@@ -280,18 +282,19 @@ function upd(){
   $("go").disabled=n<ALL.length;
 }
 
-// Scoring (draft for review). Bands: Verified 70-79, Elevated 80-89, Elite 90-96 (witnessed check pending).
-// Below Verified: 25 + up to 44 across the core items. Verified: 70, +3 per Elevated pick. Elevated: 80, +3 per pick beyond three (capped at 89).
-// Elite: 90 plus up to 6 across the Elite items (96 when all are met).
+// Scoring (draft for review). Whole points per item, so a report can list each line.
+// Below Verified: 25 + 7 per Verified item (max 60). Verified: all Verified items = 70, +2 per Elevated pick.
+// Elevated: 5 or more picks (80 to 88). Elite: all picks and all Elite items = 90, +1 per Elite item (99); 100 is held for the witnessed check.
+const ELEV=5; // Elevated picks needed for the Elevated tier
 function calc(unsureCounts){
   const m=i=>ans(i)==="Yes"||(unsureCounts&&ans(i)==="Not sure");
   const V=ALL.filter(i=>i.t==="V"),E=ALL.filter(i=>i.t==="E"),L=ALL.filter(i=>i.t==="L");
   const v=V.filter(m).length,e=E.filter(m).length,l=L.filter(m).length;
   let tier,sc;
-  if(v<V.length){tier=0;sc=25+44*v/V.length;}
-  else if(e<3){tier=1;sc=70+3*e;}
-  else if(e<E.length||l<L.length){tier=2;sc=Math.min(89,80+3*(e-3));}
-  else{tier=3;sc=90+Math.round(6*l/L.length);}
+  if(v<V.length){tier=0;sc=25+7*v;}
+  else if(e<ELEV){tier=1;sc=70+2*e;}
+  else if(e<E.length||l<L.length){tier=2;sc=70+2*e;}
+  else{tier=3;sc=90+l;}
   return{tier,score:Math.round(sc),v,e,l};
 }
 const TIERNAME=["Not yet Verified","Trace Verified","Trace Elevated","Trace Elite (witnessed check pending)"];
@@ -305,7 +308,7 @@ function gapsFor(){
   const c=calc(false);
   const unmet=t=>ALL.filter(i=>i.t===t&&ans(i)!=="Yes");
   if(c.tier===0)return{next:"Verified",list:unmet("V"),note:`All ${ALL.filter(i=>i.t==="V").length} Verified items are required.`};
-  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Any ${3-c.e} more of these picks gets you to Elevated.`};
+  if(c.tier===1)return{next:"Elevated",list:unmet("E"),note:`Any ${ELEV-c.e} more of these picks gets you to Elevated.`};
   if(c.tier===2)return{next:"Elite",list:[...unmet("E"),...unmet("L")],note:`Elite needs all ${ALL.filter(i=>i.t==="E").length} picks, every Elite item, and a witnessed check by Trace.`};
   return{next:null,list:[],note:""};
 }
@@ -360,6 +363,22 @@ function msg(t,c){$("msg").textContent=t;$("msg").className="msg "+(c||"");}
 function mailFallback(){
   location.href="mailto:hello@tracehome.co?subject="+encodeURIComponent("Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")")+"&body="+encodeURIComponent(summary());
 }
+const SUBJ=()=>"Trace Verified self-assessment — "+(S.prop||"")+" ("+ref()+")";
+// Opens a draft in a webmail tab. The full summary is copied to the clipboard and also placed in the draft when it is short enough for the link.
+async function webmail(kind){
+  const miss=intakeMissing();
+  if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
+  if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
+  const full=summary();
+  let copied=false; try{await navigator.clipboard.writeText(full);copied=true;}catch(e){}
+  const body=full.length<1500?full:(copied?"Your assessment summary is copied. Paste it here (Ctrl+V or Cmd+V), then press send.\n\nReference: "+ref():full.slice(0,1400)+"\n\n[Summary cut off. Press Copy summary on the assessment page and paste the rest.]");
+  const to="hello@tracehome.co",su=encodeURIComponent(SUBJ()),b=encodeURIComponent(body);
+  const url=kind==="gmail"?`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${b}`:`https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${su}&body=${b}`;
+  window.open(url,"_blank","noopener");
+  msg("A draft opened in a new tab"+(copied&&full.length>=1500?" and your summary is copied; paste it into the draft":"")+". Press send there to finish. If it did not open, press Copy summary and email it to hello@tracehome.co.","ok");
+}
+$("gmail").onclick=()=>webmail("gmail");
+$("outlook").onclick=()=>webmail("outlook");
 $("go").onclick=show;
 $("back").onclick=()=>{$("results").classList.add("hide");$("results").classList.remove("show");$("form").classList.remove("hide");$("foot").classList.remove("hide");window.scrollTo(0,0);};
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary());$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy summary",1800);}catch(e){prompt("Copy this:",summary());}};
@@ -367,7 +386,7 @@ $("send").onclick=async()=>{
   const miss=intakeMissing();
   if(miss.length){msg("Please go back and add "+miss.join(", ")+".","err");return;}
   if(!(S.ag||{}).agree1||!(S.ag||{}).agree2||!(S.ag||{}).agree3){msg("Please accept all three items above before sending.","err");return;}
-  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish.","ok");return;}
+  if(!ENDPOINT){mailFallback();msg("Your email app should open with your assessment ready to send. Press send there to finish. If it did not open, use Open in Gmail or Open in Outlook, or press Copy summary and email it to hello@tracehome.co.","ok");return;}
   $("send").disabled=true;msg("Sending…");
   try{
     await fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload())});
