@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Stewart's Trace Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --night: #1A1A1A;
+    --linen: #F5F5F3;
+    --bone: #E4E4E0;
+    --dusk: #888888;
+    --ash: #AAAAAA;
+    --white: #FFFFFF;
+    --green-bg: #EBF0E8;
+    --green-text: #2D5A27;
+    --amber-bg: #FBF3E3;
+    --amber: #B8863B;
+    --red: #A3402D;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    background: var(--linen);
+    color: var(--night);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 32px 100px; }
+
+  strong { font-weight: 500; }
+
+  .logo-mark { text-align: center; margin-bottom: 24px; }
+
+  .eyebrow {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dusk);
+    margin-bottom: 8px;
+  }
+
+  .visit-label {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--night);
+    margin-bottom: 24px;
+  }
+
+  .score-ring-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 32px; }
+  .score-ring { position: relative; width: 170px; height: 170px; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring-track { fill: none; stroke: var(--bone); stroke-width: 3; }
+  .score-ring-fill {
+    fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: butt;
+    stroke-dasharray: 461.8; stroke-dashoffset: 461.8;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .score-number { font-family: 'Cormorant Garamond', serif; font-size: 74px; font-weight: 400; line-height: 1; color: var(--night); }
+  .score-denom { font-size: 11px; color: var(--ash); letter-spacing: 0.1em; }
+  .score-band { margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); font-weight: 400; }
+
+  .result-headline { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 5vw, 30px); font-weight: 300; line-height: 1.25; color: var(--night); margin-bottom: 14px; text-align: center; }
+  .result-body { font-size: 14px; line-height: 1.75; color: var(--dusk); text-align: center; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+  .disclosure {
+    background: var(--white);
+    border-left: 3px solid var(--amber);
+    padding: 16px 20px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #555;
+    margin: 0 auto 32px;
+    max-width: 520px;
+  }
+
+  .divider { width: 48px; height: 1px; background: var(--bone); margin: 40px auto; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dusk); text-align: center; margin-bottom: 20px; }
+  .section-h { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; text-align: center; margin-bottom: 8px; }
+  .section-sub { font-size: 13px; color: var(--dusk); text-align: center; font-style: italic; margin-bottom: 28px; }
+
+  .reassure {
+    background: var(--green-bg);
+    border-left: 3px solid var(--green-text);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--green-text);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+
+  .approved-card { background: var(--white); border-radius: 2px; padding: 24px; margin-bottom: 32px; }
+  .approved-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+  .approved-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.5; color: var(--night); padding: 4px 0; }
+  .approved-check { color: var(--green-text); font-weight: 500; flex-shrink: 0; }
+
+  .top3-card {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--white); padding: 16px 20px; margin-bottom: 10px;
+  }
+  .top3-num {
+    width: 32px; height: 32px; background: var(--green-text); color: var(--linen);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 18px; flex-shrink: 0;
+  }
+  .top3-content { flex: 1; }
+  .top3-title { font-size: 14px; font-weight: 400; color: var(--night); margin-bottom: 2px; }
+  .top3-reason { font-size: 12px; color: var(--dusk); font-style: italic; }
+  .top3-points { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--green-text); flex-shrink: 0; }
+
+  .wave-header { text-align: center; margin: 48px 0 20px; }
+  .wave-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; }
+  .wave-sub { font-size: 13px; color: var(--dusk); font-style: italic; margin-top: 4px; }
+
+  .room-h { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 400; margin: 28px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--bone); }
+
+  .swap-card { background: var(--white); padding: 22px 24px; margin-bottom: 20px; }
+  .swap-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .swap-label { font-size: 12px; font-weight: 500; color: var(--dusk); letter-spacing: 0.05em; text-transform: uppercase; }
+  .swap-badge { font-size: 11px; font-weight: 500; color: var(--green-text); background: var(--green-bg); padding: 3px 10px; }
+  .swap-badge.free { color: var(--green-text); }
+  .swap-current { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--night); margin-bottom: 10px; }
+  .swap-why { font-size: 13px; line-height: 1.65; color: #444; margin-bottom: 10px; }
+  .swap-note { font-size: 12.5px; line-height: 1.6; color: #666; font-style: italic; margin-bottom: 14px; }
+
+  .options-row { display: grid; gap: 12px; }
+  .options-row:not(:first-of-type) { margin-top: 12px !important; }
+  .swap-card .options-row:first-of-type::before {
+    content: "VERIFIED SWAP";
+    display: block;
+    grid-column: 1 / -1;
+    font-family: 'Jost', sans-serif;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-text);
+    margin-bottom: -4px;
+  }
+  .options-row.two { grid-template-columns: 1fr 1fr; }
+  .options-row.one { grid-template-columns: 1fr; }
+  .option { border: 1px solid var(--bone); padding: 16px; }
+  .option-name { font-size: 13px; font-weight: 500; color: var(--green-text); margin-bottom: 5px; text-decoration: underline; }
+  .option-price { font-size: 12px; color: #666; margin-bottom: 3px; }
+  .option-cert { font-size: 11.5px; color: var(--green-text); font-style: italic; }
+
+  .nursery-banner {
+    background: var(--white);
+    border: 1px solid var(--bone);
+    padding: 20px 24px;
+    margin: 24px 0 28px;
+    text-align: center;
+  }
+  .nursery-banner-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-bottom: 8px; }
+  .nursery-banner-body { font-size: 13px; color: var(--dusk); line-height: 1.6; }
+
+  .footer-mark { text-align: center; font-family: 'Jost', sans-serif; font-weight: 200; font-size: 13px; letter-spacing: 0.35em; color: var(--ash); text-transform: lowercase; margin-top: 48px; }
+
+  @media (max-width: 480px) {
+    .options-row.two { grid-template-columns: 1fr; }
+    .options-row.three { grid-template-columns: 1fr; }
+    .options-row[style*="1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    .approved-grid { grid-template-columns: 1fr; }
+  }
+  .range-num { font-family:'Cormorant Garamond',serif; font-size:50px; font-weight:400; line-height:1; color:var(--night); }
+  .rm { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--bone); font-size:13px; }
+  .rm:last-child { border-bottom:none; }
+  .rm .g { color:var(--green-text); font-weight:500; }
+  .rm .a { color:var(--amber); font-weight:500; }
+  .kit-badge { font-size:11px; font-weight:500; color:var(--green-text); background:var(--green-bg); padding:3px 10px; }
+  .pri { font-size:11px; font-weight:500; padding:3px 10px; }
+  .pri.hi { background:#FBEAE5; color:var(--red); }
+  .pri.mod { background:var(--amber-bg); color:var(--amber); }
+  .pri.low { background:var(--green-bg); color:var(--green-text); }
+  .ck { display:inline-flex; align-items:center; gap:6px; }
+  .ck input { width:16px; height:16px; accent-color:var(--green-text); }
+  .ck label { font-size:11px; color:var(--green-text); cursor:pointer; font-style:italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo-mark">
+    <img src="https://tracehomeco.github.io/trace_logo_A_primary.png" alt="Trace" style="height:140px;width:auto;"
+      onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+    <div id="logo-fallback" style="display:none;font-family:'Jost', sans-serif;font-weight:200;font-size:44px;letter-spacing:0.35em;color:#1A1A1A;text-transform:lowercase;">trace</div>
+  </div>
+  <div class="eyebrow">YOUR HOME HEALTH OPTIMIZATION PLAN</div>
+  <div class="visit-label">Dr. Stewart's Home &middot; San Diego &middot; November 2026</div>
+  <p style="text-align:center;font-size:14px;color:#444;max-width:520px;margin:0 auto 18px;line-height:1.6;">
+    Thank you for welcoming me into your home. We walked through it together across 60+ checkpoints, room by room.
+    Much of what you've chosen already holds up well: organic mattresses, filtered air in every sleep space,
+    glass-bottled drinking water, and a home that is fragrance-free where it counts. What follows is what we found,
+    organized so you can act on it at whatever pace suits your household.
+  </p>
+  <div class="score-ring-wrap">
+    <div class="score-ring">
+      <svg width="170" height="170" viewBox="0 0 170 170">
+        <circle class="score-ring-track" cx="85" cy="85" r="73.5"/>
+        <circle class="score-ring-fill" id="score-arc" cx="85" cy="85" r="73.5"/>
+      </svg>
+      <div class="score-center">
+        <div class="range-num">46&ndash;56</div>
+        <div class="score-denom">ESTIMATED</div>
+      </div>
+    </div>
+    <div class="score-band">Building Momentum</div>
+  </div>
+  <h2 class="result-headline">A strong foundation of sleep and air, with the everyday products still to go.</h2>
+  <p class="result-body">
+    Your sleep spaces are essentially done. The remaining opportunity sits in daily-use products: soaps, detergent,
+    cookware, lunch containers and pest control. Those are the swaps below, and your starter kit already covers several.
+  </p>
+  <div class="disclosure">
+    <strong>How your score works:</strong> it measures breadth, not severity &mdash; the share of checkpoints using
+    the cleanest options, not a pass/fail grade. Most first-time assessments land between 30&ndash;55%, since so
+    little in this industry is required to be disclosed.<br><br>
+    <strong>Why it's a range:</strong> six items are still to confirm (listed near the end). Counting them as not
+    yet clean gives the low end; counting them as clean gives the high end. Your final number goes with the swap plan.<br><br>
+    <strong>How it grows:</strong> every completed swap moves a checkpoint into your "clean" count. With your starter
+    kit in use, the estimate moves to roughly <strong>51&ndash;61%</strong>.
+  </div>
+
+  <div class="section-label" style="margin-top:32px;">The Breakdown</div>
+  <p style="font-size:13px;color:#666;margin-bottom:16px;">Room by room, from the checkpoints we matched during the visit.</p>
+  <div class="approved-card">
+    <div class="rm"><span>Kitchen</span><span class="a">6 clean &middot; 3 swaps</span></div>
+    <div class="rm"><span>Bathroom</span><span class="a">4 clean &middot; 7 swaps</span></div>
+    <div class="rm"><span>Bedroom</span><span class="g">5 clean &middot; 1 swap</span></div>
+    <div class="rm"><span>Living room</span><span class="g">4 clean &middot; 0 swaps</span></div>
+    <div class="rm"><span>Kids' rooms</span><span class="g">5 clean &middot; 1 swap</span></div>
+    <div class="rm"><span>Laundry</span><span class="a">1 clean &middot; 2 swaps</span></div>
+    <div class="rm"><span>Home office</span><span class="a">1 clean &middot; 1 swap</span></div>
+    <div class="rm"><span>Pests, garage &amp; general</span><span class="a">0 clean &middot; 7 swaps</span></div>
+  </div>
+  <div class="reassure">
+    This plan is about progress, not perfection overnight. A few swaps at a time, in whatever order fits your life, is exactly the right pace.
+  </div>
+  <div class="divider"></div>
+
+<div class="section-label">Where you're already ahead</div>
+  <div class="section-h" style="margin-bottom:24px;">Already going well.</div>
+  <p style="font-size:13px;color:#666;margin-bottom:20px;font-style:italic;">These are the highest-impact categories, and most are already at the cleanest tier.</p>
+  <div class="approved-card">
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin-bottom:10px;">Water</div><div class="approved-grid" style="margin-bottom:20px;"><div class="approved-item"><span class="approved-check">&#10003;</span>Drinking water &mdash; Mountain Valley glass-bottle delivery, scored at the cleanest tier</div><div class="approved-item"><span class="approved-check">&#10003;</span>Whole-home water system (Flowtech) &mdash; treats water at every tap; we&rsquo;ll confirm exactly what it removes</div></div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin-bottom:10px;">Kitchen</div><div class="approved-grid" style="margin-bottom:20px;"><div class="approved-item"><span class="approved-check">&#10003;</span>Coffee &mdash; French press / pour-over (glass, stainless)</div><div class="approved-item"><span class="approved-check">&#10003;</span>Food storage &mdash; glass with glass or silicone lids</div><div class="approved-item"><span class="approved-check">&#10003;</span>Water bottles &mdash; stainless steel</div><div class="approved-item"><span class="approved-check">&#10003;</span>Cutting board &mdash; wood or bamboo</div><div class="approved-item"><span class="approved-check">&#10003;</span>All-purpose cleaner &mdash; Branch Basics tier, fragrance-free</div></div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin-bottom:10px;">Bedrooms</div><div class="approved-grid" style="margin-bottom:20px;"><div class="approved-item"><span class="approved-check">&#10003;</span>Mattresses &mdash; GOTS + GREENGUARD Gold, adults and kids</div><div class="approved-item"><span class="approved-check">&#10003;</span>Air purifiers &mdash; True HEPA in every sleep space</div><div class="approved-item"><span class="approved-check">&#10003;</span>Pillows &mdash; GOTS certified organic</div><div class="approved-item"><span class="approved-check">&#10003;</span>Kids' sheets &mdash; organic cotton, linen, wool or hemp</div><div class="approved-item"><span class="approved-check">&#10003;</span>Fragrance-free, no candles or air fresheners</div><div class="approved-item"><span class="approved-check">&#10003;</span>WiFi router &mdash; far end or different floor from the bedrooms</div></div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin-bottom:10px;">Living room &amp; entry</div><div class="approved-grid" style="margin-bottom:20px;"><div class="approved-item"><span class="approved-check">&#10003;</span>Air purifier in the main living area</div><div class="approved-item"><span class="approved-check">&#10003;</span>Rug &mdash; GOTS certified organic wool/cotton</div><div class="approved-item"><span class="approved-check">&#10003;</span>Fragrance-free, no plug-ins, candles or sprays</div><div class="approved-item"><span class="approved-check">&#10003;</span>Shoes off at the door, every time</div></div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin-bottom:10px;">Bathroom &amp; laundry</div><div class="approved-grid" style="margin-bottom:20px;"><div class="approved-item"><span class="approved-check">&#10003;</span>Feminine care &mdash; GOTS organic or cup</div><div class="approved-item"><span class="approved-check">&#10003;</span>Dental floss &mdash; PTFE-free</div><div class="approved-item"><span class="approved-check">&#10003;</span>Dry cleaning &mdash; rarely or never</div><div class="approved-item"><span class="approved-check">&#10003;</span>Lighting &mdash; mostly LED, and you already avoid overhead light at night</div></div>
+</div>
+  <div class="divider"></div>
+
+<div class="section-label">The Trace Scanning Key</div>
+  <div class="section-h" style="margin-bottom:16px;">What we scan for, and why.</div>
+  <p class="result-body" style="margin-bottom:20px;">Think of daily exposures like apps running in the background of a phone. No single one crashes it; together they add load. The goal isn't eliminating every one, it's reducing the background load where it's easiest to do.</p>
+  <div class="approved-card">
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin:16px 0 10px;">Air &amp; inhalation</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">VOCs.</strong> Compounds that evaporate into room air from paints, cleaners and furnishings. If it has a strong smell, you are breathing part of it.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Fragrance.</strong> A legal category that lets brands list one word in place of many undisclosed ingredients.</div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin:16px 0 10px;">Skin contact</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Synthetics.</strong> Polyester, nylon and spandex are plastics worn against skin for hours.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Parabens.</strong> Preservatives that absorb through skin and are studied for hormone-like activity.</div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin:16px 0 10px;">Kitchen, cookware &amp; ingestion</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">PFAS.</strong> "Forever chemicals" used in non-stick and stain-resistant coatings. They do not break down.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">BPA &amp; related plastics.</strong> Found in some plastics and can linings; can migrate into food, especially with heat.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Phthalates.</strong> Often part of an undisclosed "fragrance" blend; studied for hormone disruption.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Microplastics.</strong> Tiny plastic fragments from plastic containers, bottles and synthetic fabrics. They end up in food, water and dust.</div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin:16px 0 10px;">Water &amp; metals</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Chlorine / chloramine.</strong> Disinfectants in municipal water; absorbed through skin and inhaled as steam in hot showers.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Lead.</strong> Can come from older plumbing. No safe exposure level has been identified.</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Fluoride.</strong> A topic you will know well. We do not take a side: we note what a product does or does not remove and leave the choice to you.</div>
+<div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-text);margin:16px 0 10px;">Habits, not hazards</div><div style="font-size:13px;color:#444;margin-bottom:6px;"><strong style="color:var(--night);">Light &amp; devices.</strong> Evening light colour and nighttime WiFi/phone use are habits that affect sleep. We flag them as easy adjustments, not contaminants.</div>
+</div>
+  <div class="divider"></div>
+  <div class="disclosure" style="border-left-color:var(--green-text);max-width:520px;margin:0 auto 24px;">
+    <strong>The gap we're navigating:</strong> a product on a shelf isn't proven safe. It usually means no one has been
+    required to prove otherwise. This plan is built on ingredient disclosure and independent testing or certification
+    wherever it exists, not on marketing claims.
+  </div>
+
+<div class="section-label">If you do nothing else</div>
+  <div class="section-h">Start here.</div>
+  <p class="section-sub">Three swaps that matter most in your home, given daily use and the kids.</p>
+  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--night);" id="liveScore">46&ndash;56%</span>
+    <span style="font-size:12px;color:var(--dusk);">projected score as you complete swaps &mdash; check the boxes below as you go</span>
+  </div>
+  <p style="font-size:12px;color:var(--green-text);margin-bottom:16px;" id="kitLine">With your starter kit in use: about 51&ndash;61%</p>
+  <div class="top3-card"><div class="top3-num">1</div><div class="top3-content"><div class="top3-title">Pest control <span style="font-weight:300;color:var(--dusk);">(Home &amp; garage)</span></div><div class="top3-reason">Pesticide residue sits where kids play and walk. Ask your service for a lower-toxicity protocol.</div></div><div class="top3-points">High</div></div>
+  <div class="top3-card"><div class="top3-num">2</div><div class="top3-content"><div class="top3-title">Kids' lunch containers <span style="font-weight:300;color:var(--dusk);">(Kitchen)</span></div><div class="top3-reason">Daily food contact, often warm food in plastic</div></div><div class="top3-points">High</div></div>
+  <div class="top3-card"><div class="top3-num">3</div><div class="top3-content"><div class="top3-title">Laundry detergent <span style="font-weight:300;color:var(--dusk);">(Laundry)</span></div><div class="top3-reason">Worn and slept in every day by the whole family</div></div><div class="top3-points">High</div></div>
+  <div class="reassure" style="margin-top:20px;">
+    Do these three first and the rest of the plan will still be here. The value compounds over years, the same way small daily choices always do.
+  </div>
+  <div class="divider"></div>
+
+<div class="wave-header"><div class="wave-title" style="color:var(--green-text);">The Swaps</div></div>
+<p class="section-sub" style="margin-bottom:8px;">Most important first within each room. Items marked <strong>In your starter kit</strong> are already in your hands.</p>
+<div class="room-h">Pests &amp; garage</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb1" data-w="2" data-kit="0" onchange="updateLiveScore()"><label for="cb1">Check to see your score update</label></span><span class="swap-label">Pest control <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Home &amp; garage</span></span><span><span class="pri hi">High priority</span></span></div><div class="swap-current">Currently: conventional sprays and traps, plus a professional service (Tallos) you've already asked for lower-toxicity options from</div><div class="swap-why">Conventional indoor sprays leave residues on floors and surfaces, and young children spend the most time closest to them. You have already done the most useful thing: asking your provider for lower-toxicity options. These are the questions that make that request concrete. <strong>Counts as two checkpoints</strong> (home and garage).</div><div class="swap-note"><strong>Ask Tallos:</strong> (1) which active ingredients they use and for a safety data sheet; (2) exterior perimeter and bait stations instead of indoor spraying where possible; (3) no treatment of kids' rooms or play areas; (4) how long to wait before re-entering treated areas. For ants, sealed bait stations and removing food sources are the least-exposure approach. We do not recommend a specific pest product here, because verification for pest products is limited.</div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb2" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb2">Check to see your score update</label></span><span class="swap-label">Paint for home projects <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Garage</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: low-VOC paint</div><div class="swap-why">Low-VOC is a good start. Zero-VOC lines go further and are easy to find for your next project, especially for kids' rooms.</div><div class="options-row two"><div class="option"><a href="https://www.clare.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Clare</div></a><div class="option-price">clare.com</div><div class="option-cert">Zero-VOC line</div></div><div class="option"><a href="https://www.yolocolorhouse.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">YOLO Colorhouse</div></a><div class="option-price">yolocolorhouse.com</div><div class="option-cert">Zero-VOC line</div></div></div></div>
+<div class="room-h">Kitchen</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb3" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb3">Check to see your score update</label></span><span class="swap-label">Kids' lunch containers <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Kitchen</span></span><span><span class="pri hi">High priority</span></span></div><div class="swap-current">Currently: plastic lunchbox or containers</div><div class="swap-why">Plastic food containers are where BPA-type compounds and microplastics are most studied, particularly with warm food or repeated dishwasher cycles. Stainless steel or glass avoids the question. <strong>LunchSkins</strong> is in your starter kit; we are still confirming the exact material, so use it for dry snacks and sandwiches while we do.</div><div class="options-row two"><div class="option"><a href="https://link.amazon/B0dAp9yQu" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Klean Kanteen</div></a><div class="option-price">Amazon</div><div class="option-cert">Stainless steel &mdash; confirm lid material</div></div><div class="option"><a href="https://amzn.to/4pI5yzF" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Lifefactory Glass</div></a><div class="option-price">Amazon</div><div class="option-cert">Glass body with silicone sleeve</div></div></div><div style="margin-top:12px;" class="options-row one"><div class="option"><a href="https://lunchskins.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">LunchSkins</div></a><div class="option-price">lunchskins.com</div><div class="option-cert">In your starter kit &mdash; material being confirmed</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb4" data-w="1" data-kit="1" onchange="updateLiveScore()"><label for="cb4">Check to see your score update</label></span><span class="swap-label">Dish soap <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Kitchen</span></span><span><span class="pri low">Easy win</span> <span class="kit-badge">In your starter kit</span></span></div><div class="swap-current">Currently: Seventh Generation / Method (natural-marketed)</div><div class="swap-why">Marketed as natural and plant-based. Under the Trace standard, "natural" marketing alone is not verification, and both lists include fragrance. Molly's Suds is in your starter kit and fully discloses its ingredients. Blueland dishwasher tablets are also in your kit; we have not yet reviewed them, so they are not scored.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4yzifAZ" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Molly's Suds Dish Soap (unscented)</div></a><div class="option-price">Amazon</div><div class="option-cert">In your starter kit &middot; ingredient list disclosed</div></div><div class="option"><a href="https://attitudeliving.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Attitude Unscented Dish Soap</div></a><div class="option-price">attitudeliving.com</div><div class="option-cert">Unscented &middot; ingredient list disclosed</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb5" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb5">Check to see your score update</label></span><span class="swap-label">Cookware <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Kitchen</span></span><span><span class="pri mod">Moderate</span></span></div><div class="swap-current">Currently: a mix of clean and conventional pieces</div><div class="swap-why">Whatever is non-stick or scratched is the piece to retire first. Your Lodge cast iron skillet is in your starter kit, a material with no coating. Replacing the remaining conventional pieces moves this checkpoint.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4xJJB6u" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Lodge Cast Iron</div></a><div class="option-price">Amazon</div><div class="option-cert">In your starter kit &middot; cast iron, no coating</div></div><div class="option"><a href="https://amzn.to/46lPZor" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Made In Stainless</div></a><div class="option-price">Amazon</div><div class="option-cert">Stainless steel, no coating</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Paper towels &amp; wipes <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Kitchen</span></span><span class="swap-badge">Noted</span></div><div class="swap-why">You noted Kirkland paper towels and Clorox wipes. Disinfecting wipes use registered pesticide-type actives, which is useful for specific moments but not for everyday wiping. Branch Basics handles daily cleaning, and reusable cloths cut down on both paper and wipes. Not scored, an easy habit change.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/45Z8fnh" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Skoy Cloth</div></a><div class="option-price">Amazon</div><div class="option-cert">Reusable, no wipes needed</div></div><div class="option"><a href="https://amzn.to/4g5giUo" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">UnPaper Towels</div></a><div class="option-price">Amazon</div><div class="option-cert">Reusable cotton</div></div></div></div>
+<div class="room-h">Bathroom</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb6" data-w="1" data-kit="1" onchange="updateLiveScore()"><label for="cb6">Check to see your score update</label></span><span class="swap-label">Deodorant <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri low">Easy win</span> <span class="kit-badge">In your starter kit</span></span></div><div class="swap-current">Currently: Native scented (aluminum-free, with synthetic fragrance)</div><div class="swap-why">Aluminum-free is the harder step and you have taken it. The remaining issue is the synthetic fragrance, which can include undisclosed phthalate-containing blends. Humble Sensitive is in your starter kit; please check you got the <strong>Sensitive (unscented)</strong> version.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4xw8hyI" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Humble Sensitive Deodorant</div></a><div class="option-price">Amazon</div><div class="option-cert">In your starter kit &middot; unscented, ingredients disclosed</div></div><div class="option"><a href="https://primallypure.com/collections/deodorant" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Primally Pure</div></a><div class="option-price">primallypure.com</div><div class="option-cert">Scented with essential oils (not synthetic fragrance)</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb7" data-w="1" data-kit="1" onchange="updateLiveScore()"><label for="cb7">Check to see your score update</label></span><span class="swap-label">Toilet paper <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri low">Easy win</span> <span class="kit-badge">In your starter kit</span></span></div><div class="swap-current">Currently: conventional bleached (Charmin / Cottonelle type)</div><div class="swap-why">Conventional paper is typically bleached and often scented or lotioned for the softer lines. Repurpose is in your starter kit.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4fkYioz" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Repurpose Bamboo</div></a><div class="option-price">Amazon</div><div class="option-cert">In your starter kit &middot; bamboo-based</div></div><div class="option"><a href="https://amzn.to/4bB1H1q" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Reel Premium Bamboo</div></a><div class="option-price">Amazon</div><div class="option-cert">Bamboo-based</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb8" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb8">Check to see your score update</label></span><span class="swap-label">Tissues <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: lotion, scented or conventional bleached tissues</div><div class="swap-why">Lotion tissues add fragrance and softeners to something held at your nose and face.</div><div class="options-row one"><div class="option"><a href="https://link.amazon/B0gvsB1g5" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Caboo Bamboo Tissues</div></a><div class="option-price">Amazon</div><div class="option-cert">Bamboo-based &middot; bleaching not stated by the brand</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb9" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb9">Check to see your score update</label></span><span class="swap-label">Hand soap <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri mod">Moderate</span></span></div><div class="swap-current">Currently: natural/marketed-as-clean</div><div class="swap-why">The same pattern as dish soap: marketed as clean, but not fully disclosed or verified.</div><div class="options-row two"><div class="option"><a href="https://branchbasics.com/products/hand-soap" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Branch Basics Hand Soap (Fragrance Free)</div></a><div class="option-price">branchbasics.com</div><div class="option-cert">MADE SAFE certified</div></div><div class="option"><a href="https://attitudeliving.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Attitude Unscented Hand Soap</div></a><div class="option-price">attitudeliving.com</div><div class="option-cert">Unscented &middot; ingredient list disclosed</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb10" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb10">Check to see your score update</label></span><span class="swap-label">Body wash <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri mod">Moderate</span></span></div><div class="swap-current">Currently: natural/plant-based (Pipette, Alaffia)</div><div class="swap-why">Good brands on the shelf, but "plant-based" is not an ingredient standard. An unscented, short-ingredient option is the cleanest category.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4ffEcNS" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Dr. Bronner's Pure-Castile Soap</div></a><div class="option-price">Amazon</div><div class="option-cert">Unscented option &middot; short ingredient list</div></div><div class="option"><a href="https://link.amazon/B0f9YX2Q7" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Attitude Unscented Kids Body Wash</div></a><div class="option-price">Amazon</div><div class="option-cert">Unscented &middot; works for the girls too</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb11" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb11">Check to see your score update</label></span><span class="swap-label">Toothpaste <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: Tom's of Maine (or similar natural brand)</div><div class="swap-why">Natural-brand pastes often list "flavor" without detail. Both options below are fluoride-free with fully disclosed ingredients. Whether to use fluoride is your call and clinical judgment; if you prefer a fluoride option with full disclosure, we can look for one.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/3TwT7dT" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">David's Premium Natural</div></a><div class="option-price">Amazon</div><div class="option-cert">Fluoride-free &middot; ingredients disclosed</div></div><div class="option"><a href="https://yayzebra.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">ZEBRA Mint Toothpaste</div></a><div class="option-price">yayzebra.com</div><div class="option-cert">Fluoride-free &middot; ingredients disclosed</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb12" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb12">Check to see your score update</label></span><span class="swap-label">Towels <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bathroom</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: conventional cotton</div><div class="swap-why">Towels are against your skin daily and washed with detergent; conventional cotton can carry finishing residues. Replace as the current set wears out rather than all at once.</div><div class="options-row one"><div class="option"><a href="https://www.coyuchi.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Coyuchi Organic Towels</div></a><div class="option-price">coyuchi.com</div><div class="option-cert">GOTS organic cotton &mdash; confirm on the product page</div></div></div></div>
+<div class="room-h">Laundry</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb13" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb13">Check to see your score update</label></span><span class="swap-label">Laundry detergent <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Laundry</span></span><span><span class="pri hi">High priority</span></span></div><div class="swap-current">Currently: Seventh Generation / Method (natural-marketed)</div><div class="swap-why">Fragrance and residue go into every garment, sheet and towel your family uses. Branch Basics concentrate is in your starter kit and also works as laundry detergent; Molly's Suds is a good unscented powder.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4gQEcoK" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Branch Basics Concentrate</div></a><div class="option-price">Amazon</div><div class="option-cert">In your starter kit &middot; MADE SAFE certified</div></div><div class="option"><a href="https://amzn.to/4ptuH0L" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Molly's Suds Powder</div></a><div class="option-price">Amazon</div><div class="option-cert">Ingredients disclosed &middot; choose unscented</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb14" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb14">Check to see your score update</label></span><span class="swap-label">Washing machine microfiber filter <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Laundry</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: no filter</div><div class="swap-why">Synthetic clothing (including loungewear and leotards) sheds microfibres in every wash. A filter keeps most of them out of waste water.</div><div class="options-row two"><div class="option"><a href="https://coraball.com/products/cora-ball" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Cora Ball</div></a><div class="option-price">coraball.com</div><div class="option-cert">Reduces fibres released in the wash</div></div><div class="option"><a href="https://planetcare.org" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">PlanetCare Filter</div></a><div class="option-price">planetcare.org</div><div class="option-cert">Filter fitted to the washer outlet</div></div></div></div>
+<div class="room-h">Bedroom &amp; kids' rooms</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb15" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb15">Check to see your score update</label></span><span class="swap-label">Adult sheets <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Bedroom</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: OEKO-TEX certified sheets</div><div class="swap-why">OEKO-TEX tests the finished product for a list of restricted substances, which is a meaningful step. GOTS goes further by certifying the organic fibre and the processing, and matches your mattress and pillows. Replace when due.</div><div class="options-row one"><div class="option"><a href="https://amzn.to/4yvoW77" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Coyuchi Organic Sheets</div></a><div class="option-price">Amazon</div><div class="option-cert">GOTS organic cotton &mdash; confirm on the product page</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb16" data-w="2" data-kit="0" onchange="updateLiveScore()"><label for="cb16">Check to see your score update</label></span><span class="swap-label">Evening lighting <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Kids' rooms &amp; living areas</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: a mix of warm and bright/blue-toned light</div><div class="swap-why">You already avoid overhead light at night, which is the main thing. Swapping the remaining bright bulbs to warm, low-blue ones in the kids' rooms and main living area supports the evening wind-down. <strong>Counts as two checkpoints.</strong></div><div class="options-row two"><div class="option"><a href="https://thehealthyhome.shop/products/circadian-lightbulb" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Healthy Home Circadian Lightbulb</div></a><div class="option-price">thehealthyhome.shop</div><div class="option-cert">Warm, low-blue evening light</div></div><div class="option"><a href="https://amzn.to/4y2CJkP" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Hooga Circadian Rhythm Bulb</div></a><div class="option-price">Amazon</div><div class="option-cert">Warm, low-blue</div></div></div><div style="margin-top:12px;" class="options-row one"><div class="option"><a href="https://amzn.to/3U0g35C" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Wivety Amber Sleep Bulbs</div></a><div class="option-price">Amazon</div><div class="option-cert">Amber, for bedrooms</div></div></div></div>
+<div class="room-h">Home office</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb17" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb17">Check to see your score update</label></span><span class="swap-label">Air purifier <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Home office</span></span><span><span class="pri mod">Moderate</span></span></div><div class="swap-current">Currently: none</div><div class="swap-why">The only space without one. If you spend hours at your desk, this is a practical addition. Your sleep spaces and living room already have True HEPA.</div><div class="options-row two"><div class="option"><a href="https://link.amazon/B05CgdP19" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Coway Airmega Mighty2</div></a><div class="option-price">Amazon</div><div class="option-cert">True HEPA &middot; CARB-listed (no ozone)</div></div><div class="option"><a href="https://austinairsystems.com/" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Austin Air HealthMate</div></a><div class="option-price">austinairsystems.com</div><div class="option-cert">HEPA + carbon</div></div></div></div>
+<div class="room-h">General</div>
+<div class="swap-card"><div class="swap-top"><span class="ck"><input type="checkbox" id="cb18" data-w="1" data-kit="0" onchange="updateLiveScore()"><label for="cb18">Check to see your score update</label></span><span class="swap-label">WiFi router overnight <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; General</span></span><span><span class="pri low">Easy win</span></span></div><div class="swap-current">Currently: on 24/7</div><div class="swap-why">The router is already far from the bedrooms, which is the bigger factor. A timer is an optional extra, and it will also turn off the Google Nest and Alexa in the bedroom at night, which you may want to look at anyway.</div><div class="options-row two"><div class="option"><a href="https://amzn.to/4g9R9YI" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Smart WiFi Timer Plug</div></a><div class="option-price">Amazon</div><div class="option-cert">Schedule off overnight</div></div><div class="option"><a href="https://amzn.to/4h7P2Fs" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">BN-LINK Mechanical Timer</div></a><div class="option-price">Amazon</div><div class="option-cert">No app needed</div></div></div></div>
+<div class="divider"></div>
+<div class="wave-header"><div class="wave-title" style="color:var(--green-text);">Confirmed Good</div></div>
+<div class="room-h">Water</div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Whole-home system (Flowtech) + Mountain Valley glass delivery</span><span class="swap-badge">Confirmed good</span></div>
+<div class="swap-why">Drinking from glass-bottled spring water avoids plastic contact entirely, and in the Trace standard it sits at the same top tier as a certified filter or reverse osmosis. Your Flowtech system treats the water at every tap. Because you mentioned possibly adding reverse osmosis under the sink, that would only be an option if you want a second source for drinking.</div>
+<div class="swap-note"><strong>One thing to confirm:</strong> Flowtech makes both filtration and softening systems. A softener alone reduces hardness (scale) but does not remove chlorine, chloramine or most contaminants. San Diego's tap water is disinfected with chloramine, which many carbon systems also do not remove reliably. If you can send the model name, we'll confirm what it covers. If it is softener-only, the shower and bathroom-sink checkpoints would move from clean to swaps (a shower filter is an easy fix). On fluoride, we leave that choice with you; spring waters vary, so the brand's published analysis lists the level.</div></div>
+<div class="divider"></div>
+<div class="wave-header"><div class="wave-title" style="color:var(--amber);">Worth Refining</div></div><p class="section-sub" style="margin-bottom:20px;">Personal care and clothing. These are brand-based, so we research them individually rather than scoring them.</p>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Underwear <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Clothing</span></span><span class="swap-badge">Option</span></div><div class="swap-why">You mentioned wanting organic cotton underwear. Cotton against skin all day is the easy place to start.</div><div class="options-row one"><div class="option"><a href="https://www.quince.com/women/women-s-organic-cotton-hipster" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Quince Organic Cotton Hipster</div></a><div class="option-price">quince.com</div><div class="option-cert">Organic cotton</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Loungewear &amp; workout <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Clothing</span></span><span class="swap-badge">Option</span></div><div class="swap-why">Vuori is mostly synthetic performance fabric (check your labels). For loungewear you spend long hours in, natural fibres are a good swap; for workouts, a synthetic is fine for the hour you wear it, then wash it.</div><div class="options-row two"><div class="option"><a href="https://matethelabel.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Mate the Label</div></a><div class="option-price">matethelabel.com</div><div class="option-cert">Organic cotton basics</div></div><div class="option"><a href="https://www.quince.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Quince Organic Cotton Loungewear</div></a><div class="option-price">quince.com</div><div class="option-cert">Organic cotton</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Girls' sleepwear <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Clothing</span></span><span class="swap-badge">Option</span></div><div class="swap-why">You like Hanna Andersson and wanted more options. Both below are certified organic cotton.</div><div class="options-row two"><div class="option"><a href="https://www.hannaandersson.com" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Hanna Andersson Pajamas</div></a><div class="option-price">hannaandersson.com</div><div class="option-cert">Organic cotton &middot; OEKO-TEX</div></div><div class="option"><a href="https://treehousekids.shop?ref=lindsay_brean" target="_blank" rel="noopener" style="text-decoration:none;"><div class="option-name">Treehouse Kids</div></a><div class="option-price">treehousekids.shop</div><div class="option-cert">Organic cotton pajamas</div></div></div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Girls' leotards <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Clothing</span></span><span class="swap-badge">Researching</span></div><div class="swap-why">We have not found a verified leotard: nearly all are nylon/spandex. Practical steps: wear them for class only, wash after each use, and let us keep looking for a natural-fibre option. This is flagged for the next update.</div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Humidity <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Home</span></span><span class="swap-badge">Easy add</span></div><div class="swap-why">No meter at the moment. A simple hygrometer in the bedrooms and bathrooms shows if moisture is building up. If it stays high, we can talk about testing.</div></div>
+<div class="swap-card"><div class="swap-top"><span class="swap-label">Phones in the bedroom <span style="color:var(--dusk);font-weight:400;font-size:12px;">&middot; Habits</span></span><span class="swap-badge">Habit</span></div><div class="swap-why">Hard to keep out of the room? Airplane mode overnight gets most of the benefit.</div></div>
+<div class="divider"></div>
+<div class="section-label">Still to confirm</div>
+  <div class="section-h" style="margin-bottom:12px;">Six items we'll close out together.</div>
+  <div class="approved-card">
+    <div style="font-size:13px;color:#444;line-height:1.7;">
+      &bull; <strong>Shower filter:</strong> is there a separate one? It matters most if the Flowtech is softener-only.<br>
+      &bull; <strong>Dryer sheets or fabric softener:</strong> if used, a wool dryer ball is the easy swap.<br>
+      &bull; <strong>Flowtech system:</strong> the model, and whether it filters or only softens.<br>
+      &bull; <strong>Nursery items</strong> (crib mattress, diapers, wipes, baby wash): only if they apply to your home.<br>
+      &bull; <strong>Living-room purifier:</strong> model, so we can confirm it is True HEPA.<br>
+      &bull; <strong>Nail polish:</strong> confirm whether it is the 17+ free brand or a conventional one.
+    </div>
+  </div>
+
+<div class="divider"></div>
+  <div class="nursery-banner" style="background:var(--night);border-color:var(--night);">
+    <div class="nursery-banner-title" style="color:white;">If you'd rather we just handled it</div>
+    <div class="nursery-banner-body" style="color:#ccc;">Trace can curate and order everything on this list, then bring it all to you on one dedicated install day. We handle the setup, you come home to it done. Happy to talk through what that would look like whenever you're ready.</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-label">About Trace</div>
+  <div class="section-h" style="margin-bottom:20px;">The missing pillar of health.</div>
+  <div class="approved-card">
+    <p style="font-size:13.5px;color:#444;line-height:1.75;margin-bottom:14px;">Diet and movement are well tracked today. Almost no one has anyone looking at what is actually in the home. We trace your home room by room and identify what is worth swapping and why, backed by ingredient disclosure and independent testing or certification (GOTS, MADE SAFE, GREENGUARD) rather than marketing claims.</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.75;margin-bottom:14px;">Thank you for sharing Trace with your team and for opening your home. If a short, educational healthy-home guide would be useful to hand to patients, I'd be glad to put one together.</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.75;">If you'd like to go deeper &mdash; a follow-up visit once you have worked through this plan, or just a conversation about what's next &mdash; we'd love to. This is a relationship, not a one-time report.</p>
+  </div>
+  <div class="divider"></div>
+  <p style="text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--night);max-width:480px;margin:0 auto 32px;">
+    This blueprint is a lot for one visit. You don't need to act on all of it today &mdash; just pick one thing, and go from there.
+  </p>
+  <div style="max-width:520px;margin:0 auto;">
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;"><strong style="color:#666;">Affiliate disclosure:</strong> some links in this plan are affiliate links (Amazon Associates and brand partners). If you purchase through them, Trace may earn a small commission at no additional cost to you. Recommendations are based on independent research and certifications, not on which links pay a commission.</p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;"><strong style="color:#666;">Not medical advice:</strong> this plan is educational and reflects independent research into product formulations and certifications. It isn't medical advice and isn't a substitute for guidance from a doctor or other qualified health professional.</p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;margin-bottom:10px;"><strong style="color:#666;">Subject to change:</strong> formulations, certifications and prices can change after this document was written. Please confirm current certification status with the brand before purchasing.</p>
+    <p style="font-size:11.5px;line-height:1.7;color:#888;"><strong style="color:#666;">Specific to this visit:</strong> this plan reflects one home assessment. It isn't a guarantee of health outcomes, and isn't a comprehensive audit of every product or material in the home. The score is an estimate until the items above are confirmed.</p>
+  </div>
+  <div class="footer-mark">trace</div>
+</div>
+
+<script>
+  const BASE_CLEAN = 26, PENDING = 6, TOTAL = 57;
+  const KIT_W = 3;
+  function pct(n){ return Math.round(n / TOTAL * 100); }
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      const c = 2 * Math.PI * 73.5;
+      document.getElementById('score-arc').style.strokeDashoffset = c - (51/100) * c;
+    }, 200);
+  });
+  function updateLiveScore(){
+    let n = 0;
+    document.querySelectorAll('input[data-w]').forEach(function(el){ if(el.checked) n += parseInt(el.dataset.w, 10); });
+    const lo = Math.min(100, pct(BASE_CLEAN + n)), hi = Math.min(100, pct(BASE_CLEAN + PENDING + n));
+    document.getElementById('liveScore').textContent = lo + '\u2013' + hi + '%';
+    const k = Math.min(100, pct(BASE_CLEAN + KIT_W + n)), kh = Math.min(100, pct(BASE_CLEAN + PENDING + KIT_W + n));
+    document.getElementById('kitLine').textContent = 'With your starter kit in use: about ' + k + '\u2013' + kh + '%';
+  }
+</script>
+</body>
+</html>
