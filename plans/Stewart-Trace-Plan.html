@@ -214,7 +214,7 @@
         <circle class="score-ring-fill" id="score-arc" cx="85" cy="85" r="73.5"/>
       </svg>
       <div class="score-center">
-        <div class="range-num">46&ndash;56</div>
+        <div class="range-num">50%</div>
         <div class="score-denom">ESTIMATED</div>
       </div>
     </div>
@@ -229,7 +229,6 @@
     <strong>How your score works:</strong> it measures breadth, not severity &mdash; the share of checkpoints using
     the cleanest options, not a pass/fail grade. Most first-time assessments land between 30&ndash;55%, since so
     little in this industry is required to be disclosed.<br><br>
-    <strong>Why it's a range:</strong> a handful of answers on the day didn't fit a yes or no. Counting them as not yet clean gives the low end; counting them as clean gives the high end.<br><br>
     <strong>How it grows:</strong> every completed swap moves a checkpoint into your "clean" count. Your starter kit items are not part of this score, which reflects what we found on the day.
   </div>
 
@@ -237,11 +236,11 @@
   <p style="font-size:13px;color:#666;margin-bottom:16px;">Room by room, from the checkpoints we matched during the visit.</p>
   <div class="approved-card">
     <div class="rm"><span>Kitchen</span><span class="a">6 clean &middot; 3 swaps</span></div>
-    <div class="rm"><span>Bathroom</span><span class="a">3 clean &middot; 8 swaps</span></div>
+    <div class="rm"><span>Bathroom</span><span class="a">2 clean &middot; 9 swaps</span></div>
     <div class="rm"><span>Bedroom</span><span class="g">5 clean &middot; 1 swap</span></div>
     <div class="rm"><span>Living room</span><span class="g">4 clean &middot; 0 swaps</span></div>
     <div class="rm"><span>Kids' rooms</span><span class="g">5 clean &middot; 1 swap</span></div>
-    <div class="rm"><span>Laundry</span><span class="a">1 clean &middot; 2 swaps</span></div>
+    <div class="rm"><span>Laundry</span><span class="a">2 clean &middot; 2 swaps</span></div>
     <div class="rm"><span>Home office</span><span class="a">2 clean &middot; 0 swaps</span></div>
     <div class="rm"><span>Pests, garage &amp; general</span><span class="a">0 clean &middot; 5 swaps</span></div>
   </div>
@@ -283,7 +282,7 @@
   <div class="section-h">Start here.</div>
   <p class="section-sub">Three swaps that matter most in your home, given daily use and the kids.</p>
   <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--night);" id="liveScore">46&ndash;56%</span>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--night);" id="liveScore">50%</span>
     <span style="font-size:12px;color:var(--dusk);">projected score as you complete swaps &mdash; check the boxes below as you go</span>
   </div>
   <div class="top3-card"><div class="top3-num">1</div><div class="top3-content"><div class="top3-title">Pest control <span style="font-weight:300;color:var(--dusk);">(Home &amp; garage)</span></div><div class="top3-reason">Pesticide residue sits where kids play and walk. Ask your service for product names and a lower-impact plan.</div></div><div class="top3-points">High</div></div>
@@ -380,19 +379,18 @@
 </div>
 
 <script>
-  const BASE_CLEAN = 26, PENDING = 6, TOTAL = 57;
+  const BASE_CLEAN = 26, TOTAL = 52;
   function pct(n){ return Math.round(n / TOTAL * 100); }
   window.addEventListener('load', function(){
     setTimeout(function(){
       const c = 2 * Math.PI * 73.5;
-      document.getElementById('score-arc').style.strokeDashoffset = c - (51/100) * c;
+      document.getElementById('score-arc').style.strokeDashoffset = c - (50/100) * c;
     }, 200);
   });
   function updateLiveScore(){
     let n = 0;
     document.querySelectorAll('input[data-w]').forEach(function(el){ if(el.checked) n += parseInt(el.dataset.w, 10); });
-    const lo = Math.min(100, pct(BASE_CLEAN + n)), hi = Math.min(100, pct(BASE_CLEAN + PENDING + n));
-    document.getElementById('liveScore').textContent = lo + '\u2013' + hi + '%';
+    document.getElementById('liveScore').textContent = Math.min(100, pct(BASE_CLEAN + n)) + '%';
   }
 </script>
 </body>
